@@ -1,5 +1,5 @@
 begin;
-\ir helpers/test_helpers.sql
+\ir helpers/test_helpers.psql
 select plan(14);
 
 -- Fixture shared with AsraySplitTests/Domain/LedgerTests.swift (testSimplifyMatchesDatabaseFixture):

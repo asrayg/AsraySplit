@@ -1,6 +1,6 @@
 -- Produces canonical JSON payloads for Swift contract tests (AsraySplitTests/Fixtures).
 begin;
-\ir ../supabase/tests/helpers/test_helpers.sql
+\ir ../supabase/tests/helpers/test_helpers.psql
 \set QUIET on
 \pset tuples_only on
 \pset format unaligned

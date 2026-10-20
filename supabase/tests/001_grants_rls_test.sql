@@ -1,5 +1,5 @@
 begin;
-\ir helpers/test_helpers.sql
+\ir helpers/test_helpers.psql
 select plan(9);
 
 -- Every table in exposed schemas has RLS enabled.

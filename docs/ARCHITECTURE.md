@@ -50,10 +50,10 @@ Do not store a mutable group balance. Store immutable-ish financial facts:
 - Settlement transfers
 - Adjustments/reversals for auditability
 
-Compute each participant’s net:
+Compute each participant’s net (a debtor who pays a settlement moves toward zero, so payments *sent* increase net):
 
 ```text
-net = funded expenses - consumed allocations + settlements received - settlements sent
+net = funded expenses - consumed allocations + settlements sent - settlements received
 ```
 
 Create or edit an expense through one transactional PostgreSQL function that validates membership, currency, totals, revision, and idempotency key. Return the complete canonical record. Deletion should soft-delete or create a reversal so activity history remains understandable.
@@ -112,3 +112,30 @@ Every table needs ownership/membership indexes and explicit grants/RLS. Avoid po
 - Signed receipt URLs should expire quickly.
 - Redact tokens, email, receipt OCR, merchant/amount, and invite codes from logs.
 
+
+## As built (2026-10-20)
+
+| Layer | Location |
+| --- | --- |
+| Money & domain (pure, tested) | `AsraySplit/Core/Money`, `AsraySplit/Core/Domain` |
+| Models & write payloads | `AsraySplit/Core/Models` |
+| Service protocols | `AsraySplit/Data/Repositories/Services.swift` |
+| Supabase implementation | `AsraySplit/Data/Supabase/SupabaseBackend.swift` (supabase-swift 2.30.0) |
+| Demo / test backend | `AsraySplit/Data/Demo` (`InMemoryServer` enforces the same invariants as the RPCs) |
+| Offline cache + outbox | `AsraySplit/Data/Local` (SwiftData; one container, scoped caches) |
+| Sync engine & observable store | `AsraySplit/Data/Sync` |
+| Composition root, routing, deep links | `AsraySplit/App` |
+| Feature UI + models | `AsraySplit/Features/*` |
+| Schema, RLS, RPCs | `supabase/migrations/*` |
+| Edge Functions | `supabase/functions/*` (pure logic in `_shared/`) |
+
+Notes:
+
+- Single payer per expense in the UI; the ledger, RPCs and Swift domain already support multiple payers.
+- Balances shown are the server's `trip_balances` when the trip has no pending local changes; otherwise a
+  local projection computed with the identical algorithm, labelled "includes unsynced changes". When synced
+  data and server balances disagree the client forces a full refetch.
+- `suggested_settlements` (SQL) and `Ledger.simplify` (Swift) implement the same greedy algorithm; a shared
+  fixture (`004_balances_test.sql` / `LedgerTests`) and DB-generated contract fixtures keep them aligned.
+- SwiftData on iOS 17 breaks when more than one container with the same schema exists in a process, so
+  ephemeral caches (tests, previews, UI tests) share one container partitioned by a `scope` column.

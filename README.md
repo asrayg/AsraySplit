@@ -1,48 +1,40 @@
 # Asray Split
 
-A native SwiftUI expense-sharing app with receipt photos, AI itemization, per-item assignment, proportional tax/tip splitting, groups, balances, insights, and local-first persistence.
+Native SwiftUI app for splitting group-travel costs: exact multi-currency splits, receipt scanning with
+per-item assignment, offline capture, collaborative trips with invites, and minimal settle-up payments.
 
-> **Status:** compiling product prototype, not an App Store-ready release. Start with [CLAUDE.md](CLAUDE.md) and the [implementation plan](docs/IMPLEMENTATION_PLAN.md) before extending it.
+> **Status:** feature-complete release candidate pending real-backend, device and App Store verification.
+> See [docs/CURRENT_STATE.md](docs/CURRENT_STATE.md) for what is verified and what remains.
 
-### Vacation features
-
-- Create trips with dates, travelers, home currency, and a shared budget
-- Add ordinary numeric expenses or scan/itemize a receipt
-- Split equally, by exact amount, percentage, or weighted shares
-- Record who paid and whether it was cash, card, bank, Venmo, or another method
-- Built-in and custom expense tags, including an automatic `cash` tag
-- Per-person allocation breakdowns and balance-aware settlement records
-- Daily opt-in trip reminders and expense confirmation notifications
-- Expense history, detail screens, and deletion
-
-## Run the iOS app
+## Run the app (no backend needed)
 
 ```sh
 xcodegen generate
 open AsraySplit.xcodeproj
 ```
 
-The app runs immediately in demo mode. Camera capture works on a device; the simulator can use the photo library or built-in demo receipt.
+Without Supabase configuration the app runs in **demo mode** against an in-memory backend that enforces the
+same rules as the server. Demo data never leaves the device.
 
 ## Connect Supabase
 
-1. Create a Supabase project and enable anonymous sign-ins under Auth.
-2. Run `supabase/migrations/001_initial.sql` in the SQL editor (or link the CLI and run `supabase db push`).
-3. Add the project URL and publishable key to `AsraySplit/Info.plist`. Never add a secret/service-role key to the app.
-4. Set the server-only AI key and deploy:
+1. `cp Config/Secrets.example.xcconfig Config/Secrets.Debug.xcconfig` and fill in the project host and
+   publishable key (for a local stack: `SUPABASE_HOST = 127.0.0.1:54321`).
+2. `supabase start` (or `supabase link` + `supabase db push` for a hosted project).
+3. Deploy functions and set secrets — see [docs/OPERATIONS.md](docs/OPERATIONS.md).
+
+## Tests
 
 ```sh
-supabase secrets set OPENAI_API_KEY=your_key
-supabase functions deploy scan-receipt
+xcodebuild test -project AsraySplit.xcodeproj -scheme AsraySplit -destination 'platform=iOS Simulator,name=iPhone 15'
+scripts/db-test.sh                      # migrations + pgTAP on local Postgres (no Docker)
+supabase test db                        # same suite on the real Supabase stack
+node --test supabase/functions/tests/   # Edge Function logic (or: deno test)
+DB_FIXTURES_OUT=$PWD/AsraySplitTests/Fixtures scripts/db-test.sh   # refresh Swift contract fixtures
 ```
 
-The receipt bucket is private and protected by owner-scoped RLS. The Edge Function validates the caller JWT and keeps AI credentials server-side.
+## Docs
 
-## Architecture
-
-- SwiftUI + Observation via `ObservableObject`
-- Vision text recognition as the private on-device fallback
-- Supabase Auth, Postgres, Storage, and Edge Functions
-- JSON local snapshot for offline/demo behavior
-- Structured AI output; the user must review before saving
-
+[Product spec](docs/PRODUCT_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) ·
+[Implementation plan](docs/IMPLEMENTATION_PLAN.md) · [QA & release](docs/QA_AND_RELEASE.md) ·
+[Operations](docs/OPERATIONS.md)

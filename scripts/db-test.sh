@@ -24,7 +24,7 @@ PSQL=(psql -X -q -v ON_ERROR_STOP=1 -h "$WORK" -p "$PORT" -U postgres)
 "${PSQL[@]}" -d postgres -c "create database $DB"
 # Same default search_path as hosted Supabase.
 "${PSQL[@]}" -d postgres -c "alter database $DB set search_path = \"\$user\", public, extensions"
-"${PSQL[@]}" -d "$DB" -f "$ROOT/supabase/tests/shim/supabase_shim.sql" >/dev/null
+"${PSQL[@]}" -d "$DB" -f "$ROOT/scripts/db-shim.sql" >/dev/null
 
 for migration in "$ROOT"/supabase/migrations/*.sql; do
   echo "migrate $(basename "$migration")"

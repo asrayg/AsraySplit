@@ -1,4 +1,5 @@
 -- Shared pgTAP helpers. Included with \ir from each *_test.sql inside its transaction.
+create extension if not exists pgtap with schema extensions;
 create schema if not exists tests;
 
 create or replace function tests.create_user(p_email text, p_name text default null) returns uuid

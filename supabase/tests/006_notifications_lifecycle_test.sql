@@ -1,5 +1,5 @@
 begin;
-\ir helpers/test_helpers.sql
+\ir helpers/test_helpers.psql
 select plan(16);
 
 select tests.create_user('n1@example.com', 'Nia') as u1 \gset

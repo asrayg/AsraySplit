@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    name: iOS build + tests
+    runs-on: macos-14
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app
+      - name: Generate project
+        run: brew install xcodegen && xcodegen generate
+      - name: Unit + UI tests (demo backend, no secrets)
+        run: |
+          set -o pipefail
+          xcodebuild test \
+            -project AsraySplit.xcodeproj -scheme AsraySplit \
+            -destination 'platform=iOS Simulator,name=iPhone 15' \
+            -resultBundlePath TestResults.xcresult \
+            CODE_SIGNING_ALLOWED=NO | xcbeautify || exit 1
+      - name: Release build (no development secrets)
+        run: |
+          set -o pipefail
+          xcodebuild build -project AsraySplit.xcodeproj -scheme AsraySplit -configuration Release \
+            -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO | xcbeautify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-test-results
+          path: TestResults.xcresult
+
+  database:
+    name: Database (migrations + pgTAP)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+      - name: Start Supabase
+        run: supabase db start
+      - name: Lint
+        run: supabase db lint --level warning
+      - name: pgTAP
+        run: supabase test db
+
+  functions:
+    name: Edge Functions
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Type-check
+        run: deno check supabase/functions/*/index.ts
+      - name: Unit tests
+        run: deno test --allow-env supabase/functions/tests/
