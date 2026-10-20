@@ -1,5 +1,50 @@
 project_id = "asray-split"
 
+[api]
+schemas = ["public"]
+extra_search_path = ["public", "extensions"]
+max_rows = 1000
+
+[db]
+major_version = 15
+
+[auth]
+site_url = "https://asraysplit.app"
+additional_redirect_urls = ["asraysplit://auth-callback"]
+jwt_expiry = 3600
+enable_refresh_token_rotation = true
+enable_signup = true
+# Guest/anonymous accounts are not used; every account can be deleted in-app.
+enable_anonymous_sign_ins = false
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = true
+enable_confirmations = false
+max_frequency = "60s"
+
+[auth.external.apple]
+enabled = true
+client_id = "env(APPLE_CLIENT_ID)"
+secret = "env(APPLE_SIGNIN_SECRET)"
+
+[auth.rate_limit]
+email_sent = 10
+sign_in_sign_ups = 30
+token_verifications = 30
+
+[storage]
+file_size_limit = "10MiB"
+
 [functions.scan-receipt]
 verify_jwt = true
 
+[functions.exchange-rates]
+verify_jwt = true
+
+[functions.delete-account]
+verify_jwt = true
+
+[functions.maintenance]
+# Authorized inside the function against the service-role key.
+verify_jwt = false
