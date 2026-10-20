@@ -1,0 +1,5 @@
+project_id = "asray-split"
+
+[functions.scan-receipt]
+verify_jwt = true
+

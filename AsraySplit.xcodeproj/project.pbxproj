@@ -1,0 +1,410 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 54;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		048C74E7CBCD557655E10D13 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = D389CA841341CE60230956C4 /* Models.swift */; };
+		2BA006DFD9DC154CCAFD9393 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E247E686FCAC30EEDF0138 /* Services.swift */; };
+		67A0F5994382D5764A17FCE4 /* AsraySplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A842C0A5DCB0D1B876DB9EA /* AsraySplitApp.swift */; };
+		6B810F88EC66C6CB067604B0 /* ReceiptParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD66E827A738F5EE77FBE1D5 /* ReceiptParserTests.swift */; };
+		976F1B34FB799D866F98920E /* SecondaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D201C707D92BA4ED085AED0F /* SecondaryViews.swift */; };
+		AB7529C3714EA1CF41E706D1 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F74A408B7ECE28D8921B10 /* RootView.swift */; };
+		EDF4947E377C05976CF5CE0D /* ReceiptFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40F9EE136BD8AE2157F923 /* ReceiptFlow.swift */; };
+		F6961BA2B5BD293D80C91B0C /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B058F1B2E6D55F2BC20DECB /* AppStore.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		79A0519E2F46E06E666A6A80 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9C65F56FC1E38F8C0A689565 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2D0487169C4A10C848459BC7;
+			remoteInfo = AsraySplit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		051CFEE9771D2EFB8189CEC2 /* AsraySplit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = AsraySplit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1C40F9EE136BD8AE2157F923 /* ReceiptFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptFlow.swift; sourceTree = "<group>"; };
+		5A842C0A5DCB0D1B876DB9EA /* AsraySplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsraySplitApp.swift; sourceTree = "<group>"; };
+		5D3C5417FE0A2D495AA794AF /* AsraySplitTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AsraySplitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9B058F1B2E6D55F2BC20DECB /* AppStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStore.swift; sourceTree = "<group>"; };
+		AD66E827A738F5EE77FBE1D5 /* ReceiptParserTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptParserTests.swift; sourceTree = "<group>"; };
+		C15ADEDDB0584C0BCE094F7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		D201C707D92BA4ED085AED0F /* SecondaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryViews.swift; sourceTree = "<group>"; };
+		D389CA841341CE60230956C4 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		D7E247E686FCAC30EEDF0138 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		F7F74A408B7ECE28D8921B10 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		06E53C92F677D1D0EB6DF894 /* AsraySplitTests */ = {
+			isa = PBXGroup;
+			children = (
+				AD66E827A738F5EE77FBE1D5 /* ReceiptParserTests.swift */,
+			);
+			path = AsraySplitTests;
+			sourceTree = "<group>";
+		};
+		80EE50AB722A7D7DAD1FA59F /* AsraySplit */ = {
+			isa = PBXGroup;
+			children = (
+				9B058F1B2E6D55F2BC20DECB /* AppStore.swift */,
+				5A842C0A5DCB0D1B876DB9EA /* AsraySplitApp.swift */,
+				C15ADEDDB0584C0BCE094F7B /* Info.plist */,
+				D389CA841341CE60230956C4 /* Models.swift */,
+				1C40F9EE136BD8AE2157F923 /* ReceiptFlow.swift */,
+				F7F74A408B7ECE28D8921B10 /* RootView.swift */,
+				D201C707D92BA4ED085AED0F /* SecondaryViews.swift */,
+				D7E247E686FCAC30EEDF0138 /* Services.swift */,
+			);
+			path = AsraySplit;
+			sourceTree = "<group>";
+		};
+		87C698B681AC0DC5E0F641E8 = {
+			isa = PBXGroup;
+			children = (
+				80EE50AB722A7D7DAD1FA59F /* AsraySplit */,
+				06E53C92F677D1D0EB6DF894 /* AsraySplitTests */,
+				9F046A56FAAE5D14D765E1AF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		9F046A56FAAE5D14D765E1AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				051CFEE9771D2EFB8189CEC2 /* AsraySplit.app */,
+				5D3C5417FE0A2D495AA794AF /* AsraySplitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2D0487169C4A10C848459BC7 /* AsraySplit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2EF5EEDA68B7FE2E210A8A88 /* Build configuration list for PBXNativeTarget "AsraySplit" */;
+			buildPhases = (
+				A607E2CCF9502689AC7D678B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AsraySplit;
+			productName = AsraySplit;
+			productReference = 051CFEE9771D2EFB8189CEC2 /* AsraySplit.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CEDF31C86658C2EBFAB1FF58 /* AsraySplitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F6C5FD9F3E4992686DAD9AD5 /* Build configuration list for PBXNativeTarget "AsraySplitTests" */;
+			buildPhases = (
+				F7769AE726DAD1208DEFEA4B /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07CCDA1CC748D077EB818DAC /* PBXTargetDependency */,
+			);
+			name = AsraySplitTests;
+			productName = AsraySplitTests;
+			productReference = 5D3C5417FE0A2D495AA794AF /* AsraySplitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9C65F56FC1E38F8C0A689565 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					2D0487169C4A10C848459BC7 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					CEDF31C86658C2EBFAB1FF58 = {
+						DevelopmentTeam = "";
+					};
+				};
+			};
+			buildConfigurationList = FE0BA65765668ABC98367826 /* Build configuration list for PBXProject "AsraySplit" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 87C698B681AC0DC5E0F641E8;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2D0487169C4A10C848459BC7 /* AsraySplit */,
+				CEDF31C86658C2EBFAB1FF58 /* AsraySplitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A607E2CCF9502689AC7D678B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6961BA2B5BD293D80C91B0C /* AppStore.swift in Sources */,
+				67A0F5994382D5764A17FCE4 /* AsraySplitApp.swift in Sources */,
+				048C74E7CBCD557655E10D13 /* Models.swift in Sources */,
+				EDF4947E377C05976CF5CE0D /* ReceiptFlow.swift in Sources */,
+				AB7529C3714EA1CF41E706D1 /* RootView.swift in Sources */,
+				976F1B34FB799D866F98920E /* SecondaryViews.swift in Sources */,
+				2BA006DFD9DC154CCAFD9393 /* Services.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F7769AE726DAD1208DEFEA4B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6B810F88EC66C6CB067604B0 /* ReceiptParserTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07CCDA1CC748D077EB818DAC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2D0487169C4A10C848459BC7 /* AsraySplit */;
+			targetProxy = 79A0519E2F46E06E666A6A80 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		2A8DEF066F8C87A733929D5C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AsraySplit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplit;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		4D0751A399190D68A675D8F0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = "";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		5C88D0751458945375B4E51A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplitTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AsraySplit.app/AsraySplit";
+			};
+			name = Release;
+		};
+		5D0956511F0E475E61792A72 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplitTests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/AsraySplit.app/AsraySplit";
+			};
+			name = Debug;
+		};
+		A42885503E9A93654C77116F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AsraySplit/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplit;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		FB7350381D277ED7E55162A8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2EF5EEDA68B7FE2E210A8A88 /* Build configuration list for PBXNativeTarget "AsraySplit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A42885503E9A93654C77116F /* Debug */,
+				2A8DEF066F8C87A733929D5C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F6C5FD9F3E4992686DAD9AD5 /* Build configuration list for PBXNativeTarget "AsraySplitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5D0956511F0E475E61792A72 /* Debug */,
+				5C88D0751458945375B4E51A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FE0BA65765668ABC98367826 /* Build configuration list for PBXProject "AsraySplit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB7350381D277ED7E55162A8 /* Debug */,
+				4D0751A399190D68A675D8F0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9C65F56FC1E38F8C0A689565 /* Project object */;
+}
