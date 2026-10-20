@@ -9,15 +9,16 @@ final class CoreFlowUITests: XCTestCase {
         app.launchArguments = ["-uiTesting", "-emptyDemo"]
         app.launch()
 
-        let add = app.buttons["addMenu"]
-        XCTAssertTrue(add.waitForExistence(timeout: 10))
-        add.tap()
-        app.buttons["New trip"].tap()
+        let create = app.buttons["Create a trip"]
+        XCTAssertTrue(create.waitForExistence(timeout: 10))
+        create.tap()
         let name = app.textFields["tripName"]
         XCTAssertTrue(name.waitForExistence(timeout: 5))
         name.tap()
-        name.typeText("Kyoto")
+        name.typeText("Kyoto\n")
         let guest = app.textFields["Add a traveler’s name"]
+        app.swipeUp()
+        XCTAssertTrue(guest.waitForExistence(timeout: 5))
         guest.tap()
         guest.typeText("Kai\n")
         app.buttons["saveTrip"].tap()
