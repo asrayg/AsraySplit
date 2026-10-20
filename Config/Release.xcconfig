@@ -1,6 +1,7 @@
 #include "Base.xcconfig"
 APP_ENV = release
-PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplit
+APP_BUNDLE_ID = com.asray.AsraySplit
+APP_GROUP_ID = group.com.asray.AsraySplit
 APP_DISPLAY_NAME = Asray Split
 APNS_ENVIRONMENT = production
 #include? "Secrets.Release.xcconfig"

@@ -29,6 +29,7 @@
   <key>SupabasePublishableKey</key><string>$(SUPABASE_PUBLISHABLE_KEY)</string>
   <key>InviteHost</key><string>$(INVITE_HOST)</string>
   <key>AppEnvironment</key><string>$(APP_ENV)</string>
+  <key>AppGroupIdentifier</key><string>$(APP_GROUP_ID)</string>
   <key>APNSEnvironment</key><string>$(APNS_ENVIRONMENT)</string>
 </dict>
 </plist>

@@ -64,6 +64,38 @@ struct ScanReviewView: View {
                 Text("Highlighted fields were hard to read. Nothing is saved until you tap Save.")
             }
 
+            if let ride = model.ride {
+                Section {
+                    Label {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("\(ride.provider.displayName)\(ride.product.map { " · \($0)" } ?? "")").font(.headline)
+                            if let pickup = ride.pickup { Text("From \(pickup)").font(.subheadline).fixedSize(horizontal: false, vertical: true) }
+                            if let dropoff = ride.dropoff { Text("To \(dropoff)").font(.subheadline).fixedSize(horizontal: false, vertical: true) }
+                            if let distance = ride.distance { Text([distance, ride.duration].compactMap { $0 }.joined(separator: " · ")).font(.caption).foregroundStyle(.secondary) }
+                        }
+                    } icon: { Image(systemName: "car.fill").foregroundStyle(Color.brand) }
+                    ForEach(model.trip.activeParticipants) { person in
+                        let inCar = model.riders.contains(person.id)
+                        Button {
+                            var riders = model.riders
+                            if inCar { riders.remove(person.id) } else { riders.insert(person.id) }
+                            model.setRiders(riders)
+                        } label: {
+                            HStack {
+                                Avatar(name: person.displayName, size: 28)
+                                Text(person.displayName).foregroundStyle(Color.primary)
+                                Spacer()
+                                Image(systemName: inCar ? "checkmark.circle.fill" : "circle").foregroundStyle(inCar ? Color.brand : Color.secondary)
+                            }
+                            .frame(minHeight: 44)
+                        }
+                        .accessibilityAddTraits(inCar ? .isSelected : [])
+                    }
+                } header: { Text("Who was in the ride?") } footer: {
+                    Text("The fare, fees and tip are split equally between riders. Change a rider’s share below if needed.")
+                }
+            }
+
             Section {
                 ForEach($model.lines) { $line in
                     LineEditor(line: $line, currency: model.currency, people: model.trip.activeParticipants,
@@ -128,6 +160,7 @@ struct ScanReviewView: View {
     private var sourceText: String {
         switch model.source {
         case .ai: String(localized: "AI read · \(Int(model.overallConfidence * 100))% confident · please check")
+        case .onDevice where model.ride != nil: String(localized: "Ride receipt recognized on this iPhone · please check")
         case .onDevice: String(localized: "Read on this iPhone · please check carefully")
         case .manual: String(localized: "Manual entry")
         }

@@ -10,6 +10,7 @@ struct ScanReceiptView: View {
     @Environment(ReceiptScanCoordinator.self) private var scanner
     @Environment(\.dismiss) private var dismiss
     let initialTripID: TripID?
+    var initialJobID: UUID? = nil
 
     @State private var tripID: TripID?
     @State private var jobID: UUID?
@@ -58,7 +59,10 @@ struct ScanReceiptView: View {
                 catch { self.error = (error as? ReceiptImageError)?.errorDescription ?? error.localizedDescription }
             }
         }
-        .onAppear { tripID = tripID ?? initialTripID ?? store.activeTrips.first?.id }
+        .onAppear {
+            tripID = tripID ?? initialTripID ?? store.activeTrips.first?.id
+            if jobID == nil { jobID = initialJobID }
+        }
     }
 
     private var selectedTrip: Trip? { store.trip(tripID) }

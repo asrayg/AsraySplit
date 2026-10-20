@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import SwiftUI
+import UniformTypeIdentifiers
 
 enum Route: Hashable {
     case trip(TripID)
@@ -16,6 +17,8 @@ enum SheetRoute: Identifiable, Equatable {
     case createTrip
     case addExpense(TripID)
     case scanReceipt(TripID?)
+    /// Opens the review for a scan job already started (e.g. an item shared from another app).
+    case reviewScan(TripID, jobID: UUID)
     case settleUp(TripID, SuggestedTransfer?)
 
     var id: String {
@@ -24,6 +27,7 @@ enum SheetRoute: Identifiable, Equatable {
         case .createTrip: "create-trip"
         case .addExpense(let trip): "add-\(trip)"
         case .scanReceipt(let trip): "scan-\(trip?.uuidString ?? "")"
+        case .reviewScan(let trip, let job): "review-\(trip)-\(job)"
         case .settleUp(let trip, let transfer): "settle-\(trip)-\(transfer?.id ?? "")"
         }
     }
@@ -112,6 +116,7 @@ final class AppModel {
                 await env.notifications.scheduleDailyReminders(for: env.store.activeTrips, enabled: preferences.dailyReminder)
             }
             if let link = pendingLink { pendingLink = nil; open(link) }
+            processSharedInbox()
         }
     }
 
@@ -169,6 +174,32 @@ final class AppModel {
             path = [.trip(trip), .balances(trip)]
         case .authCallback(let url):
             handle(url: url)
+        }
+    }
+
+    // MARK: Shared items (Share Extension)
+
+    /// Imports the oldest item shared from another app (receipt photo, PDF or Uber/Lyft receipt text)
+    /// and opens its review. Called when the app becomes active.
+    func processSharedInbox(inbox: SharedInbox? = SharedInbox.shared()) {
+        guard phase == .ready, sheet == nil, let inbox, let item = inbox.items().first else { return }
+        guard let trip = env.store.trip(item.tripId) ?? env.store.activeTrips.first else {
+            show(Toast(message: String(localized: "Create a trip first, then share the receipt again."), style: .warning))
+            return
+        }
+        defer { inbox.remove(item) }
+        do {
+            let jobID: UUID
+            if let data = inbox.data(for: item) {
+                jobID = try env.scanner.start(fileData: data, contentType: item.contentType.flatMap { UTType($0) }, trip: trip)
+            } else if let text = item.text {
+                jobID = try env.scanner.start(text: text, trip: trip)
+            } else {
+                return
+            }
+            sheet = .reviewScan(trip.id, jobID: jobID)
+        } catch {
+            show(Toast(message: (error as? LocalizedError)?.errorDescription ?? String(localized: "That shared item couldn’t be read."), style: .warning))
         }
     }
 

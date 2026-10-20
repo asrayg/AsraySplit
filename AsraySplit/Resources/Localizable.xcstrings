@@ -1,6 +1,1836 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
+    "#%@" : {
+
+    },
+    "%" : {
+
+    },
+    "%@ – %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ – %2$@"
+          }
+        }
+      }
+    },
+    "%@ – %@ · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ – %2$@ · %3$@"
+          }
+        }
+      }
+    },
+    "%@ · %@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ · %2$@%3$@"
+          }
+        }
+      }
+    },
+    "%@ · you" : {
+
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
+    "%@ → %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ → %2$@"
+          }
+        }
+      }
+    },
+    "%@ added “%@” %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ added “%2$@” %3$@"
+          }
+        }
+      }
+    },
+    "%@ added %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ added %2$@"
+          }
+        }
+      }
+    },
+    "%@ archived the trip" : {
+
+    },
+    "%@ at 1 %@ = %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ at 1 %2$@ = %3$@ %4$@"
+          }
+        }
+      }
+    },
+    "%@ changed a member’s role" : {
+
+    },
+    "%@ created" : {
+
+    },
+    "%@ created the trip" : {
+
+    },
+    "%@ deleted “%@” %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ deleted “%2$@” %3$@"
+          }
+        }
+      }
+    },
+    "%@ deleted a payment" : {
+
+    },
+    "%@ edited “%@” %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ edited “%2$@” %3$@"
+          }
+        }
+      }
+    },
+    "%@ has paid the most: %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ has paid the most: %2$@."
+          }
+        }
+      }
+    },
+    "%@ is the biggest category: %@, %lld%% of all spending." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ is the biggest category: %2$@, %3$lld%% of all spending."
+          }
+        }
+      }
+    },
+    "%@ joined" : {
+
+    },
+    "%@ left in the budget — about %@ per remaining day." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ left in the budget — about %2$@ per remaining day."
+          }
+        }
+      }
+    },
+    "%@ left the trip" : {
+
+    },
+    "%@ left to assign" : {
+
+    },
+    "%@ paid · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ paid · %2$@"
+          }
+        }
+      }
+    },
+    "%@ pays %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ pays %2$@"
+          }
+        }
+      }
+    },
+    "%@ pays you" : {
+
+    },
+    "%@ recorded %@ paying %@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ recorded %2$@ paying %3$@ %4$@"
+          }
+        }
+      }
+    },
+    "%@ removed a member" : {
+
+    },
+    "%@ renamed a traveler" : {
+
+    },
+    "%@ restored “%@”" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ restored “%2$@”"
+          }
+        }
+      }
+    },
+    "%@ share(s)" : {
+
+    },
+    "%@ unarchived the trip" : {
+
+    },
+    "%@ updated trip details" : {
+
+    },
+    "%@: %lld share(s)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@: %2$lld share(s)"
+          }
+        }
+      }
+    },
+    "%@%%" : {
+
+    },
+    "%@%% left to assign" : {
+
+    },
+    "%lld change(s) haven’t synced yet and will be lost. Connect to the internet first to keep them." : {
+
+    },
+    "%lld change(s) need attention" : {
+
+    },
+    "%lld issue(s)" : {
+
+    },
+    "%lld member(s) · %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld member(s) · %2$@"
+          }
+        }
+      }
+    },
+    "%lld pending" : {
+
+    },
+    "%lld percent" : {
+
+    },
+    "%lld unassigned — assign all to…" : {
+
+    },
+    "+0" : {
+
+    },
+    "≈ %@ in trip currency" : {
+
+    },
+    "0" : {
+
+    },
+    "0.00" : {
+
+    },
+    "1" : {
+
+    },
+    "1 %@ =" : {
+
+    },
+    "1 day" : {
+
+    },
+    "1 week" : {
+
+    },
+    "30 days" : {
+
+    },
+    "A member" : {
+
+    },
+    "A receipt scan failed" : {
+
+    },
+    "A receipt scan finished" : {
+
+    },
+    "a traveler" : {
+
+    },
+    "Access" : {
+
+    },
+    "Activities" : {
+
+    },
+    "Activity" : {
+
+    },
+    "Add" : {
+
+    },
+    "Add a description." : {
+
+    },
+    "Add a short description." : {
+
+    },
+    "Add a traveler" : {
+
+    },
+    "Add a traveler’s name" : {
+
+    },
+    "Add an exchange rate for this currency." : {
+
+    },
+    "Add an exchange rate to %@." : {
+
+    },
+    "Add at least one item." : {
+
+    },
+    "Add expense" : {
+
+    },
+    "Add expenses offline — they sync when you’re back" : {
+
+    },
+    "Add item" : {
+
+    },
+    "Add people now even if they never install the app. Anyone you invite later can claim their name." : {
+
+    },
+    "Add tag (e.g. reimbursable)" : {
+
+    },
+    "Add today’s %@ expenses while they’re fresh." : {
+
+    },
+    "Adjustment for %@" : {
+
+    },
+    "Adjustments" : {
+
+    },
+    "Adjustments are larger than the total." : {
+
+    },
+    "Admin" : {
+
+    },
+    "AI read · %lld%% confident · please check" : {
+
+    },
+    "AI results are suggestions. Nothing is saved until you review and confirm every amount. If the AI is unavailable or you’re offline, your iPhone reads the receipt itself, and you can always type items manually." : {
+
+    },
+    "All changes synced" : {
+
+    },
+    "All expenses, payments and receipts are permanently deleted for every member. This can’t be undone." : {
+
+    },
+    "Amount" : {
+
+    },
+    "Amount (%@)" : {
+
+    },
+    "Amounts are exact to the smallest unit. Any leftover cent goes to the first people in a stable order, so every device agrees." : {
+
+    },
+    "Any" : {
+
+    },
+    "Anyone" : {
+
+    },
+    "Anyone with this link or code can join until it expires. You can revoke it at any time." : {
+
+    },
+    "Anything to split today?" : {
+
+    },
+    "Apple didn’t return a sign-in token." : {
+
+    },
+    "Apply" : {
+
+    },
+    "Archive trip" : {
+
+    },
+    "Archived" : {
+
+    },
+    "Archived (%lld)" : {
+
+    },
+    "Are you one of these travelers?" : {
+
+    },
+    "Asray Split" : {
+
+    },
+    "Asray Split %@" : {
+
+    },
+    "Assign %lld item(s) to someone." : {
+
+    },
+    "Assign every item to at least one person." : {
+
+    },
+    "Attached" : {
+
+    },
+    "Avatar" : {
+
+    },
+    "Avatar %@" : {
+
+    },
+    "Average of %@ per day with spending, over %lld day(s)." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Average of %1$@ per day with spending, over %2$lld day(s)."
+          }
+        }
+      }
+    },
+    "Balances" : {
+
+    },
+    "Balances & settle up" : {
+
+    },
+    "Balances are shown in the trip currency. Expenses in other currencies are converted with the rate saved on each expense." : {
+
+    },
+    "Balances update for everyone. The expense stays in the activity history and can be restored." : {
+
+    },
+    "Balances:" : {
+
+    },
+    "Bank transfer" : {
+
+    },
+    "Based on %lld expenses in %@, as of the last sync." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Based on %1$lld expenses in %2$@, as of the last sync."
+          }
+        }
+      }
+    },
+    "Budget (optional)" : {
+
+    },
+    "Budget used" : {
+
+    },
+    "By category" : {
+
+    },
+    "By day" : {
+
+    },
+    "By person" : {
+
+    },
+    "Calculated total" : {
+
+    },
+    "Cancel" : {
+
+    },
+    "Cancelled" : {
+
+    },
+    "Card" : {
+
+    },
+    "Cash" : {
+
+    },
+    "Category" : {
+
+    },
+    "Changed on another device" : {
+
+    },
+    "Changed on another device, needs review" : {
+
+    },
+    "Changes are saved on this iPhone first and synced to your trips automatically." : {
+
+    },
+    "Check %@ for a sign-in link." : {
+
+    },
+    "Check the details" : {
+
+    },
+    "Check the existing expense before saving a duplicate." : {
+
+    },
+    "Checking invite…" : {
+
+    },
+    "Choose" : {
+
+    },
+    "Choose a photo" : {
+
+    },
+    "Choose a valid time zone." : {
+
+    },
+    "Choose at least one person." : {
+
+    },
+    "Choose two different people." : {
+
+    },
+    "Choose who paid." : {
+
+    },
+    "Close" : {
+
+    },
+    "Code, e.g. ABCD-EFGH" : {
+
+    },
+    "Color" : {
+
+    },
+    "consumed %@" : {
+
+    },
+    "Continue" : {
+
+    },
+    "Continue with email" : {
+
+    },
+    "Couldn’t fetch a rate — enter it manually." : {
+
+    },
+    "Couldn’t save" : {
+
+    },
+    "Couldn’t sync this change" : {
+
+    },
+    "Create" : {
+
+    },
+    "Create a trip" : {
+
+    },
+    "Create a trip first." : {
+
+    },
+    "Create a trip, then invite friends with a link, QR code or short code." : {
+
+    },
+    "Create invite" : {
+
+    },
+    "Currency" : {
+
+    },
+    "Currency %@" : {
+
+    },
+    "Daily “log today’s spending” reminder" : {
+
+    },
+    "Date" : {
+
+    },
+    "Dates" : {
+
+    },
+    "Day" : {
+
+    },
+    "Default currency" : {
+
+    },
+    "Delete" : {
+
+    },
+    "DELETE" : {
+
+    },
+    "Delete %@?" : {
+
+    },
+    "Delete account" : {
+
+    },
+    "Delete demo account" : {
+
+    },
+    "Delete expense" : {
+
+    },
+    "Delete for everyone" : {
+
+    },
+    "Delete image" : {
+
+    },
+    "Delete this expense?" : {
+
+    },
+    "Delete this receipt image?" : {
+
+    },
+    "Delete trip" : {
+
+    },
+    "Deleted" : {
+
+    },
+    "Deleting your account removes your profile, devices, receipt images you uploaded and trips only you belong to. Shared trips are handed to another member and your name is replaced with “Former traveler”." : {
+
+    },
+    "Deleting…" : {
+
+    },
+    "Demo data stays on this iPhone and is never uploaded." : {
+
+    },
+    "Demo mode · data stays on this iPhone" : {
+
+    },
+    "Details" : {
+
+    },
+    "Discard" : {
+
+    },
+    "Discount" : {
+
+    },
+    "Discounts can’t exceed the items they apply to." : {
+
+    },
+    "Display name" : {
+
+    },
+    "Done" : {
+
+    },
+    "Drinks" : {
+
+    },
+    "Duplicate" : {
+
+    },
+    "Duplicate expense" : {
+
+    },
+    "Edit" : {
+
+    },
+    "Edit expense" : {
+
+    },
+    "Edit trip" : {
+
+    },
+    "Edit trip details" : {
+
+    },
+    "Email address" : {
+
+    },
+    "Email me a sign-in link" : {
+
+    },
+    "Ends" : {
+
+    },
+    "Enter an amount other than zero." : {
+
+    },
+    "Enter an amount." : {
+
+    },
+    "Enter items manually" : {
+
+    },
+    "Enter the 8-character code a trip member shared with you." : {
+
+    },
+    "Equally" : {
+
+    },
+    "Every item needs a price." : {
+
+    },
+    "Everyone" : {
+
+    },
+    "Everyone is settled up" : {
+
+    },
+    "Everyone’s share" : {
+
+    },
+    "Everyone’s shares must add up to the total." : {
+
+    },
+    "Exact amounts" : {
+
+    },
+    "Expense" : {
+
+    },
+    "Expense deleted" : {
+
+    },
+    "Expense deletion" : {
+
+    },
+    "Expense edit" : {
+
+    },
+    "Expense restore" : {
+
+    },
+    "Expense saved" : {
+
+    },
+    "Expense unavailable" : {
+
+    },
+    "Expenses (%lld)" : {
+
+    },
+    "Expenses added or changed" : {
+
+    },
+    "Expires" : {
+
+    },
+    "Expires %@ · up to %lld use(s)" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Expires %1$@ · up to %2$lld use(s)"
+          }
+        }
+      }
+    },
+    "Explore the demo trip" : {
+
+    },
+    "Export" : {
+
+    },
+    "Export CSV" : {
+
+    },
+    "Export my data" : {
+
+    },
+    "Fees" : {
+
+    },
+    "Fetch exchange rate" : {
+
+    },
+    "Fetching rate…" : {
+
+    },
+    "Filter" : {
+
+    },
+    "Filters (%lld)" : {
+
+    },
+    "Finished %@ under budget." : {
+
+    },
+    "Fix the totals or confirm the difference." : {
+
+    },
+    "Flights" : {
+
+    },
+    "Food" : {
+
+    },
+    "For" : {
+
+    },
+    "Former member" : {
+
+    },
+    "Former traveler" : {
+
+    },
+    "From" : {
+
+    },
+    "Full amount: %@" : {
+
+    },
+    "Groceries" : {
+
+    },
+    "Guest (no account)" : {
+
+    },
+    "Guests can be added without an account and claimed later when they join. Removed members lose access immediately; their past expenses keep their name." : {
+
+    },
+    "Has receipt" : {
+
+    },
+    "Health" : {
+
+    },
+    "Help & support" : {
+
+    },
+    "Highest day: %@ at %@." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Highest day: %1$@ at %2$@."
+          }
+        }
+      }
+    },
+    "Highlighted fields were hard to read. Nothing is saved until you tap Save." : {
+
+    },
+    "Highlights" : {
+
+    },
+    "Home currency" : {
+
+    },
+    "How" : {
+
+    },
+    "How receipt scanning works" : {
+
+    },
+    "I didn’t use Sign in with Apple — delete" : {
+
+    },
+    "I’m someone new" : {
+
+    },
+    "Icon %@" : {
+
+    },
+    "If you signed in with Apple, confirm with Apple so we can revoke the app’s access to your Apple ID." : {
+
+    },
+    "Import PDF or file" : {
+
+    },
+    "In progress" : {
+
+    },
+    "Included" : {
+
+    },
+    "Includes" : {
+
+    },
+    "Includes changes not yet confirmed by the server." : {
+
+    },
+    "Includes unsynced changes" : {
+
+    },
+    "Insights" : {
+
+    },
+    "Insights appear after expenses sync." : {
+
+    },
+    "Invite" : {
+
+    },
+    "Invite code %@" : {
+
+    },
+    "Invite people" : {
+
+    },
+    "Invite problem" : {
+
+    },
+    "Invite revoked" : {
+
+    },
+    "Invited by %@" : {
+
+    },
+    "is owed" : {
+
+    },
+    "is owed %@" : {
+
+    },
+    "is settled" : {
+
+    },
+    "It may have been deleted by someone else." : {
+
+    },
+    "It may have been deleted on another device." : {
+
+    },
+    "It may have been deleted, or you were removed." : {
+
+    },
+    "Item" : {
+
+    },
+    "Itemized" : {
+
+    },
+    "Items" : {
+
+    },
+    "Items — tap who had each" : {
+
+    },
+    "Items don’t add up to the subtotal." : {
+
+    },
+    "Items, tax, tip and discounts must add up to the total." : {
+
+    },
+    "Join “%@” on Asray Split: %@ — or enter code %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Join “%1$@” on Asray Split: %2$@ — or enter code %3$@"
+          }
+        }
+      }
+    },
+    "Join %@" : {
+
+    },
+    "Join a trip" : {
+
+    },
+    "Join trip" : {
+
+    },
+    "Join with a code" : {
+
+    },
+    "Join with code" : {
+
+    },
+    "Joined %@" : {
+
+    },
+    "Keep mine" : {
+
+    },
+    "Keep theirs" : {
+
+    },
+    "Leave" : {
+
+    },
+    "Leave %@?" : {
+
+    },
+    "Leave trip" : {
+
+    },
+    "Leave with unsettled balance" : {
+
+    },
+    "Left the trip" : {
+
+    },
+    "Loading" : {
+
+    },
+    "Lodging" : {
+
+    },
+    "Make admin" : {
+
+    },
+    "Make member" : {
+
+    },
+    "Manual entry" : {
+
+    },
+    "Manual rate. It’s saved with this expense and never recalculated." : {
+
+    },
+    "Matching expenses" : {
+
+    },
+    "Maximum" : {
+
+    },
+    "Member" : {
+
+    },
+    "Members can see the trip’s expenses, receipts and balances." : {
+
+    },
+    "Merchant" : {
+
+    },
+    "Merchant (optional)" : {
+
+    },
+    "Method" : {
+
+    },
+    "Minimum" : {
+
+    },
+    "Money" : {
+
+    },
+    "Mute this trip" : {
+
+    },
+    "Name" : {
+
+    },
+    "Needs review" : {
+
+    },
+    "Net" : {
+
+    },
+    "Net = paid for the group − own share + payments sent − payments received. Shown in %@." : {
+
+    },
+    "New expense" : {
+
+    },
+    "New trip" : {
+
+    },
+    "No activity yet" : {
+
+    },
+    "No expenses yet" : {
+
+    },
+    "No insights yet" : {
+
+    },
+    "No receipts" : {
+
+    },
+    "No trips yet" : {
+
+    },
+    "Not allowed" : {
+
+    },
+    "Not attached to an expense" : {
+
+    },
+    "Not found" : {
+
+    },
+    "Not included" : {
+
+    },
+    "not involved" : {
+
+    },
+    "Note (optional)" : {
+
+    },
+    "Notes" : {
+
+    },
+    "Notifications" : {
+
+    },
+    "Notifications are off in Settings" : {
+
+    },
+    "Notifications never include amounts or merchants unless you allow lock-screen details. You can mute individual trips in trip settings." : {
+
+    },
+    "of %@" : {
+
+    },
+    "Offline" : {
+
+    },
+    "Offline — enter the rate manually." : {
+
+    },
+    "OK" : {
+
+    },
+    "One of the values isn’t valid." : {
+
+    },
+    "Only the trip owner can do this." : {
+
+    },
+    "Only trip owners and admins can do this." : {
+
+    },
+    "Only unsynced changes" : {
+
+    },
+    "Open %@" : {
+
+    },
+    "Open trip" : {
+
+    },
+    "Options for %@" : {
+
+    },
+    "Other" : {
+
+    },
+    "Over budget by %@." : {
+
+    },
+    "owes" : {
+
+    },
+    "owes %@" : {
+
+    },
+    "Own share of expenses" : {
+
+    },
+    "Owner" : {
+
+    },
+    "paid %@" : {
+
+    },
+    "Paid by" : {
+
+    },
+    "Paid for the group" : {
+
+    },
+    "Partial payments are fine — balances update by the amount recorded." : {
+
+    },
+    "Payment" : {
+
+    },
+    "Payment deletion" : {
+
+    },
+    "Payment method" : {
+
+    },
+    "Payment recorded" : {
+
+    },
+    "Payments must add up to the total." : {
+
+    },
+    "Payments received" : {
+
+    },
+    "Payments recorded" : {
+
+    },
+    "Payments sent" : {
+
+    },
+    "people" : {
+
+    },
+    "People" : {
+
+    },
+    "People joining or leaving" : {
+
+    },
+    "Percentages" : {
+
+    },
+    "Percentages must add up to 100%." : {
+
+    },
+    "Photos are resized and stripped of location data before upload, and stored privately for trip members." : {
+
+    },
+    "Pick your name so expenses already recorded for you count toward your balance." : {
+
+    },
+    "Please sign in again" : {
+
+    },
+    "Please try again in a moment." : {
+
+    },
+    "Preparing…" : {
+
+    },
+    "Printed total %@ differs from items; saved as reviewed." : {
+
+    },
+    "Privacy" : {
+
+    },
+    "Privacy policy" : {
+
+    },
+    "Profile" : {
+
+    },
+    "Push notifications" : {
+
+    },
+    "QR code for the invite link" : {
+
+    },
+    "Rate" : {
+
+    },
+    "Rate from %@ for %@. Saved with this expense." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Rate from %1$@ for %2$@. Saved with this expense."
+          }
+        }
+      }
+    },
+    "Rate: %@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Rate: %1$@%2$@"
+          }
+        }
+      }
+    },
+    "Read on this iPhone · please check carefully" : {
+
+    },
+    "Reading every line…" : {
+
+    },
+    "Ready to review" : {
+
+    },
+    "Receipt" : {
+
+    },
+    "Receipt deleted" : {
+
+    },
+    "Receipt image" : {
+
+    },
+    "Receipt options" : {
+
+    },
+    "Receipt saved" : {
+
+    },
+    "Receipt scanning" : {
+
+    },
+    "Receipt scans finished" : {
+
+    },
+    "Receipts" : {
+
+    },
+    "Record" : {
+
+    },
+    "Record payment" : {
+
+    },
+    "Recorded payments" : {
+
+    },
+    "Reference (optional)" : {
+
+    },
+    "Remove from trip" : {
+
+    },
+    "Remove tag %@" : {
+
+    },
+    "Removed" : {
+
+    },
+    "Rename" : {
+
+    },
+    "Reserve the invite for a specific traveler so their existing expenses link to their account." : {
+
+    },
+    "Reset" : {
+
+    },
+    "Restore expense" : {
+
+    },
+    "Retry" : {
+
+    },
+    "Review receipt" : {
+
+    },
+    "Revoke invite" : {
+
+    },
+    "Role" : {
+
+    },
+    "Save" : {
+
+    },
+    "Save %@" : {
+
+    },
+    "Save or share" : {
+
+    },
+    "Save with the calculated total anyway" : {
+
+    },
+    "Saved offline — will sync later" : {
+
+    },
+    "Saved on this iPhone. Waiting to sync." : {
+
+    },
+    "Scan" : {
+
+    },
+    "Scan a receipt" : {
+
+    },
+    "Scan a receipt or add an expense. It works offline too." : {
+
+    },
+    "Scan receipt" : {
+
+    },
+    "Scan receipts and assign items to people" : {
+
+    },
+    "Scan with camera" : {
+
+    },
+    "Scanned receipts are stored privately for trip members." : {
+
+    },
+    "Scanning & privacy" : {
+
+    },
+    "Scanning…" : {
+
+    },
+    "Search description, person, tag or amount" : {
+
+    },
+    "See who owes whom, simplified" : {
+
+    },
+    "Service fee" : {
+
+    },
+    "Set trip dates" : {
+
+    },
+    "Settings" : {
+
+    },
+    "Settle" : {
+
+    },
+    "settled" : {
+
+    },
+    "Share data export" : {
+
+    },
+    "Share invite link" : {
+
+    },
+    "Share summary" : {
+
+    },
+    "Shares" : {
+
+    },
+    "Shares always add up exactly to the total. The payer is credited the full amount; each person’s share is what they consumed." : {
+
+    },
+    "Shares for %@" : {
+
+    },
+    "Shares must all be positive (or all negative for refunds)." : {
+
+    },
+    "Shopping" : {
+
+    },
+    "Show amounts on lock screen" : {
+
+    },
+    "Shown to people in trips you join." : {
+
+    },
+    "Sign out" : {
+
+    },
+    "Sign out and discard %lld change(s)" : {
+
+    },
+    "Sign out?" : {
+
+    },
+    "Slow down a moment" : {
+
+    },
+    "Some details aren’t valid." : {
+
+    },
+    "Someone" : {
+
+    },
+    "Someone else made changes" : {
+
+    },
+    "Someone in this split isn’t part of the trip." : {
+
+    },
+    "Someone saved a newer version while your edit was waiting. Choose which version to keep." : {
+
+    },
+    "Something went wrong" : {
+
+    },
+    "Spent" : {
+
+    },
+    "Split" : {
+
+    },
+    "Split by receipt items. Changing the split method replaces the item assignments." : {
+
+    },
+    "Split trip costs fairly, keep every receipt, and settle up with the fewest payments." : {
+
+    },
+    "Starts" : {
+
+    },
+    "Subtotal (printed)" : {
+
+    },
+    "Subtotal, tax, tip and discounts don’t match the receipt total." : {
+
+    },
+    "Suggested payments" : {
+
+    },
+    "Support" : {
+
+    },
+    "Sync" : {
+
+    },
+    "Sync failed" : {
+
+    },
+    "Sync isn’t set up" : {
+
+    },
+    "Sync issues" : {
+
+    },
+    "Tags" : {
+
+    },
+    "Tags & notes" : {
+
+    },
+    "Tap to record" : {
+
+    },
+    "Tax" : {
+
+    },
+    "Tax / VAT" : {
+
+    },
+    "Tax, fees, tip and discounts are shared in proportion to each person’s items." : {
+
+    },
+    "Tax, tip, fees and discounts can’t be negative." : {
+
+    },
+    "Terms" : {
+
+    },
+    "Terms of service" : {
+
+    },
+    "That amount is too large." : {
+
+    },
+    "That code doesn’t look right." : {
+
+    },
+    "That currency isn’t supported." : {
+
+    },
+    "That file is too large. Try a photo under 25 MB." : {
+
+    },
+    "That file isn’t a readable image or PDF." : {
+
+    },
+    "That image is too small to read." : {
+
+    },
+    "That link isn’t supported." : {
+
+    },
+    "That person is already linked to another account." : {
+
+    },
+    "The expense stays; only the stored image is removed for everyone." : {
+
+    },
+    "The fewest payments that settle everyone. No money moves in the app — record a payment after you’ve paid by cash, bank transfer, Venmo or PayPal." : {
+
+    },
+    "The server rejected this change." : {
+
+    },
+    "The total can’t be zero." : {
+
+    },
+    "The trip currency can’t change after expenses are added." : {
+
+    },
+    "This build isn’t connected to a server. You can keep using demo mode." : {
+
+    },
+    "This change conflicts with one already saved. Discard it and try again." : {
+
+    },
+    "This change conflicts with the latest data." : {
+
+    },
+    "This exact receipt was already uploaded to this trip." : {
+
+    },
+    "This invite has already been used." : {
+
+    },
+    "This invite has expired. Ask for a new one." : {
+
+    },
+    "This invite link or code isn’t valid." : {
+
+    },
+    "This invite was revoked. Ask for a new one." : {
+
+    },
+    "This looks like a receipt already in this trip." : {
+
+    },
+    "This permanently deletes your Asray Split account. It can’t be undone." : {
+
+    },
+    "This trip is archived and read-only." : {
+
+    },
+    "This trip is archived. Unarchive it to make changes." : {
+
+    },
+    "This was changed on another device. Review the latest version before saving yours." : {
+
+    },
+    "Time zone" : {
+
+    },
+    "Tip" : {
+
+    },
+    "To" : {
+
+    },
+    "To leave a trip you own, transfer ownership to another member first." : {
+
+    },
+    "To read the items, the image is sent from our server to an AI provider. The provider processes it to return structured text and does not receive your name, email or trip details. We record only usage metadata (time, model, success) — never the receipt contents — in our logs." : {
+
+    },
+    "To settle up:" : {
+
+    },
+    "Too many attempts. Try again later." : {
+
+    },
+    "Total (printed)" : {
+
+    },
+    "Total spent: %@ across %lld expenses" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Total spent: %1$@ across %2$lld expenses"
+          }
+        }
+      }
+    },
+    "Totals" : {
+
+    },
+    "Transfer ownership" : {
+
+    },
+    "Transfer ownership or delete the trip before leaving." : {
+
+    },
+    "Transport" : {
+
+    },
+    "Travelers" : {
+
+    },
+    "Trip" : {
+
+    },
+    "Trip currency" : {
+
+    },
+    "Trip data cached on this iPhone will be removed." : {
+
+    },
+    "Trip name" : {
+
+    },
+    "Trip ownership was transferred" : {
+
+    },
+    "Trip settings" : {
+
+    },
+    "Trip unavailable" : {
+
+    },
+    "Trips" : {
+
+    },
+    "Try again" : {
+
+    },
+    "Type DELETE to confirm." : {
+
+    },
+    "Unarchive trip" : {
+
+    },
+    "Undo" : {
+
+    },
+    "Up to date" : {
+
+    },
+    "Uploading securely…" : {
+
+    },
+    "Use fewer decimal places." : {
+
+    },
+    "View" : {
+
+    },
+    "View receipt photo" : {
+
+    },
+    "Waiting to sync" : {
+
+    },
+    "We’ll read the items, tax and tip. You review everything and choose who had what before anything is saved." : {
+
+    },
+    "Welcome" : {
+
+    },
+    "What should friends call you?" : {
+
+    },
+    "What was it for?" : {
+
+    },
+    "When you scan a receipt, the photo is resized on your iPhone and its location and camera metadata are removed. It’s uploaded to private storage that only members of that trip can access, using links that expire within minutes." : {
+
+    },
+    "Who owes what" : {
+
+    },
+    "With receipt" : {
+
+    },
+    "Without receipt" : {
+
+    },
+    "You" : {
+
+    },
+    "you borrowed %@" : {
+
+    },
+    "You can close this screen — the scan keeps going and will be waiting in Receipts." : {
+
+    },
+    "You can delete a receipt image at any time from the expense or the trip’s Receipts screen. Deleting your account deletes the images you uploaded." : {
+
+    },
+    "You don’t have permission to do that." : {
+
+    },
+    "you lent %@" : {
+
+    },
+    "you owe" : {
+
+    },
+    "You owe" : {
+
+    },
+    "You pay %@" : {
+
+    },
+    "You still have an unsettled balance in this trip." : {
+
+    },
+    "You still have an unsettled balance. Others will keep seeing it under your name." : {
+
+    },
+    "You’ll lose access to this trip. Your past expenses stay in the ledger." : {
+
+    },
+    "You’re already in this trip" : {
+
+    },
+    "You’re no longer a member of this trip." : {
+
+    },
+    "You’re offline" : {
+
+    },
+    "You’re offline, so the receipt was read on this iPhone. The photo will be attached when you’re back online." : {
+
+    },
+    "you’re owed" : {
+
+    },
+    "You’re owed" : {
+
+    },
+    "You’re settled up" : {
+
+    },
+    "Your changes are saved on this iPhone and will sync when you’re back online." : {
+
+    },
+    "Your data" : {
+
+    },
+    "Your name" : {
+
+    },
+    "Your session ended. Sign in to keep syncing." : {
+
+    }
   },
   "version" : "1.0"
 }

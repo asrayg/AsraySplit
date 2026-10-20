@@ -35,11 +35,13 @@
 		499AE101043382F6D6CFA59B /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02DE0EE1F20A1334D364AE /* Ledger.swift */; };
 		4B4C8C81AB58AEDCAF155BC9 /* SplitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E36D882CBFC1D5D7D3C25 /* SplitRule.swift */; };
 		4B8F52C30ED4E47B259FF53B /* trips.json in Resources */ = {isa = PBXBuildFile; fileRef = B1FA8654696ABB479E0F2175 /* trips.json */; };
+		4EF86636B0712CD1799F648B /* RideDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FD3F0BD76E8937D04D45B3 /* RideDetails.swift */; };
 		56B4FEC3EFC20C9F19EED441 /* settlements.json in Resources */ = {isa = PBXBuildFile; fileRef = 3D2C33E99C40DDE8BB56530D /* settlements.json */; };
 		58869CC3642B15D1F9B5C576 /* LedgerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D55E923449F8DE9396B7608 /* LedgerTests.swift */; };
 		5C5DE3855C6EC9357BB250BF /* TripSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C52A529BC17003FB98F9CA04 /* TripSettingsView.swift */; };
 		5FC81767CE6B80BF4978BE03 /* ExpenseFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 831FC3AC35E76BFD0D41E0E7 /* ExpenseFilter.swift */; };
 		601189E5EAA6A3949AAB0446 /* invite_preview.json in Resources */ = {isa = PBXBuildFile; fileRef = B29287AA5A229BA16F10666D /* invite_preview.json */; };
+		60230E78A36ADA9EFFBDF7AA /* SharedInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15A006333BD3CC9A31F8092 /* SharedInbox.swift */; };
 		64A3D8A233DA4DC922F5B050 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 672EC72053E118C1A12DFAB2 /* Localizable.xcstrings */; };
 		674947DF9446B2D1510D0349 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCA8D1BE4DB9165D99EFD957 /* AppConfig.swift */; };
 		67AC7800C6AC835F32DC17DE /* ActivityAndReceiptsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D619B0F598A548B84C1706 /* ActivityAndReceiptsViews.swift */; };
@@ -60,9 +62,12 @@
 		95586B066443C97BEB99EC8C /* CoreFlowUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD5E8D27060283A5871300D7 /* CoreFlowUITests.swift */; };
 		955B7E6C732BF8F41A05B6C1 /* expenses.json in Resources */ = {isa = PBXBuildFile; fileRef = 3AEFE9B83B7C7FB6AAA66761 /* expenses.json */; };
 		9D86AC9C3A53BFE4CAA5B63F /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E5EFB5E0EB9C174094130E /* InsightsView.swift */; };
+		A28326C2D96EEED719FDC696 /* RideImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC8F8269564B6AF2EE19848 /* RideImportTests.swift */; };
+		A762C0441D751B1910F66E8E /* ShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5D485E201362B9553E820FE /* ShareViewController.swift */; };
 		A95C8A111447CDC6B207224F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDD91BE1D9E8337F3115CA5 /* SettingsView.swift */; };
 		B2BEA18AA88697F868521AF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F838E0CB005EB9648D2D2ED4 /* CurrencyCode.swift */; };
 		B448DD1627E2FE51417AD53A /* trip.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BE99C65A5E4CD0B7B2E7E60 /* trip.json */; };
+		B6A33D69A4C6F97C798CC8F8 /* SharedInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15A006333BD3CC9A31F8092 /* SharedInbox.swift */; };
 		B7A337E56A8FA36E47D5CBAB /* InMemoryBackend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D8A80AE58B1308F9362072 /* InMemoryBackend.swift */; };
 		B7C24060C96D7ECE533A2F20 /* NotificationCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5753CD65495A2320F89537F2 /* NotificationCoordinator.swift */; };
 		C24ACD9CE8D67F7C0B865171 /* ReceiptTextParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6A9DCBC5753EA6CC26C0F71 /* ReceiptTextParser.swift */; };
@@ -79,10 +84,12 @@
 		E5D7210605CB0F7F30CE72F1 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 092A763675C8FB7FC5B3BBA7 /* NetworkMonitor.swift */; };
 		E820156BB7A6C26EB2AD5A4D /* TripDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 812E829A120DD3454848888E /* TripDetailView.swift */; };
 		EBE95EEE64AC549EA254A3E9 /* MoneyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37F10B6E697D97C61E78CCEF /* MoneyTests.swift */; };
+		F191448DA781D19857B482C9 /* AsraySplitShare.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B370BFFE3E7308B91FEBC265 /* AsraySplitShare.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F1F572B4F36B22492ED01A92 /* TripsHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD341819EEFB724770337592 /* TripsHomeView.swift */; };
 		F2F2A339FA2888D349D62439 /* ScanReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF8FF930C3E9C6E9B7F7F6F /* ScanReviewView.swift */; };
 		F54F5D7149803D41089BB6DB /* TripEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 129EA10AD4A3FF4456379AC6 /* TripEditorView.swift */; };
 		F68169BDA23ADC5B1B7BA8F8 /* ScanReviewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E37705D6F15D055CD68C6D66 /* ScanReviewModel.swift */; };
+		F856147B60DACB66A5738ED1 /* RideReceiptParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6652E5B46B8E611018D83B /* RideReceiptParser.swift */; };
 		FC54D149CF87A69706B4E2B2 /* Allocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA84D654890320E119D2857E /* Allocation.swift */; };
 		FF6126104F42F6F865AFB075 /* MoneyField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D773A531B69D3FF3BABC1F9 /* MoneyField.swift */; };
 /* End PBXBuildFile section */
@@ -95,6 +102,13 @@
 			remoteGlobalIDString = 2D0487169C4A10C848459BC7;
 			remoteInfo = AsraySplit;
 		};
+		9C59D171E0F0A45FB9994454 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 9C65F56FC1E38F8C0A689565 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 447626537A055C3D606C31CA;
+			remoteInfo = AsraySplitShare;
+		};
 		9FA0A750DB2E8A6A43074B70 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 9C65F56FC1E38F8C0A689565 /* Project object */;
@@ -103,6 +117,20 @@
 			remoteInfo = AsraySplit;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		812EFB06945E740FE06CCF99 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F191448DA781D19857B482C9 /* AsraySplitShare.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		00B9A6AAF98E606A8E12E62F /* TripModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripModels.swift; sourceTree = "<group>"; };
@@ -116,6 +144,7 @@
 		129EA10AD4A3FF4456379AC6 /* TripEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripEditorView.swift; sourceTree = "<group>"; };
 		147AFEC390D51B0CC917258A /* TripStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripStore.swift; sourceTree = "<group>"; };
 		18736BC3FFD378CC5357E3E6 /* Money.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Money.swift; sourceTree = "<group>"; };
+		18FD3F0BD76E8937D04D45B3 /* RideDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideDetails.swift; sourceTree = "<group>"; };
 		197410CF59354C1A9CE4E502 /* Logging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logging.swift; sourceTree = "<group>"; };
 		1C1BB410453B547D9BF7B5CF /* ReceiptScanResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScanResult.swift; sourceTree = "<group>"; };
 		1C9CA3651088ACE895446DA6 /* ScanReceiptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReceiptView.swift; sourceTree = "<group>"; };
@@ -133,6 +162,7 @@
 		3BE99C65A5E4CD0B7B2E7E60 /* trip.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = trip.json; sourceTree = "<group>"; };
 		3C02DE0EE1F20A1334D364AE /* Ledger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ledger.swift; sourceTree = "<group>"; };
 		3D2C33E99C40DDE8BB56530D /* settlements.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = settlements.json; sourceTree = "<group>"; };
+		486B1DBEA2D53D49C89347FD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		51E5EFB5E0EB9C174094130E /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		542537CF0C277673C35F7D81 /* ReceiptImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptImageProcessor.swift; sourceTree = "<group>"; };
 		544B147453C11A6FDD2EDDF8 /* AsraySplitApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsraySplitApp.swift; sourceTree = "<group>"; };
@@ -145,6 +175,7 @@
 		672EC72053E118C1A12DFAB2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		6CF8FF930C3E9C6E9B7F7F6F /* ScanReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewView.swift; sourceTree = "<group>"; };
 		6DE3A9D84AE43F0DB497BC4F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		6EC8F8269564B6AF2EE19848 /* RideImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideImportTests.swift; sourceTree = "<group>"; };
 		75E27D9CACEEB0EB66C64E98 /* ContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractTests.swift; sourceTree = "<group>"; };
 		7A88743FBB2D3D5E52A00230 /* LocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreTests.swift; sourceTree = "<group>"; };
 		7D773A531B69D3FF3BABC1F9 /* MoneyField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyField.swift; sourceTree = "<group>"; };
@@ -165,7 +196,9 @@
 		AE8A9D802D4332588367A6F8 /* AsraySplitUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = AsraySplitUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B1216FECB024B5A062FDB95B /* SupabaseBackend.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseBackend.swift; sourceTree = "<group>"; };
 		B1FA8654696ABB479E0F2175 /* trips.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = trips.json; sourceTree = "<group>"; };
+		B211AD2A98EF95E9A1BF9DB5 /* AsraySplitShare.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AsraySplitShare.entitlements; sourceTree = "<group>"; };
 		B29287AA5A229BA16F10666D /* invite_preview.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = invite_preview.json; sourceTree = "<group>"; };
+		B370BFFE3E7308B91FEBC265 /* AsraySplitShare.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = AsraySplitShare.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		B60BCEF80D1069F4647FBAD8 /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		B679B03B33E326B7EF83FEE2 /* ExpenseEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseEditorView.swift; sourceTree = "<group>"; };
 		B90AC8A19D38D2A31731628B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -177,10 +210,13 @@
 		C6D032EE8D73A1DA0988604E /* TripExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripExporter.swift; sourceTree = "<group>"; };
 		CD5E8D27060283A5871300D7 /* CoreFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreFlowUITests.swift; sourceTree = "<group>"; };
 		CDF75442F218997199CD1E8E /* AsraySplit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AsraySplit.entitlements; sourceTree = "<group>"; };
+		D5D485E201362B9553E820FE /* ShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareViewController.swift; sourceTree = "<group>"; };
 		DA17D7D7EE09488E6AE7DA58 /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
 		DB6E28834BA36DB58DCE9195 /* BalancesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BalancesView.swift; sourceTree = "<group>"; };
+		DC6652E5B46B8E611018D83B /* RideReceiptParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideReceiptParser.swift; sourceTree = "<group>"; };
 		DCA8D1BE4DB9165D99EFD957 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		DF1E36D882CBFC1D5D7D3C25 /* SplitRule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitRule.swift; sourceTree = "<group>"; };
+		E15A006333BD3CC9A31F8092 /* SharedInbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedInbox.swift; sourceTree = "<group>"; };
 		E37705D6F15D055CD68C6D66 /* ScanReviewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewModel.swift; sourceTree = "<group>"; };
 		E3973D1BD39C2241D5C94D99 /* activity.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = activity.json; sourceTree = "<group>"; };
 		E9EA5E377DB24EA3676306A6 /* JoinTripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinTripView.swift; sourceTree = "<group>"; };
@@ -309,6 +345,7 @@
 				542537CF0C277673C35F7D81 /* ReceiptImageProcessor.swift */,
 				EB9CA4EA5DF8B03415C1EE69 /* ReceiptScanCoordinator.swift */,
 				A6A9DCBC5753EA6CC26C0F71 /* ReceiptTextParser.swift */,
+				DC6652E5B46B8E611018D83B /* RideReceiptParser.swift */,
 				1C9CA3651088ACE895446DA6 /* ScanReceiptView.swift */,
 				E37705D6F15D055CD68C6D66 /* ScanReviewModel.swift */,
 				6CF8FF930C3E9C6E9B7F7F6F /* ScanReviewView.swift */,
@@ -320,6 +357,7 @@
 			isa = PBXGroup;
 			children = (
 				954DBADD044BC210D3CF4E03 /* FeatureLogicTests.swift */,
+				6EC8F8269564B6AF2EE19848 /* RideImportTests.swift */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -382,6 +420,7 @@
 			isa = PBXGroup;
 			children = (
 				80EE50AB722A7D7DAD1FA59F /* AsraySplit */,
+				C97D9FAD1F96AF0DE0D4D1C4 /* AsraySplitShare */,
 				06E53C92F677D1D0EB6DF894 /* AsraySplitTests */,
 				E06BA2312E3DEE031789E519 /* AsraySplitUITests */,
 				2DE2AA0B384534EDBE5B8243 /* Config */,
@@ -407,6 +446,7 @@
 			isa = PBXGroup;
 			children = (
 				051CFEE9771D2EFB8189CEC2 /* AsraySplit.app */,
+				B370BFFE3E7308B91FEBC265 /* AsraySplitShare.appex */,
 				5D3C5417FE0A2D495AA794AF /* AsraySplitTests.xctest */,
 				AE8A9D802D4332588367A6F8 /* AsraySplitUITests.xctest */,
 			);
@@ -419,6 +459,7 @@
 				A464376F9439CE0979646B36 /* LedgerModels.swift */,
 				1098689CA41129E05EECF8B6 /* Payloads.swift */,
 				1C1BB410453B547D9BF7B5CF /* ReceiptScanResult.swift */,
+				18FD3F0BD76E8937D04D45B3 /* RideDetails.swift */,
 				00B9A6AAF98E606A8E12E62F /* TripModels.swift */,
 			);
 			path = Models;
@@ -446,6 +487,16 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		C97D9FAD1F96AF0DE0D4D1C4 /* AsraySplitShare */ = {
+			isa = PBXGroup;
+			children = (
+				B211AD2A98EF95E9A1BF9DB5 /* AsraySplitShare.entitlements */,
+				486B1DBEA2D53D49C89347FD /* Info.plist */,
+				D5D485E201362B9553E820FE /* ShareViewController.swift */,
+			);
+			path = AsraySplitShare;
+			sourceTree = "<group>";
+		};
 		CEDA27DCA862A5B21E0CEC90 /* Demo */ = {
 			isa = PBXGroup;
 			children = (
@@ -462,6 +513,7 @@
 				5F7507D9BBF4F306B88B3A8C /* AppError.swift */,
 				54E963293779ED064DE7291C /* JSONCoding.swift */,
 				197410CF59354C1A9CE4E502 /* Logging.swift */,
+				E15A006333BD3CC9A31F8092 /* SharedInbox.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -553,10 +605,12 @@
 				A607E2CCF9502689AC7D678B /* Sources */,
 				1241435E9A4F011C38AB34DB /* Resources */,
 				D01D433E91BDC286E2F4165C /* Frameworks */,
+				812EFB06945E740FE06CCF99 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				DB3C8C2B9F625C6C9099A8E2 /* PBXTargetDependency */,
 			);
 			name = AsraySplit;
 			packageProductDependencies = (
@@ -565,6 +619,21 @@
 			productName = AsraySplit;
 			productReference = 051CFEE9771D2EFB8189CEC2 /* AsraySplit.app */;
 			productType = "com.apple.product-type.application";
+		};
+		447626537A055C3D606C31CA /* AsraySplitShare */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 83E6CBE1E873E259BAD7504F /* Build configuration list for PBXNativeTarget "AsraySplitShare" */;
+			buildPhases = (
+				1FCD749F71BFEF5FCCE1BFDB /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AsraySplitShare;
+			productName = AsraySplitShare;
+			productReference = B370BFFE3E7308B91FEBC265 /* AsraySplitShare.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		471DF34A6A2160919DF98204 /* AsraySplitUITests */ = {
 			isa = PBXNativeTarget;
@@ -612,6 +681,10 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					447626537A055C3D606C31CA = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					471DF34A6A2160919DF98204 = {
 						DevelopmentTeam = "";
 						TestTargetID = 2D0487169C4A10C848459BC7;
@@ -639,6 +712,7 @@
 			projectRoot = "";
 			targets = (
 				2D0487169C4A10C848459BC7 /* AsraySplit */,
+				447626537A055C3D606C31CA /* AsraySplitShare */,
 				CEDF31C86658C2EBFAB1FF58 /* AsraySplitTests */,
 				471DF34A6A2160919DF98204 /* AsraySplitUITests */,
 			);
@@ -676,6 +750,15 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1FCD749F71BFEF5FCCE1BFDB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A762C0441D751B1910F66E8E /* ShareViewController.swift in Sources */,
+				60230E78A36ADA9EFFBDF7AA /* SharedInbox.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6920F732BD65A58F5E16669C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -726,12 +809,15 @@
 				132CDE8B1F27595AF06A09B5 /* ReceiptScanCoordinator.swift in Sources */,
 				D7F742407FFDCF903444F5D1 /* ReceiptScanResult.swift in Sources */,
 				C24ACD9CE8D67F7C0B865171 /* ReceiptTextParser.swift in Sources */,
+				4EF86636B0712CD1799F648B /* RideDetails.swift in Sources */,
+				F856147B60DACB66A5738ED1 /* RideReceiptParser.swift in Sources */,
 				C3C69FD0ED474A63E7227264 /* RootView.swift in Sources */,
 				23D831C473214EFD2CA70823 /* ScanReceiptView.swift in Sources */,
 				F68169BDA23ADC5B1B7BA8F8 /* ScanReviewModel.swift in Sources */,
 				F2F2A339FA2888D349D62439 /* ScanReviewView.swift in Sources */,
 				3534355003326D4139858C0B /* Services.swift in Sources */,
 				A95C8A111447CDC6B207224F /* SettingsView.swift in Sources */,
+				B6A33D69A4C6F97C798CC8F8 /* SharedInbox.swift in Sources */,
 				CCAE75ED86AD220D21F24108 /* SignInView.swift in Sources */,
 				4B4C8C81AB58AEDCAF155BC9 /* SplitRule.swift in Sources */,
 				7257AF856B338EAC35C26771 /* SupabaseBackend.swift in Sources */,
@@ -757,6 +843,7 @@
 				58869CC3642B15D1F9B5C576 /* LedgerTests.swift in Sources */,
 				2613D963EB7E115A42670456 /* LocalStoreTests.swift in Sources */,
 				EBE95EEE64AC549EA254A3E9 /* MoneyTests.swift in Sources */,
+				A28326C2D96EEED719FDC696 /* RideImportTests.swift in Sources */,
 				6AC224688BE886242BB27CC8 /* SyncEngineTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -774,6 +861,11 @@
 			target = 2D0487169C4A10C848459BC7 /* AsraySplit */;
 			targetProxy = 9FA0A750DB2E8A6A43074B70 /* PBXContainerItemProxy */;
 		};
+		DB3C8C2B9F625C6C9099A8E2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 447626537A055C3D606C31CA /* AsraySplitShare */;
+			targetProxy = 9C59D171E0F0A45FB9994454 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -790,6 +882,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID)";
 				PRODUCT_NAME = AsraySplit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -874,6 +967,46 @@
 			};
 			name = Release;
 		};
+		552804DCB932CB0C57264535 /* Staging */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 899ED194F82E55F0F755F693 /* Staging.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AsraySplitShare/AsraySplitShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AsraySplitShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).share";
+				PRODUCT_NAME = AsraySplitShare;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Staging;
+		};
+		57FD2F58AEECD317F4ECDDE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = FB1F30182175755840634D88 /* Release.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AsraySplitShare/AsraySplitShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AsraySplitShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).share";
+				PRODUCT_NAME = AsraySplitShare;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
 		5C88D0751458945375B4E51A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -938,6 +1071,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID)";
 				PRODUCT_NAME = AsraySplit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1052,6 +1186,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID)";
 				PRODUCT_NAME = AsraySplit;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1126,6 +1261,26 @@
 			};
 			name = Debug;
 		};
+		FCAAAC7C39C41515AF43051F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2CBBD82CA7CD55208DF22C92 /* Debug.xcconfig */;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = AsraySplitShare/AsraySplitShare.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = AsraySplitShare/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "$(APP_BUNDLE_ID).share";
+				PRODUCT_NAME = AsraySplitShare;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1135,6 +1290,16 @@
 				A42885503E9A93654C77116F /* Debug */,
 				2A8DEF066F8C87A733929D5C /* Release */,
 				F0B04E967FEA34FCB62E06F5 /* Staging */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		83E6CBE1E873E259BAD7504F /* Build configuration list for PBXNativeTarget "AsraySplitShare" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FCAAAC7C39C41515AF43051F /* Debug */,
+				57FD2F58AEECD317F4ECDDE6 /* Release */,
+				552804DCB932CB0C57264535 /* Staging */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

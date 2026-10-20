@@ -36,6 +36,8 @@ final class ScanReviewModel {
     let overallConfidence: Double
     /// User acknowledged that the printed total differs and wants to save anyway.
     var acceptDiscrepancy = false
+    /// Uber/Lyft ride metadata, when the receipt is a ride.
+    let ride: RideDetails?
 
     init(trip: Trip, result: ReceiptScanResult, receiptID: UUID?, me: ParticipantID?) {
         self.trip = trip
@@ -54,7 +56,22 @@ final class ScanReviewModel {
         fieldConfidence = result.fieldConfidence
         overallConfidence = result.confidence
         payerID = me ?? trip.activeParticipants.first?.id
+        ride = result.ride
+        if result.ride != nil {
+            // A ride is shared by everyone in the car: default to an equal split the user can trim.
+            category = .transport
+            let everyone = Dictionary(uniqueKeysWithValues: trip.activeParticipants.map { ($0.id, Decimal(1)) })
+            for index in lines.indices { lines[index].assignees = everyone }
+        }
     }
+
+    /// Rides: pick who was in the car; the fare, fees and tip are split equally among them.
+    func setRiders(_ riders: Set<ParticipantID>) {
+        let weights = Dictionary(uniqueKeysWithValues: riders.map { ($0, Decimal(1)) })
+        for index in lines.indices { lines[index].assignees = weights }
+    }
+
+    var riders: Set<ParticipantID> { Set(lines.first?.assignees.keys.map { $0 } ?? []) }
 
     var itemsSum: Int64 { lines.reduce(0) { $0 + ($1.amountMinor ?? 0) } }
     var extras: Int64 { (taxMinor ?? 0) + (serviceFeeMinor ?? 0) + (tipMinor ?? 0) - (discountMinor ?? 0) }
@@ -113,17 +130,22 @@ final class ScanReviewModel {
             ExpenseItem(id: line.id, name: line.name.isEmpty ? String(localized: "Item") : line.name, quantity: line.quantity, amountMinor: line.amountMinor ?? 0,
                         assignees: line.assignees.filter { $0.value > 0 }.sorted { $0.key.sortKey < $1.key.sortKey }.map { ItemAssignee(participantId: $0.key, weight: $0.value) })
         }
-        let title = merchant.trimmingCharacters(in: .whitespaces).isEmpty ? String(localized: "Receipt") : merchant
-        var notes: String?
-        if !discrepancies.isEmpty, let declared = declaredTotalMinor {
-            notes = String(localized: "Printed total \(Money(minorUnits: declared, currency: currency).formatted()) differs from items; saved as reviewed.")
+        let title: String
+        if let ride {
+            title = ride.dropoff.map { String(localized: "\(ride.provider.displayName) to \($0)") } ?? String(localized: "\(ride.provider.displayName) ride")
+        } else {
+            title = merchant.trimmingCharacters(in: .whitespaces).isEmpty ? String(localized: "Receipt") : merchant
         }
-        return ExpensePayload(title: title, merchant: merchant.isEmpty ? nil : merchant, notes: notes, category: category, paymentMethod: .card,
+        var notes: String? = ride.map(\.summary)
+        if !discrepancies.isEmpty, let declared = declaredTotalMinor {
+            notes = [notes, String(localized: "Printed total \(Money(minorUnits: declared, currency: currency).formatted()) differs from items; saved as reviewed.")].compactMap { $0 }.joined(separator: "\n")
+        }
+        return ExpensePayload(title: String(title.prefix(120)), merchant: merchant.isEmpty ? nil : merchant, notes: notes, category: category, paymentMethod: .card,
                               spentAt: spentAt, splitMethod: .itemized, amountMinor: total, currency: currency,
                               exchangeRate: needsRate ? exchangeRate : nil, rateProvider: needsRate ? "manual" : nil, rateDate: needsRate ? spentAt : nil,
                               payments: [.init(participantId: payerID, amountMinor: total)],
                               allocations: shares.sorted { $0.key.sortKey < $1.key.sortKey }.map { .init(participantId: $0.key, amountMinor: $0.value) },
                               items: items, taxMinor: taxMinor, serviceFeeMinor: serviceFeeMinor, tipMinor: tipMinor, discountMinor: discountMinor,
-                              tags: source == .ai ? ["receipt", "scanned"] : ["receipt"], receiptIds: receiptID.map { [$0] } ?? [])
+                              tags: ride.map { ["ride", $0.provider.rawValue] } ?? (source == .ai ? ["receipt", "scanned"] : ["receipt"]), receiptIds: receiptID.map { [$0] } ?? [])
     }
 }

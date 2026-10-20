@@ -43,6 +43,34 @@ enum ReceiptTextParser {
         }
     }
 
+    struct AmountLine: Equatable {
+        var label: String
+        /// Magnitude in minor units; see `negative`.
+        var minor: Int64
+        var negative: Bool
+    }
+
+    /// Splits "Booking Fee $2.75" into label + exact amount. Nil when the line has no trailing amount.
+    static func amountLine(_ line: String, currency: CurrencyCode, locale: Locale = .current) -> AmountLine? {
+        amountLine(line, pattern: amountPattern(for: currency), parser: MoneyParser(locale: locale), currency: currency)
+    }
+
+    private static func amountLine(_ line: String, pattern: NSRegularExpression, parser: MoneyParser, currency: CurrencyCode) -> AmountLine? {
+        let range = NSRange(line.startIndex..., in: line)
+        guard let match = pattern.firstMatch(in: line, range: range), let amountRange = Range(match.range(at: 1), in: line) else { return nil }
+        var amountText = String(line[amountRange])
+        let negative = amountText.contains("-") || amountText.contains("(") || amountText.contains("−")
+        amountText = amountText.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
+            .replacingOccurrences(of: "-", with: "").replacingOccurrences(of: "−", with: "")
+        guard let money = try? parser.parse(amountText, currency: currency) else { return nil }
+        var label = String(line[..<amountRange.lowerBound])
+        // "−$2.00" puts the minus before the symbol, outside the match.
+        let trimmedLabel = label.trimmingCharacters(in: .whitespaces)
+        let leadingMinus = trimmedLabel.hasSuffix("-") || trimmedLabel.hasSuffix("−")
+        label = label.trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters).union(CharacterSet(charactersIn: "−")))
+        return AmountLine(label: label, minor: money.minorUnits, negative: negative || leadingMinus)
+    }
+
     static func scan(image: UIImage, currency: CurrencyCode, locale: Locale = .current) async throws -> ReceiptScanResult {
         parse(lines: try await recognizeText(in: image), currency: currency, locale: locale)
     }
@@ -60,17 +88,12 @@ enum ReceiptTextParser {
         let pattern = amountPattern(for: currency)
 
         for line in lines {
-            let range = NSRange(line.startIndex..., in: line)
-            guard let match = pattern.firstMatch(in: line, range: range), let amountRange = Range(match.range(at: 1), in: line) else {
+            guard let parsed = amountLine(line, pattern: pattern, parser: parser, currency: currency) else {
                 if merchant == nil, line.rangeOfCharacter(from: .letters) != nil, line.count >= 3 { merchant = line.capitalized }
                 continue
             }
-            var amountText = String(line[amountRange])
-            let negative = amountText.contains("-") || amountText.contains("(")
-            amountText = amountText.replacingOccurrences(of: "(", with: "").replacingOccurrences(of: ")", with: "")
-            guard let money = try? parser.parse(amountText.replacingOccurrences(of: "-", with: ""), currency: currency) else { continue }
-            let amount = money.minorUnits
-            var label = String(line[..<amountRange.lowerBound]).trimmingCharacters(in: .whitespacesAndNewlines.union(.punctuationCharacters))
+            let amount = parsed.minor, negative = parsed.negative
+            var label = parsed.label
             let lower = label.lowercased()
 
             if lower.contains("subtotal") || lower.contains("sub total") || lower.contains("net amount") { subtotal = amount }

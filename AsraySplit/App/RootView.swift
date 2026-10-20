@@ -94,6 +94,7 @@ struct MainView: View {
             case .createTrip: TripEditorView(existing: nil)
             case .addExpense(let trip): ExpenseEditorView(tripID: trip, editing: nil)
             case .scanReceipt(let trip): ScanReceiptView(initialTripID: trip)
+            case .reviewScan(let trip, let job): ScanReceiptView(initialTripID: trip, initialJobID: job)
             case .settleUp(let trip, let transfer): SettleUpView(tripID: trip, suggestion: transfer)
             }
         }

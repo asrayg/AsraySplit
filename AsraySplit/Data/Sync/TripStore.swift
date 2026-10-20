@@ -73,6 +73,7 @@ final class TripStore {
         operations = (try? await local.operations()) ?? []
         version &+= 1
         updateRealtimeSubscriptions()
+        SharedInbox.shared()?.writeTrips(activeTrips.map { SharedTripSummary(id: $0.id, name: $0.name, emoji: $0.emoji) })
     }
 
     /// Delivers pending work, then pulls canonical data for every trip.
@@ -382,5 +383,6 @@ final class TripStore {
         trips = []
         operations = []
         version &+= 1
+        SharedInbox.shared()?.clear()
     }
 }

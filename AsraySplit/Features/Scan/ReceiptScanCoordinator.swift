@@ -54,6 +54,25 @@ final class ReceiptScanCoordinator {
         return id
     }
 
+    /// Imports shared plain text (for example an emailed Uber/Lyft receipt). No image is stored.
+    func start(text: String, trip: Trip) throws -> UUID {
+        let lines = text.components(separatedBy: .newlines)
+        let result: ReceiptScanResult
+        if let (parsed, _) = RideReceiptParser.parse(lines: lines, currency: trip.baseCurrency) {
+            result = parsed
+        } else {
+            result = ReceiptTextParser.parse(lines: lines, currency: trip.baseCurrency)
+            guard !result.items.isEmpty else { throw ReceiptImageError.unreadable }
+        }
+        let id = UUID()
+        var job = Job(id: id, tripID: trip.id, image: UIImage(systemName: "doc.text") ?? UIImage())
+        job.result = result
+        job.phase = .ready
+        job.fallbackReason = String(localized: "Imported from text — no photo is attached.")
+        jobs[id] = job
+        return id
+    }
+
     func discard(_ id: UUID) {
         jobs[id] = nil
     }
@@ -85,8 +104,15 @@ final class ReceiptScanCoordinator {
                 update(id) { $0.fallbackReason = appError == .offline ? String(localized: "You’re offline, so the receipt was read on this iPhone. The photo will be attached when you’re back online.") : appError.message }
             }
 
+            // Ride receipts (Uber/Lyft) are recognized on-device: no AI call or quota needed.
+            update(id) { $0.phase = .scanning }
+            let lines = (try? await ReceiptTextParser.recognizeText(in: job.image)) ?? []
+            if let (result, _) = RideReceiptParser.parse(lines: lines, currency: trip.baseCurrency) {
+                update(id) { $0.result = result; $0.phase = .ready }
+                return
+            }
+
             if useAI, jobs[id]?.receipt != nil {
-                update(id) { $0.phase = .scanning }
                 do {
                     let result = try await receipts.scanReceipt(id: prepared.id)
                     update(id) { $0.result = result; $0.phase = .ready }
@@ -100,9 +126,7 @@ final class ReceiptScanCoordinator {
                 }
             }
 
-            update(id) { $0.phase = .scanning }
-            let result = try await ReceiptTextParser.scan(image: job.image, currency: trip.baseCurrency)
-            update(id) { $0.result = result; $0.phase = .ready }
+            update(id) { $0.result = ReceiptTextParser.parse(lines: lines, currency: trip.baseCurrency); $0.phase = .ready }
         } catch {
             let message = (error as? ReceiptImageError)?.errorDescription ?? error.asAppError.message
             update(id) { $0.phase = .failed(message) }

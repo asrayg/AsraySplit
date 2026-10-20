@@ -45,6 +45,8 @@ struct ReceiptScanResult: Codable, Equatable, Sendable {
     var fieldConfidence: [String: Double] = [:]
     var source: Source
     var model: String?
+    /// Present when the receipt is an Uber/Lyft ride (see RideReceiptParser).
+    var ride: RideDetails?
 
     static let lowConfidenceThreshold = 0.7
 
@@ -83,6 +85,7 @@ struct ReceiptScanResult: Codable, Equatable, Sendable {
         fieldConfidence = try container.decodeIfPresent([String: Double].self, forKey: .fieldConfidence) ?? [:]
         source = try container.decodeIfPresent(Source.self, forKey: .source) ?? .ai
         model = try container.decodeIfPresent(String.self, forKey: .model)
+        ride = try? container.decodeIfPresent(RideDetails.self, forKey: .ride)
     }
 
     func isLowConfidence(_ field: String) -> Bool { (fieldConfidence[field] ?? confidence) < Self.lowConfidenceThreshold }

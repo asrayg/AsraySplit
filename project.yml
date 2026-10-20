@@ -41,8 +41,11 @@ targets:
     dependencies:
       - package: Supabase
         product: Supabase
+      - target: AsraySplitShare
+        embed: true
     settings:
       base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID)
         INFOPLIST_FILE: AsraySplit/Info.plist
         CODE_SIGN_ENTITLEMENTS: AsraySplit/AsraySplit.entitlements
         CODE_SIGN_STYLE: Automatic
@@ -52,6 +55,25 @@ targets:
     scheme:
       testTargets: [AsraySplitTests, AsraySplitUITests]
       gatherCoverageData: true
+  AsraySplitShare:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: AsraySplitShare
+      - path: AsraySplit/Core/Support/SharedInbox.swift
+    configFiles:
+      Debug: Config/Debug.xcconfig
+      Staging: Config/Staging.xcconfig
+      Release: Config/Release.xcconfig
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: $(APP_BUNDLE_ID).share
+        INFOPLIST_FILE: AsraySplitShare/Info.plist
+        CODE_SIGN_ENTITLEMENTS: AsraySplitShare/AsraySplitShare.entitlements
+        CODE_SIGN_STYLE: Automatic
+        TARGETED_DEVICE_FAMILY: "1"
+        APPLICATION_EXTENSION_API_ONLY: YES
+        PRODUCT_NAME: AsraySplitShare
   AsraySplitTests:
     type: bundle.unit-test
     platform: iOS
