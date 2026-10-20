@@ -1,0 +1,6 @@
+#include "Base.xcconfig"
+APP_ENV = debug
+PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplit.debug
+APP_DISPLAY_NAME = Split Dev
+// Optional, git-ignored. Copy Secrets.example.xcconfig to Secrets.Debug.xcconfig.
+#include? "Secrets.Debug.xcconfig"

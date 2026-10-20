@@ -1,0 +1,5 @@
+#include "Base.xcconfig"
+APP_ENV = staging
+PRODUCT_BUNDLE_IDENTIFIER = com.asray.AsraySplit.staging
+APP_DISPLAY_NAME = Split Beta
+#include? "Secrets.Staging.xcconfig"

@@ -31,6 +31,12 @@ for migration in "$ROOT"/supabase/migrations/*.sql; do
   "${PSQL[@]}" -d "$DB" -f "$migration" >/dev/null
 done
 
+if [[ -n "${DB_FIXTURES_OUT:-}" ]]; then
+  mkdir -p "$DB_FIXTURES_OUT"
+  "${PSQL[@]}" -d "$DB" -v outdir="$DB_FIXTURES_OUT" -f "$ROOT/scripts/fixtures.sql" >/dev/null
+  echo "fixtures written to $DB_FIXTURES_OUT"
+fi
+
 failed=0
 for test in "$ROOT"/supabase/tests/*_test.sql; do
   out="$("${PSQL[@]}" -d "$DB" -t -A -f "$test" 2>&1)" || true

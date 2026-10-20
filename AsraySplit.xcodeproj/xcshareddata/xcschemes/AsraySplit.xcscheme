@@ -28,6 +28,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES"
       onlyGenerateCoverageForSpecifiedTargets = "NO">
       <MacroExpansion>
          <BuildableReference
@@ -46,6 +47,16 @@
                BlueprintIdentifier = "CEDF31C86658C2EBFAB1FF58"
                BuildableName = "AsraySplitTests.xctest"
                BlueprintName = "AsraySplitTests"
+               ReferencedContainer = "container:AsraySplit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "471DF34A6A2160919DF98204"
+               BuildableName = "AsraySplitUITests.xctest"
+               BlueprintName = "AsraySplitUITests"
                ReferencedContainer = "container:AsraySplit.xcodeproj">
             </BuildableReference>
          </TestableReference>

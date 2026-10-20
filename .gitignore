@@ -4,3 +4,6 @@ xcuserdata/
 .DS_Store
 .env
 supabase/.temp/
+Config/Secrets.*.xcconfig
+!Config/Secrets.example.xcconfig
+supabase/functions/.env
