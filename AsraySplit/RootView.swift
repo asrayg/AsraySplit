@@ -20,6 +20,7 @@ struct RootView: View {
         }
         .background(Color.ink.ignoresSafeArea())
         .fullScreenCover(isPresented: $store.showScanner) { ReceiptFlowView() }
+        .sheet(isPresented: $store.showAddExpense) { AddExpenseView() }
         .overlay(alignment: .top) {
             if let toast = store.toast { Text(toast).font(.subheadline.weight(.semibold)).padding(.horizontal, 18).padding(.vertical, 12).background(.ultraThinMaterial, in: Capsule()).padding(.top, 12).task { try? await Task.sleep(for: .seconds(2)); store.toast = nil } }
         }
@@ -33,7 +34,7 @@ struct HomeView: View {
             LazyVStack(alignment: .leading, spacing: 22) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) { Text("Tuesday, October 20").font(.caption).foregroundStyle(.secondary); Text("Hey, Alex").font(.largeTitle.bold()) }
-                    Spacer(); Avatar(name: store.currentUser.name, size: 46)
+                    Spacer(); Button { store.showAddExpense = true } label: { Image(systemName: "plus").font(.headline).frame(width: 42, height: 42).background(Color.panel, in: Circle()) }; Avatar(name: store.currentUser.name, size: 46)
                 }
                 BalanceCard()
                 HStack { Text("Your groups").font(.title3.bold()); Spacer(); NavigationLink("See all", destination: GroupsView()).font(.subheadline).foregroundStyle(Color.softMint) }
@@ -80,7 +81,7 @@ struct ExpenseRow: View {
     var body: some View {
         HStack(spacing: 13) {
             Image(systemName: expense.category.icon).font(.headline).foregroundStyle(Color.softMint).frame(width: 44, height: 44).background(Color.panel, in: RoundedRectangle(cornerRadius: 14))
-            VStack(alignment: .leading, spacing: 4) { Text(expense.title).font(.subheadline.bold()); Text(expense.note.isEmpty ? "Paid by \(expense.paidBy.name)" : expense.note).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
+            VStack(alignment: .leading, spacing: 4) { Text(expense.title).font(.subheadline.bold()); Text(expense.note.isEmpty ? "\(expense.paymentMethod.title) · \(expense.splitMethod.title)" + (expense.tags.isEmpty ? "" : " · #\(expense.tags.joined(separator: " #"))") : expense.note).font(.caption).foregroundStyle(.secondary).lineLimit(1) }
             Spacer(); VStack(alignment: .trailing, spacing: 4) { Text(expense.amount, format: .currency(code: "USD")).font(.subheadline.bold()); Text(expense.date, style: .relative).font(.caption2).foregroundStyle(.secondary) }
         }
     }

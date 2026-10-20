@@ -2,6 +2,19 @@
 
 A native SwiftUI expense-sharing app with receipt photos, AI itemization, per-item assignment, proportional tax/tip splitting, groups, balances, insights, and local-first persistence.
 
+> **Status:** compiling product prototype, not an App Store-ready release. Start with [CLAUDE.md](CLAUDE.md) and the [implementation plan](docs/IMPLEMENTATION_PLAN.md) before extending it.
+
+### Vacation features
+
+- Create trips with dates, travelers, home currency, and a shared budget
+- Add ordinary numeric expenses or scan/itemize a receipt
+- Split equally, by exact amount, percentage, or weighted shares
+- Record who paid and whether it was cash, card, bank, Venmo, or another method
+- Built-in and custom expense tags, including an automatic `cash` tag
+- Per-person allocation breakdowns and balance-aware settlement records
+- Daily opt-in trip reminders and expense confirmation notifications
+- Expense history, detail screens, and deletion
+
 ## Run the iOS app
 
 ```sh

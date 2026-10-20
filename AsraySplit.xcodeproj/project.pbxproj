@@ -11,8 +11,10 @@
 		2BA006DFD9DC154CCAFD9393 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7E247E686FCAC30EEDF0138 /* Services.swift */; };
 		67A0F5994382D5764A17FCE4 /* AsraySplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A842C0A5DCB0D1B876DB9EA /* AsraySplitApp.swift */; };
 		6B810F88EC66C6CB067604B0 /* ReceiptParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD66E827A738F5EE77FBE1D5 /* ReceiptParserTests.swift */; };
+		6DFCD864F8DF7E20570B328F /* ExpenseAndGroupFlows.swift in Sources */ = {isa = PBXBuildFile; fileRef = F781F70E96BD98B240EC7C9E /* ExpenseAndGroupFlows.swift */; };
 		976F1B34FB799D866F98920E /* SecondaryViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D201C707D92BA4ED085AED0F /* SecondaryViews.swift */; };
 		AB7529C3714EA1CF41E706D1 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7F74A408B7ECE28D8921B10 /* RootView.swift */; };
+		D22BE25FE579AB217D1AEEB7 /* ExpenseDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E3E587D18359F1CDC90818B3 /* ExpenseDetailView.swift */; };
 		EDF4947E377C05976CF5CE0D /* ReceiptFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C40F9EE136BD8AE2157F923 /* ReceiptFlow.swift */; };
 		F6961BA2B5BD293D80C91B0C /* AppStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B058F1B2E6D55F2BC20DECB /* AppStore.swift */; };
 /* End PBXBuildFile section */
@@ -38,6 +40,8 @@
 		D201C707D92BA4ED085AED0F /* SecondaryViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecondaryViews.swift; sourceTree = "<group>"; };
 		D389CA841341CE60230956C4 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
 		D7E247E686FCAC30EEDF0138 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
+		E3E587D18359F1CDC90818B3 /* ExpenseDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseDetailView.swift; sourceTree = "<group>"; };
+		F781F70E96BD98B240EC7C9E /* ExpenseAndGroupFlows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseAndGroupFlows.swift; sourceTree = "<group>"; };
 		F7F74A408B7ECE28D8921B10 /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -55,6 +59,8 @@
 			children = (
 				9B058F1B2E6D55F2BC20DECB /* AppStore.swift */,
 				5A842C0A5DCB0D1B876DB9EA /* AsraySplitApp.swift */,
+				F781F70E96BD98B240EC7C9E /* ExpenseAndGroupFlows.swift */,
+				E3E587D18359F1CDC90818B3 /* ExpenseDetailView.swift */,
 				C15ADEDDB0584C0BCE094F7B /* Info.plist */,
 				D389CA841341CE60230956C4 /* Models.swift */,
 				1C40F9EE136BD8AE2157F923 /* ReceiptFlow.swift */,
@@ -160,6 +166,8 @@
 			files = (
 				F6961BA2B5BD293D80C91B0C /* AppStore.swift in Sources */,
 				67A0F5994382D5764A17FCE4 /* AsraySplitApp.swift in Sources */,
+				6DFCD864F8DF7E20570B328F /* ExpenseAndGroupFlows.swift in Sources */,
+				D22BE25FE579AB217D1AEEB7 /* ExpenseDetailView.swift in Sources */,
 				048C74E7CBCD557655E10D13 /* Models.swift in Sources */,
 				EDF4947E377C05976CF5CE0D /* ReceiptFlow.swift in Sources */,
 				AB7529C3714EA1CF41E706D1 /* RootView.swift in Sources */,

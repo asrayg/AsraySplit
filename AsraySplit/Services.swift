@@ -62,13 +62,22 @@ final class SupabaseService {
         return try JSONDecoder.supabase.decode(ReceiptDraft.self, from: data)
     }
 
-    func save(expense: Expense, draft: ReceiptDraft, imageData: Data?) async throws {
+    func save(expense: Expense, draft: ReceiptDraft?, imageData: Data?) async throws {
         guard let baseURL else { throw BackendError.notConfigured }; let token = try await userToken()
         var receiptPath: String?
         if let imageData { receiptPath = try await uploadReceipt(imageData, id: expense.id, baseURL: baseURL, token: token) }
-        var object: [String: Any] = ["id": expense.id.uuidString, "group_id": expense.groupID.uuidString, "description": expense.title, "amount": expense.amount, "currency": draft.currency, "category": expense.category.rawValue, "paid_by": expense.paidBy.id.uuidString, "metadata": ["draft": try jsonObject(draft)]]
+        var metadata: [String: Any] = ["tags": expense.tags, "allocations": try jsonObject(expense.allocations)]
+        if let draft { metadata["draft"] = try jsonObject(draft) }
+        var object: [String: Any] = ["id": expense.id.uuidString, "group_id": expense.groupID.uuidString, "description": expense.title, "amount": expense.amount, "currency": draft?.currency ?? "USD", "category": expense.category.rawValue, "paid_by": expense.paidBy.id.uuidString, "payment_method": expense.paymentMethod.rawValue, "split_method": expense.splitMethod.rawValue, "tags": expense.tags, "metadata": metadata]
         if let receiptPath { object["receipt_path"] = receiptPath }
         var request = URLRequest(url: baseURL.appending(path: "rest/v1/expenses")); request.httpMethod = "POST"; request.httpBody = try JSONSerialization.data(withJSONObject: object); applyHeaders(&request, token: token); request.setValue("return=minimal", forHTTPHeaderField: "Prefer")
+        let (data, response) = try await URLSession.shared.data(for: request); try validate(response, data: data)
+    }
+
+    func save(group: SplitGroup) async throws {
+        guard let baseURL else { throw BackendError.notConfigured }; let token = try await userToken()
+        let object: [String: Any] = ["id": group.id.uuidString, "name": group.name, "emoji": group.emoji, "color_hex": group.colorHex, "start_date": ISO8601DateFormatter().string(from: group.startDate), "end_date": ISO8601DateFormatter().string(from: group.endDate), "currency": group.currency, "budget": group.budget, "member_names": group.members.map(\.name)]
+        var request = URLRequest(url: baseURL.appending(path: "rest/v1/groups")); request.httpMethod = "POST"; request.httpBody = try JSONSerialization.data(withJSONObject: object); applyHeaders(&request, token: token); request.setValue("return=minimal", forHTTPHeaderField: "Prefer")
         let (data, response) = try await URLSession.shared.data(for: request); try validate(response, data: data)
     }
 
@@ -79,7 +88,7 @@ final class SupabaseService {
         let value = try JSONDecoder().decode(AuthResponse.self, from: data); accessToken = value.accessToken; return value.accessToken
     }
     private func uploadReceipt(_ data: Data, id: UUID, baseURL: URL, token: String) async throws -> String {
-        let path = "\(id.uuidString.lowercased()).jpg"; var request = URLRequest(url: baseURL.appending(path: "storage/v1/object/receipts/\(path)")); request.httpMethod = "POST"; request.httpBody = data; request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type"); applyHeaders(&request, token: token)
+        let path = "\(id.uuidString.lowercased()).jpg"; var request = URLRequest(url: baseURL.appending(path: "storage/v1/object/receipts/\(path)")); request.httpMethod = "POST"; request.httpBody = data; applyHeaders(&request, token: token); request.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
         let (body, response) = try await URLSession.shared.data(for: request); try validate(response, data: body); return path
     }
     private func applyHeaders(_ request: inout URLRequest, token: String) { request.setValue(key, forHTTPHeaderField: "apikey"); request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization"); request.setValue("application/json", forHTTPHeaderField: "Content-Type") }

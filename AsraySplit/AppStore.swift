@@ -7,6 +7,8 @@ final class AppStore: ObservableObject {
     @Published var expenses: [Expense] = [] { didSet { save() } }
     @Published var selectedTab = 0
     @Published var showScanner = false
+    @Published var showAddExpense = false
+    @Published var pendingGroupID: UUID?
     @Published var toast: String?
     let currentUser = Person(name: "Alex Ray")
     let backend = SupabaseService()
@@ -18,14 +20,56 @@ final class AppStore: ObservableObject {
     var recentExpenses: [Expense] { expenses.sorted { $0.date > $1.date } }
 
     func addExpense(from draft: ReceiptDraft, group: SplitGroup, imageData: Data?) async {
+        let allocations = group.members.map { person -> ExpenseAllocation in
+            let itemShare = draft.items.reduce(0.0) { sum, item in
+                guard item.assignedTo.contains(person.id), !item.assignedTo.isEmpty else { return sum }
+                return sum + item.price / Double(item.assignedTo.count)
+            }
+            let total = draft.subtotal > 0 ? itemShare + (draft.tax + draft.tip - draft.discount) * itemShare / draft.subtotal : itemShare
+            return ExpenseAllocation(personID: person.id, value: itemShare, owedAmount: total)
+        }.filter { $0.owedAmount > 0 }
         let expense = Expense(groupID: group.id, title: draft.merchant.isEmpty ? "Receipt" : draft.merchant,
                               amount: draft.total, paidBy: currentUser, date: draft.date, category: .food,
-                              note: "AI itemized · \(draft.items.count) items")
-        expenses.append(expense)
+                              note: "AI itemized · \(draft.items.count) items", tags: ["receipt", "ai-scanned"], allocations: allocations)
+        addExpense(expense)
         if backend.isConfigured {
             do { try await backend.save(expense: expense, draft: draft, imageData: imageData) }
             catch { toast = "Saved locally — sync will retry later" }
         } else { toast = "Saved in demo mode" }
+    }
+
+    func addExpense(_ expense: Expense) {
+        expenses.append(expense)
+        if let index = groups.firstIndex(where: { $0.id == expense.groupID }) {
+            let myShare = expense.allocations.first(where: { $0.personID == currentUser.id })?.owedAmount ?? 0
+            groups[index].balance += expense.paidBy.id == currentUser.id ? expense.amount - myShare : -myShare
+        }
+        NotificationService.shared.scheduleExpenseAdded(expense.title, amount: expense.amount)
+        toast = "Expense added"
+        if backend.isConfigured { Task { try? await backend.save(expense: expense, draft: nil, imageData: nil) } }
+    }
+
+    func deleteExpense(_ expense: Expense) {
+        expenses.removeAll { $0.id == expense.id }
+        toast = "Expense deleted"
+    }
+
+    func createGroup(_ group: SplitGroup) {
+        groups.append(group)
+        toast = "\(group.name) created"
+        if backend.isConfigured { Task { try? await backend.save(group: group) } }
+    }
+
+    func settle(group: SplitGroup, amount: Double, with person: Person, method: PaymentMethod) {
+        let settlement = Expense(groupID: group.id, title: "Settlement with \(person.name)", amount: amount,
+                                 paidBy: group.balance < 0 ? currentUser : person, date: .now,
+                                 category: .other, note: "Balance settled", paymentMethod: method,
+                                 splitMethod: .amounts, tags: ["settlement"])
+        expenses.append(settlement)
+        if let index = groups.firstIndex(where: { $0.id == group.id }) {
+            groups[index].balance += group.balance < 0 ? amount : -amount
+        }
+        toast = "Settlement recorded"
     }
 
     private struct Snapshot: Codable { let groups: [SplitGroup]; let expenses: [Expense] }

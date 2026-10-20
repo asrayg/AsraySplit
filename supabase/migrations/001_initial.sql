@@ -12,6 +12,11 @@ create table public.groups (
   name text not null,
   emoji text not null default '✨',
   color_hex text not null default '23C58A',
+  start_date date,
+  end_date date,
+  currency text not null default 'USD',
+  budget numeric(12,2) not null default 0,
+  member_names jsonb not null default '[]'::jsonb,
   created_at timestamptz not null default now()
 );
 create table public.group_members (
@@ -30,6 +35,9 @@ create table public.expenses (
   currency text not null default 'USD',
   category text not null default 'other',
   paid_by uuid not null,
+  payment_method text not null default 'card',
+  split_method text not null default 'equally',
+  tags text[] not null default '{}',
   receipt_path text,
   metadata jsonb not null default '{}'::jsonb,
   created_at timestamptz not null default now()
