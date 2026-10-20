@@ -69,6 +69,7 @@
 		C37CE54EF9F9E382F96D238D /* JSONCoding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54E963293779ED064DE7291C /* JSONCoding.swift */; };
 		C3C69FD0ED474A63E7227264 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE3A9D84AE43F0DB497BC4F /* RootView.swift */; };
 		C9A0B9B5D5EC89172FE04F97 /* AppModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32986AF66533B61E717F5632 /* AppModel.swift */; };
+		CAACCE9A736C4F97493C7594 /* ScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C95477F42732D3C3577DCAF /* ScreenshotTests.swift */; };
 		CB865E6EAD7B7F4E14D6BCCF /* balances.json in Resources */ = {isa = PBXBuildFile; fileRef = 1266CBACED1C039ED76298BF /* balances.json */; };
 		CCAE75ED86AD220D21F24108 /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA4CE7AD8E6E74CB1BAF7F96 /* SignInView.swift */; };
 		CE1C0EC5A19CB459307B7504 /* LedgerModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A464376F9439CE0979646B36 /* LedgerModels.swift */; };
@@ -157,6 +158,7 @@
 		954DBADD044BC210D3CF4E03 /* FeatureLogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureLogicTests.swift; sourceTree = "<group>"; };
 		98D619B0F598A548B84C1706 /* ActivityAndReceiptsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityAndReceiptsViews.swift; sourceTree = "<group>"; };
 		9A22A1463DE7211B7849B7F4 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
+		9C95477F42732D3C3577DCAF /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
 		9DDD91BE1D9E8337F3115CA5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A464376F9439CE0979646B36 /* LedgerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerModels.swift; sourceTree = "<group>"; };
 		A6A9DCBC5753EA6CC26C0F71 /* ReceiptTextParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTextParser.swift; sourceTree = "<group>"; };
@@ -495,6 +497,7 @@
 			isa = PBXGroup;
 			children = (
 				CD5E8D27060283A5871300D7 /* CoreFlowUITests.swift */,
+				9C95477F42732D3C3577DCAF /* ScreenshotTests.swift */,
 			);
 			path = AsraySplitUITests;
 			sourceTree = "<group>";
@@ -678,6 +681,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				95586B066443C97BEB99EC8C /* CoreFlowUITests.swift in Sources */,
+				CAACCE9A736C4F97493C7594 /* ScreenshotTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

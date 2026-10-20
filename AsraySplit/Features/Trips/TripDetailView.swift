@@ -65,10 +65,10 @@ struct TripDetailView: View {
                 .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
 
             Section {
-                HStack(spacing: 10) {
+                AdaptiveStack(spacing: 10) {
                     actionButton("Add", icon: "plus", id: "addExpense", primary: false) { app.sheet = .addExpense(trip.id) }
                     actionButton("Scan", icon: "doc.viewfinder", id: "scanReceipt", primary: true) { app.sheet = .scanReceipt(trip.id) }
-                    actionButton("Settle", icon: "arrow.left.arrow.right", id: "settleUp", primary: false) { app.sheet = .settleUp(trip.id, nil) }
+                    actionButton("Settle", icon: "arrow.left.arrow.right.circle", id: "settleUp", primary: false) { app.sheet = .settleUp(trip.id, nil) }
                 }
                 .disabled(trip.isArchived)
             }
@@ -139,7 +139,7 @@ struct TripDetailView: View {
 
     private func actionButton(_ title: LocalizedStringKey, icon: String, id: String, primary: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Label(title, systemImage: icon).labelStyle(.titleAndIcon).frame(maxWidth: .infinity)
+            Label(title, systemImage: icon).labelStyle(.titleAndIcon).lineLimit(1).minimumScaleFactor(0.8).frame(maxWidth: .infinity)
         }
         .buttonStyle(primary ? AnyButtonStyle(PrimaryButtonStyle()) : AnyButtonStyle(SecondaryButtonStyle()))
         .accessibilityIdentifier(id)
@@ -175,12 +175,13 @@ private struct TripHeader: View {
         let me = store.me(in: trip)?.id
         let net = balances.net(for: me)
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 12) {
+            AdaptiveStack(spacing: 12) {
                 Text(trip.emoji).font(.largeTitle).accessibilityHidden(true)
                 VStack(alignment: .leading) {
-                    Text(trip.name).font(.title2.bold())
+                    Text(trip.name).font(.title2.bold()).fixedSize(horizontal: false, vertical: true)
                     if let start = trip.startDate, let end = trip.endDate {
                         Text("\(start.shortDay) – \(end.shortDay) · \(trip.baseCurrency.rawValue)").font(.subheadline).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
             }
@@ -197,7 +198,7 @@ private struct TripHeader: View {
             .accessibilityElement(children: .combine)
             if let summary {
                 VStack(alignment: .leading, spacing: 6) {
-                    HStack {
+                    AdaptiveStack {
                         Text("Spent").font(.caption.bold())
                         Spacer()
                         Text(Money(minorUnits: summary.totalSpentMinor, currency: trip.baseCurrency).formatted())
@@ -228,7 +229,7 @@ struct ExpenseRow: View {
     var me: ParticipantID?
 
     var body: some View {
-        HStack(spacing: 12) {
+        AdaptiveStack(spacing: 12) {
             Image(systemName: expense.category.icon)
                 .font(.headline)
                 .foregroundStyle(Color.brand)

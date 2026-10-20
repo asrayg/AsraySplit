@@ -21,9 +21,9 @@ struct BalancesView: View {
                     }
                     ForEach(snapshot.suggestions) { transfer in
                         Button { app.sheet = .settleUp(trip.id, transfer) } label: {
-                            HStack {
+                            AdaptiveStack {
                                 VStack(alignment: .leading, spacing: 2) {
-                                    Text("\(trip.name(of: transfer.from)) pays \(trip.name(of: transfer.to))").foregroundStyle(Color.primary)
+                                    Text(trip.transferSentence(from: transfer.from, to: transfer.to, me: store.me(in: trip)?.id)).foregroundStyle(Color.primary)
                                     Text("Tap to record").font(.caption).foregroundStyle(.secondary)
                                 }
                                 Spacer()
@@ -41,7 +41,7 @@ struct BalancesView: View {
                         DisclosureGroup {
                             explanation(balance, currency: trip.baseCurrency)
                         } label: {
-                            HStack {
+                            AdaptiveStack {
                                 Avatar(name: trip.name(of: balance.participantID), size: 32)
                                 Text(trip.name(of: balance.participantID))
                                 Spacer()

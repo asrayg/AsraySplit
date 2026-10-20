@@ -105,7 +105,7 @@ struct TripRow: View {
     @State private var net: Int64 = 0
 
     var body: some View {
-        HStack(spacing: 14) {
+        AdaptiveStack(spacing: 14) {
             Text(trip.emoji)
                 .font(.title)
                 .frame(width: 52, height: 52)
@@ -115,7 +115,8 @@ struct TripRow: View {
                 Text(trip.name).font(.headline)
                 Text(subtitle).font(.caption).foregroundStyle(.secondary)
             }
-            Spacer()
+ 
+            Spacer(minLength: 0)
             VStack(alignment: .trailing, spacing: 2) {
                 Text(net > 0 ? "you’re owed" : net < 0 ? "you owe" : "settled").font(.caption2).foregroundStyle(.secondary)
                 if net != 0 { BalanceText(minor: net, currency: trip.baseCurrency, font: .subheadline.bold()) }

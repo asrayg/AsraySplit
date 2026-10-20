@@ -177,3 +177,29 @@ extension View {
 extension Date {
     var shortDay: String { formatted(.dateTime.month(.abbreviated).day()) }
 }
+
+/// Horizontal at regular text sizes, vertical at accessibility sizes so text never squeezes into
+/// one-word columns.
+@MainActor
+struct AdaptiveStack<Content: View>: View {
+    @Environment(\.dynamicTypeSize) private var size
+    var spacing: CGFloat? = nil
+    var horizontalAlignment: VerticalAlignment = .center
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        let layout = size.isAccessibilitySize
+            ? AnyLayout(VStackLayout(alignment: .leading, spacing: spacing))
+            : AnyLayout(HStackLayout(alignment: horizontalAlignment, spacing: spacing))
+        layout { content }
+    }
+}
+
+extension Trip {
+    /// "You pay Maya" / "Sam pays you" / "Sam pays Maya".
+    func transferSentence(from: ParticipantID, to: ParticipantID, me: ParticipantID?) -> String {
+        if from == me { return String(localized: "You pay \(name(of: to))") }
+        if to == me { return String(localized: "\(name(of: from)) pays you") }
+        return String(localized: "\(name(of: from)) pays \(name(of: to))")
+    }
+}
