@@ -260,6 +260,10 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
         try await rpc("list_activity", ["p_trip_id": Self.json(tripID), "p_before_id": Self.json(beforeID), "p_limit": .integer(Int64(limit))])
     }
 
+    func requestPaymentReminder(tripID: TripID, debtor: ParticipantID) async throws -> ReminderResult {
+        try await rpc("request_payment_reminder", ["p_trip_id": Self.json(tripID), "p_debtor_participant_id": Self.json(debtor)])
+    }
+
     // MARK: ReceiptService
 
     private static let bucket = "receipts"

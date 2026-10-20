@@ -272,4 +272,22 @@ final class SyncEngineTests: XCTestCase {
         let local = await a.store.expense(payload.id)
         XCTAssertEqual(local?.expense.receiptIds, [prepared.id])
     }
+
+    func testPaymentReminderRules() async throws {
+        let server = InMemoryServer()
+        let (a, b, trip) = try await sharedTrip(server: server)
+        try await a.store.saveExpense(try a.equalPayload(trip, title: "Hotel", amount: 10_000), in: trip)
+        await a.store.sync.drain(force: true)
+        let debtor = try XCTUnwrap(b.store.me(in: trip)?.id ?? a.store.trip(trip.id)?.participant(forUser: b.userID)?.id)
+        let first = try await a.backend.requestPaymentReminder(tripID: trip.id, debtor: debtor)
+        XCTAssertEqual(first, ReminderResult(queued: true, reason: nil))
+        let second = try await a.backend.requestPaymentReminder(tripID: trip.id, debtor: debtor)
+        XCTAssertEqual(second.reason, "already_reminded_today")
+        do {
+            _ = try await b.backend.requestPaymentReminder(tripID: trip.id, debtor: try XCTUnwrap(a.store.me(in: trip)?.id))
+            XCTFail("the debtor can't remind the creditor")
+        } catch {
+            XCTAssertEqual(error as? AppError, .conflict(code: "nothing_owed", currentRevision: nil))
+        }
+    }
 }

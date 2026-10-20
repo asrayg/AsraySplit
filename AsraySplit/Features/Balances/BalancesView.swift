@@ -31,6 +31,17 @@ struct BalancesView: View {
                             }
                         }
                         .disabled(trip.isArchived)
+                        .swipeActions {
+                            if canRemind(transfer, in: trip) {
+                                Button { Task { await remind(transfer, in: trip) } } label: { Label("Remind", systemImage: "envelope") }
+                                    .tint(Color.brand)
+                            }
+                        }
+                        .contextMenu {
+                            if canRemind(transfer, in: trip) {
+                                Button { Task { await remind(transfer, in: trip) } } label: { Label("Send reminder email", systemImage: "envelope") }
+                            }
+                        }
                     }
                 } header: { Text("Suggested payments") } footer: {
                     Text("The fewest payments that settle everyone. No money moves in the app — record a payment after you’ve paid by cash, bank transfer, Venmo or PayPal.")
@@ -96,6 +107,30 @@ struct BalancesView: View {
             }
         } else {
             ContentUnavailableView("Trip unavailable", systemImage: "suitcase")
+        }
+    }
+
+    /// The person owed (or an admin) can email a member with an account who owes money.
+    private func canRemind(_ transfer: SuggestedTransfer, in trip: Trip) -> Bool {
+        let me = store.me(in: trip)?.id
+        let debtorIsMember = trip.activeMembers.contains { $0.participantId == transfer.from }
+        return debtorIsMember && transfer.from != me && (transfer.to == me || trip.canManage(.admin))
+    }
+
+    private func remind(_ transfer: SuggestedTransfer, in trip: Trip) async {
+        do {
+            let result = try await app.env.backend.ledger.requestPaymentReminder(tripID: trip.id, debtor: transfer.from)
+            let name = trip.name(of: transfer.from)
+            let message: String = switch (result.queued, result.reason) {
+            case (true, _): String(localized: "Reminder sent to \(name)")
+            case (_, "already_reminded_today"): String(localized: "\(name) was already reminded today")
+            case (_, "opted_out"): String(localized: "\(name) has turned off reminder emails")
+            case (_, "no_account"): String(localized: "\(name) doesn’t have an account to email")
+            default: String(localized: "\(name) is already settled up")
+            }
+            app.show(Toast(message: message, style: result.queued ? .success : .info))
+        } catch {
+            app.report(error)
         }
     }
 

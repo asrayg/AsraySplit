@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <meta name="referrer" content="no-referrer">
+  <title>Open trip</title>
+  <style>
+    :root { --bg: #f4f7f6; --fg: #0b1a14; --brand: #0b7f57; --muted: #4b5b55; }
+    @media (prefers-color-scheme: dark) { :root { --bg: #090e12; --fg: #eef5f2; --brand: #6eedb5; --muted: #9fb2ab; } }
+    body { margin: 0; font: 17px/1.5 -apple-system, system-ui, sans-serif; background: var(--bg); color: var(--fg); }
+    main { max-width: 480px; margin: 0 auto; padding: 48px 16px; text-align: center; }
+    a.button { display: block; margin: 16px 0; padding: 14px; border-radius: 14px; background: var(--brand); color: var(--bg); text-decoration: none; font-weight: 600; }
+    code { font-size: 1.4em; letter-spacing: .1em; }
+    p { color: var(--muted); }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Open this trip in Asray Split</h1>
+  <p>Open this link on your iPhone with Asray Split installed to see balances and record a payment.</p>
+  <a class="button" id="open" href="#">Open in Asray Split</a>
+  <a class="button" href="https://apps.apple.com/app/id0000000000">Get Asray Split</a>
+  
+</main>
+<script>
+  var parts = location.pathname.split("/").filter(Boolean);
+  if (/^[0-9a-f-]{36}$/i.test(parts[1] || "")) document.getElementById("open").href = "asraysplit://trip/" + parts.slice(1).join("/");
+</script>
+</body>
+</html>

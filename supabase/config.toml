@@ -28,6 +28,16 @@ enabled = true
 client_id = "env(APPLE_CLIENT_ID)"
 secret = "env(APPLE_SIGNIN_SECRET)"
 
+# Magic-link and other auth emails are sent through Resend's SMTP relay from your domain.
+[auth.email.smtp]
+enabled = true
+host = "smtp.resend.com"
+port = 465
+user = "resend"
+pass = "env(RESEND_API_KEY)"
+admin_email = "no-reply@asraysplit.app"
+sender_name = "Asray Split"
+
 [auth.rate_limit]
 email_sent = 10
 sign_in_sign_ups = 30
@@ -47,4 +57,8 @@ verify_jwt = true
 
 [functions.maintenance]
 # Authorized inside the function against the service-role key.
+verify_jwt = false
+
+[functions.email-unsubscribe]
+# Public one-click link; authorized by an HMAC signature instead of a JWT.
 verify_jwt = false

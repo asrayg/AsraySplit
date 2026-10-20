@@ -485,6 +485,25 @@ actor InMemoryServer {
         return Array(activity.filter { $0.tripId == tripID && (beforeID == nil || $0.id < beforeID!) }.sorted { $0.id > $1.id }.prefix(limit))
     }
 
+    private(set) var reminders: [String: Date] = [:]
+
+    /// Mirrors public.request_payment_reminder; demo mode records the request but sends nothing.
+    func requestReminder(_ tripID: TripID, debtor: ParticipantID, by user: UserID) throws -> ReminderResult {
+        try gate()
+        let role = try require(user, tripID)
+        let trip = trips[tripID]!
+        guard let debtorUser = trip.activeMembers.first(where: { $0.participantId == debtor })?.userId else { return ReminderResult(queued: false, reason: "no_account") }
+        guard debtorUser != user else { throw AppError.validation(code: "invalid_parties", message: nil) }
+        let me = trip.participant(forUser: user)?.id
+        let plan = Ledger.simplify(try serverBalances(tripID).map(\.participantBalance))
+        if !plan.contains(where: { $0.from == debtor && $0.to == me }) && role < .admin { throw AppError.conflict(code: "nothing_owed", currentRevision: nil) }
+        guard plan.contains(where: { $0.from == debtor }) else { return ReminderResult(queued: false, reason: "settled") }
+        let key = "\(tripID)-\(debtorUser)-\(PostgresDate.day(clock()))"
+        guard reminders[key] == nil else { return ReminderResult(queued: false, reason: "already_reminded_today") }
+        reminders[key] = clock()
+        return ReminderResult(queued: true, reason: nil)
+    }
+
     // MARK: Receipts
 
     func registerReceipt(_ prepared: PreparedReceipt, tripID: TripID, by user: UserID) throws -> ReceiptRegistration {

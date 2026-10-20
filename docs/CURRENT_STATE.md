@@ -6,10 +6,10 @@ Updated: 2026-10-20
 
 | Suite | Result | How to run |
 | --- | --- | --- |
-| iOS unit tests (67) | pass | `xcodebuild test -scheme AsraySplit -only-testing:AsraySplitTests -destination 'platform=iOS Simulator,name=iPhone 15'` |
+| iOS unit tests (74) | pass | `xcodebuild test -scheme AsraySplit -only-testing:AsraySplitTests -destination 'platform=iOS Simulator,name=iPhone 15'` |
 | iOS UI tests (2, demo backend) | pass | `... -only-testing:AsraySplitUITests` |
-| Database: 8 migrations + 142 pgTAP assertions | pass | `scripts/db-test.sh` (local Postgres 16 + pgTAP, Supabase shim) |
-| Edge Function shared logic (12) | pass | `node --test supabase/functions/tests/` |
+| Database: 9 migrations + 153 pgTAP assertions | pass | `scripts/db-test.sh` (local Postgres 16 + pgTAP, Supabase shim) |
+| Edge Function shared logic (15) | pass | `node --test supabase/functions/tests/` |
 | Debug simulator build, Release device build (unsigned) | pass | Xcode 15.2 / Swift 5.9 |
 
 Not yet verified (no access from this machine): the real Supabase stack (`supabase start` could not pull
@@ -53,6 +53,13 @@ explainable insights with charts; CSV export (formula-injection safe) and sharea
 **M7** — device registration, preferences, per-trip mute, de-duplicated push queue, APNs dispatcher with
 quiet hours, privacy-safe payloads, dead-token cleanup; notification deep links; local daily reminders.
 
+**Rides** — Uber and Lyft don't grant ride-history API access to new apps, so rides are imported from
+receipts: an on-device ride parser (fare, fees, tolls, promotions, tip, route) feeds a "who was in the car"
+equal split; a Share Extension accepts receipt screenshots, PDFs and text from any app.
+
+**Email (Resend)** — auth emails via Resend SMTP; queued, idempotent settle-up reminder emails (daily after a
+trip ends, plus a "Remind" action for the person owed) with signed one-click unsubscribe.
+
 **M8 (partial)** — adaptive light/dark + increased-contrast palette, Dynamic Type-friendly fonts, 44pt
 targets, VoiceOver labels on custom controls, no color-only meaning for balances, original app icon,
 privacy manifest, privacy/terms/support pages (`web/`).
@@ -68,6 +75,9 @@ privacy manifest, privacy/terms/support pages (`web/`).
   populated by Xcode on the next IDE build. No translations yet.
 - **Accessibility audit** with Accessibility Inspector and largest text sizes has not been performed on
   device; VoiceOver behaviour of charts is basic.
+- **Share Extension** needs a signed build with the App Group (`group.<bundle id>`) registered in the
+  developer account; unsigned/CI builds compile it but sharing is unavailable.
+- **Resend** needs a verified domain and secrets (docs/OPERATIONS.md).
 - **Push** requires APNs keys as function secrets and the `maintenance` cron (pg_cron + pg_net + Vault).
 - **AI provider fallback:** a single provider (OpenAI) with on-device OCR as the fallback.
 - **Load testing** of RPCs/scan endpoint, Supabase advisors, TestFlight, App Store metadata/screenshots.

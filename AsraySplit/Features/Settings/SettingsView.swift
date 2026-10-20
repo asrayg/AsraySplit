@@ -49,12 +49,13 @@ struct SettingsView: View {
                         Toggle("Show amounts on lock screen", isOn: $preferences.showDetailsOnLockScreen)
                     }
                     Toggle("Daily “log today’s spending” reminder", isOn: $preferences.dailyReminder)
+                    Toggle("Email me settle-up reminders", isOn: $preferences.emailReminders)
                     if app.env.notifications.authorization == .denied {
                         Button("Notifications are off in Settings") { if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) } }
                             .font(.footnote)
                     }
                 } header: { Text("Notifications") } footer: {
-                    Text("Notifications never include amounts or merchants unless you allow lock-screen details. You can mute individual trips in trip settings.")
+                    Text("Notifications never include amounts or merchants unless you allow lock-screen details. You can mute individual trips in trip settings. Settle-up emails are sent after a trip ends, or when someone you owe taps Remind.")
                 }
                 .onChange(of: preferences) { _, value in
                     guard loadedPreferences else { return }

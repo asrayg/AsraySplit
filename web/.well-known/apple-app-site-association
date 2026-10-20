@@ -3,7 +3,7 @@
     "details": [
       {
         "appIDs": ["TEAMID.com.asray.AsraySplit", "TEAMID.com.asray.AsraySplit.staging"],
-        "components": [{ "/": "/join/*", "comment": "Trip invites" }]
+        "components": [{ "/": "/join/*", "comment": "Trip invites" }, { "/": "/trip/*", "comment": "Trip links from reminder emails" }]
       }
     ]
   },

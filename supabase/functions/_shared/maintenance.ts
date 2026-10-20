@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "jsr:@supabase/supabase-js@2";
 import { apnsJWT, buildAPNsPayload, inQuietHours, isDeadToken, type PushJob } from "./push.ts";
 import { log } from "./http.ts";
+import { renderEmail, sendWithResend, unsubscribeURL, type EmailJob } from "./email.ts";
 import { optionalEnv } from "./supabase.ts";
 
 /** Deletes storage objects whose database rows are gone (receipt/trip/account deletion). */
@@ -73,5 +74,45 @@ export async function dispatchPush(admin: SupabaseClient, limit = 100): Promise<
     delivered ? stats.sent++ : stats.failed++;
   }
   log("push_dispatch", stats);
+  return stats;
+}
+
+/** Sends due reminder emails through Resend. Skipped (not failed) when Resend isn't configured. */
+export async function dispatchEmail(admin: SupabaseClient, limit = 50): Promise<{ sent: number; failed: number; skipped: number }> {
+  const stats = { sent: 0, failed: 0, skipped: 0 };
+  const apiKey = optionalEnv("RESEND_API_KEY"), from = optionalEnv("EMAIL_FROM"), secret = optionalEnv("EMAIL_LINK_SECRET");
+  const { data, error } = await admin.rpc("claim_email_jobs", { p_limit: limit });
+  if (error || !data?.length) return stats;
+  const webBase = `https://${optionalEnv("INVITE_HOST") ?? "asraysplit.app"}`;
+  const functionsBase = `${optionalEnv("SUPABASE_URL")}/functions/v1`;
+  for (const job of data as EmailJob[]) {
+    if (!apiKey || !from || !secret) {
+      await admin.rpc("finish_email_job", { p_job_id: job.id, p_status: "skipped", p_error: "email_not_configured" });
+      stats.skipped++;
+      continue;
+    }
+    const { data: user } = await admin.auth.admin.getUserById(job.user_id);
+    const { data: prefs } = await admin.from("notification_preferences").select("email_reminders").eq("user_id", job.user_id).maybeSingle();
+    const email = user?.user?.email;
+    // Apple "Hide My Email" relay addresses work; users without an email (none today) are skipped.
+    if (!email || prefs?.email_reminders === false) {
+      await admin.rpc("finish_email_job", { p_job_id: job.id, p_status: "skipped", p_error: email ? "opted_out" : "no_email" });
+      stats.skipped++;
+      continue;
+    }
+    const unsubscribe = await unsubscribeURL(`${functionsBase}/email-unsubscribe`, job.user_id, secret);
+    const rendered = renderEmail(job, { trip: `${webBase}/trip/${job.trip_id}/balances`, unsubscribe });
+    const result = await sendWithResend(apiKey, {
+      from, to: email, ...rendered, unsubscribe, idempotencyKey: `email-job-${job.id}`, tags: { kind: job.kind },
+    });
+    if (result.ok) {
+      await admin.rpc("finish_email_job", { p_job_id: job.id, p_status: "sent", p_error: null, p_provider_id: result.id });
+      stats.sent++;
+    } else {
+      await admin.rpc("finish_email_job", { p_job_id: job.id, p_status: result.retryable ? "failed" : "skipped", p_error: result.error });
+      result.retryable ? stats.failed++ : stats.skipped++;
+    }
+  }
+  log("email_dispatch", stats);
   return stats;
 }

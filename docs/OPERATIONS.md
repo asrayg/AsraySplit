@@ -21,6 +21,25 @@ supabase secrets set OPENAI_API_KEY=... RECEIPT_MODEL=gpt-4.1-mini \
   APPLE_TEAM_ID=... APPLE_KEY_ID=... APPLE_CLIENT_ID=com.asray.AsraySplit APPLE_PRIVATE_KEY="$(cat SIWA.p8)"
 ```
 
+### Email (Resend)
+
+1. In Resend, add and verify your sending domain (SPF + DKIM DNS records; add a DMARC record too).
+2. Create an API key with "Sending access" only.
+3. Set function secrets and push auth config:
+
+```sh
+supabase secrets set RESEND_API_KEY=re_... EMAIL_FROM="Asray Split <reminders@asraysplit.app>" \
+  EMAIL_LINK_SECRET="$(openssl rand -hex 32)" INVITE_HOST=asraysplit.app
+RESEND_API_KEY=re_... supabase config push   # auth emails (magic links) go through smtp.resend.com
+supabase functions deploy email-unsubscribe maintenance
+```
+
+Reminder emails: a daily cron (`settle-up-reminders`, 17:00 UTC) queues one email every 3 days, at most 3
+per trip, to members who still owe money a day after the trip ends. The "Remind" swipe action on Balances
+queues one immediately (max once per debtor per trip per day). Emails carry a signed one-click unsubscribe
+link (`List-Unsubscribe` + `email-unsubscribe` function) and respect the in-app "Email me settle-up
+reminders" toggle. Without `RESEND_API_KEY` jobs are marked `skipped`, never retried forever.
+
 One-time Vault setup so pg_cron can call the `maintenance` function (run in the SQL editor of each project;
 these are secrets, so they are deliberately not in migrations):
 
@@ -32,7 +51,7 @@ select vault.create_secret('<service-role-key>', 'service_role_key');
 Auth settings live in `supabase/config.toml` (`supabase config push`): Apple provider, redirect
 `asraysplit://auth-callback`, anonymous sign-ins disabled, rate limits. Configure custom SMTP before launch.
 
-Host `web/` at the invite domain (`INVITE_HOST`, default `asraysplit.app`), replacing `TEAMID` in
+Host `web/` at the invite domain (rewrite `/join/*` → `/join/index.html` and `/trip/*` → `/trip/index.html`) (`INVITE_HOST`, default `asraysplit.app`), replacing `TEAMID` in
 `web/.well-known/apple-app-site-association` and serving it as `application/json` without redirects.
 
 ## Limits (tunable without deploys)
@@ -53,6 +72,8 @@ pause AI scanning instantly; the app falls back to on-device OCR.
 ## Incident playbooks
 
 - **Runaway AI cost:** `update private.app_limits set value = 0 where key = 'receipt_scans_global_per_day';`
+- **Email problem (bounces/complaints):** `update public.email_jobs set status = 'skipped' where status in ('pending','failed');`
+  then check the Resend dashboard; pause the cron with `select cron.unschedule('settle-up-reminders');`.
 - **Push storm:** `update public.push_jobs set status = 'skipped' where status in ('pending','failed');`
 - **Bad migration:** migrations are forward-only; ship a forward-repair migration. Restore from PITR backup
   for data loss.

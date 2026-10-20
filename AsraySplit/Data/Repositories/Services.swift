@@ -60,6 +60,8 @@ protocol LedgerService: Sendable {
     func fetchSuggestedSettlements(tripID: TripID) async throws -> [SuggestedTransfer]
     func fetchSummary(tripID: TripID) async throws -> TripSummary?
     func fetchActivity(tripID: TripID, beforeID: Int64?, limit: Int) async throws -> [ActivityEvent]
+    /// Emails a member who owes money a reminder (at most once a day per trip).
+    func requestPaymentReminder(tripID: TripID, debtor: ParticipantID) async throws -> ReminderResult
 }
 
 struct PreparedReceipt: Sendable {
@@ -124,6 +126,32 @@ struct NotificationPreferences: Codable, Equatable, Sendable {
     var quietHoursStart: String?
     var quietHoursEnd: String?
     var timezone = TimeZone.current.identifier
+    /// Settle-up reminder emails (sent through Resend).
+    var emailReminders = true
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let defaults = NotificationPreferences()
+        pushEnabled = try container.decodeIfPresent(Bool.self, forKey: .pushEnabled) ?? defaults.pushEnabled
+        expenseChanges = try container.decodeIfPresent(Bool.self, forKey: .expenseChanges) ?? defaults.expenseChanges
+        settlements = try container.decodeIfPresent(Bool.self, forKey: .settlements) ?? defaults.settlements
+        membership = try container.decodeIfPresent(Bool.self, forKey: .membership) ?? defaults.membership
+        receiptScans = try container.decodeIfPresent(Bool.self, forKey: .receiptScans) ?? defaults.receiptScans
+        dailyReminder = try container.decodeIfPresent(Bool.self, forKey: .dailyReminder) ?? defaults.dailyReminder
+        showDetailsOnLockScreen = try container.decodeIfPresent(Bool.self, forKey: .showDetailsOnLockScreen) ?? defaults.showDetailsOnLockScreen
+        quietHoursStart = try container.decodeIfPresent(String.self, forKey: .quietHoursStart)
+        quietHoursEnd = try container.decodeIfPresent(String.self, forKey: .quietHoursEnd)
+        timezone = try container.decodeIfPresent(String.self, forKey: .timezone) ?? defaults.timezone
+        emailReminders = try container.decodeIfPresent(Bool.self, forKey: .emailReminders) ?? defaults.emailReminders
+    }
+}
+
+struct ReminderResult: Codable, Equatable, Sendable {
+    var queued: Bool
+    /// no_account, settled, opted_out, already_reminded_today
+    var reason: String?
 }
 
 protocol AccountService: Sendable {

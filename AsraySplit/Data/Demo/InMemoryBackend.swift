@@ -106,6 +106,10 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
         try await server.activity(tripID, beforeID: beforeID, limit: limit, for: user())
     }
 
+    func requestPaymentReminder(tripID: TripID, debtor: ParticipantID) async throws -> ReminderResult {
+        try await server.requestReminder(tripID, debtor: debtor, by: user())
+    }
+
     // MARK: ReceiptService
 
     func uploadReceipt(_ receipt: PreparedReceipt, tripID: TripID) async throws -> ReceiptRegistration {

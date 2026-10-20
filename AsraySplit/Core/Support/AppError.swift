@@ -78,6 +78,7 @@ enum AppError: Error, Equatable, Sendable, Identifiable {
             case "unsettled_balance": String(localized: "You still have an unsettled balance in this trip.")
             case "owner_must_transfer": String(localized: "Transfer ownership or delete the trip before leaving.")
             case "idempotency_key_reused": String(localized: "This change conflicts with one already saved. Discard it and try again.")
+            case "nothing_owed": String(localized: "This person doesn’t owe you anything.")
             case "base_currency_locked": String(localized: "The trip currency can’t change after expenses are added.")
             default: String(localized: "This change conflicts with the latest data.")
             }
