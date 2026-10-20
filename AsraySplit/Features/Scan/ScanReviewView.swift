@@ -8,6 +8,8 @@ struct ScanReviewView: View {
     let image: UIImage?
     let duplicates: [ReceiptDuplicate]
     let fallbackReason: String?
+    /// Image that couldn't be uploaded yet (offline); queued for upload once the expense syncs.
+    var pendingUpload: PreparedReceipt? = nil
     var onSaved: () -> Void
 
     @State private var saving = false
@@ -149,7 +151,9 @@ struct ScanReviewView: View {
         saving = true
         defer { saving = false }
         do {
-            try await store.saveExpense(try model.makePayload(), in: model.trip)
+            let payload = try model.makePayload()
+            try await store.saveExpense(payload, in: model.trip)
+            if let pendingUpload { try? await store.queueReceiptUpload(pendingUpload, tripID: model.trip.id, expenseID: payload.id) }
             app.show(Toast(message: String(localized: "Receipt saved"), style: .success))
             onSaved()
         } catch {

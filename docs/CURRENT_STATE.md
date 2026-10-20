@@ -6,11 +6,11 @@ Updated: 2026-10-20
 
 | Suite | Result | How to run |
 | --- | --- | --- |
-| iOS unit tests (66) | pass | `xcodebuild test -scheme AsraySplit -only-testing:AsraySplitTests -destination 'platform=iOS Simulator,name=iPhone 15'` |
+| iOS unit tests (67) | pass | `xcodebuild test -scheme AsraySplit -only-testing:AsraySplitTests -destination 'platform=iOS Simulator,name=iPhone 15'` |
 | iOS UI tests (2, demo backend) | pass | `... -only-testing:AsraySplitUITests` |
-| Database: 7 migrations + 138 pgTAP assertions | pass | `scripts/db-test.sh` (local Postgres 16 + pgTAP, Supabase shim) |
+| Database: 8 migrations + 142 pgTAP assertions | pass | `scripts/db-test.sh` (local Postgres 16 + pgTAP, Supabase shim) |
 | Edge Function shared logic (12) | pass | `node --test supabase/functions/tests/` |
-| Debug simulator build | pass | Xcode 15.2 / Swift 5.9 |
+| Debug simulator build, Release device build (unsigned) | pass | Xcode 15.2 / Swift 5.9 |
 
 Not yet verified (no access from this machine): the real Supabase stack (`supabase start` could not pull
 Docker images — low disk), Deno type-checking of the Edge Functions, a Release archive with signing, physical
@@ -44,7 +44,8 @@ duplicate expense; undo delete.
 normalization (orientation, resize, metadata stripped), SHA-256 + perceptual hash duplicate warnings;
 background scan jobs; hardened Edge Function (membership, quotas, timeouts, retry, schema validation);
 per-field confidence highlighting, reconciliation, unassigned-item warnings; on-device OCR + manual fallback;
-receipt gallery, download/share and deletion.
+receipt gallery, download/share and deletion; receipts captured offline are queued and uploaded +
+attached (`attach_receipt`) once their expense syncs.
 
 **M6** — stored historical rates (ECB via Frankfurter, cached), manual override; server trip summary;
 explainable insights with charts; CSV export (formula-injection safe) and shareable summary.
@@ -60,8 +61,6 @@ privacy manifest, privacy/terms/support pages (`web/`).
 
 - **Legal/ops placeholders:** support email, App Store ID, Apple Team ID in `web/.well-known/…`, privacy
   policy legal review, production Supabase project + Vault secrets (see `docs/OPERATIONS.md`).
-- **Receipts captured offline** are read on-device but the image is not uploaded later; the user is told
-  the photo isn't attached. A deferred-upload queue is the next improvement.
 - **Multiple payers per expense** are supported by the ledger but not exposed in the editor (deferred per
   product spec).
 - **Recurring expense templates** are not built (duplicate covers the common case).

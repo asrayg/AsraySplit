@@ -82,7 +82,7 @@ final class ReceiptScanCoordinator {
             } catch {
                 let appError = error.asAppError
                 Log.scan.notice("Receipt upload unavailable: \(appError.title, privacy: .public)")
-                update(id) { $0.fallbackReason = appError == .offline ? String(localized: "You’re offline, so the receipt was read on this iPhone and the photo isn’t attached yet.") : appError.message }
+                update(id) { $0.fallbackReason = appError == .offline ? String(localized: "You’re offline, so the receipt was read on this iPhone. The photo will be attached when you’re back online.") : appError.message }
             }
 
             if useAI, jobs[id]?.receipt != nil {

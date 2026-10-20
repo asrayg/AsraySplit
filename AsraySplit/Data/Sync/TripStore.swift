@@ -81,6 +81,7 @@ final class TripStore {
         isRefreshing = true
         defer { isRefreshing = false }
         await sync.drain()
+        await uploadPendingReceipts()
         do {
             try await sync.refreshAll()
             lastSyncError = nil
@@ -303,6 +304,55 @@ final class TripStore {
     private func afterLocalWrite() async {
         await reload()
         Task { [sync] in await sync.drain() }
+    }
+
+    // MARK: Receipts captured offline
+
+    /// Keeps a receipt image to upload and attach once `expenseID` reaches the server.
+    func queueReceiptUpload(_ prepared: PreparedReceipt, tripID: TripID, expenseID: ExpenseID) async throws {
+        let pending = PendingReceiptUpload(prepared: prepared, tripId: tripID, expenseId: expenseID)
+        try FileManager.default.createDirectory(at: PendingReceiptUpload.directory, withIntermediateDirectories: true)
+        try prepared.data.write(to: pending.fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        var queue = (try? await local.value([PendingReceiptUpload].self, forKey: PendingReceiptUpload.storeKey)) ?? []
+        queue.removeAll { $0.receiptId == pending.receiptId }
+        queue.append(pending)
+        try await local.setValue(queue, forKey: PendingReceiptUpload.storeKey)
+    }
+
+    private(set) var pendingReceiptCount = 0
+
+    /// Uploads queued offline receipts whose expenses have synced, then attaches them.
+    func uploadPendingReceipts() async {
+        let queue = (try? await local.value([PendingReceiptUpload].self, forKey: PendingReceiptUpload.storeKey)) ?? []
+        guard !queue.isEmpty, await network.isOnline else { pendingReceiptCount = queue.count; return }
+        var remaining: [PendingReceiptUpload] = []
+        for (index, original) in queue.enumerated() {
+            var item = original
+            // The expense must reach the server first.
+            if ((try? await local.operation(forEntity: item.expenseId)) ?? nil) != nil {
+                remaining.append(item)
+                continue
+            }
+            do {
+                _ = try await backend.receipts.uploadReceipt(try item.prepared(), tripID: item.tripId)
+                let expense = try await backend.receipts.attachReceipt(item.receiptId, to: item.expenseId)
+                try await local.saveExpense(expense, state: .synced)
+                try? FileManager.default.removeItem(at: item.fileURL)
+            } catch {
+                let appError = error.asAppError
+                item.attempts += 1
+                if appError == .offline {
+                    remaining.append(item)
+                    remaining.append(contentsOf: queue[(index + 1)...])
+                    break
+                }
+                // Permanent failures (trip deleted, file missing) are dropped after a few attempts.
+                if appError.isTransient || item.attempts < 5 { remaining.append(item) }
+                else { try? FileManager.default.removeItem(at: item.fileURL) }
+            }
+        }
+        pendingReceiptCount = remaining.count
+        try? await local.setValue(remaining, forKey: PendingReceiptUpload.storeKey)
     }
 
     // MARK: Problem resolution

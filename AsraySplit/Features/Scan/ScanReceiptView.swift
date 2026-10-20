@@ -161,7 +161,8 @@ private struct ReviewHost: View {
     }
 
     var body: some View {
-        ScanReviewView(model: model, image: job.image, duplicates: job.duplicates, fallbackReason: job.fallbackReason, onSaved: onSaved)
+        ScanReviewView(model: model, image: job.image, duplicates: job.duplicates, fallbackReason: job.fallbackReason,
+                       pendingUpload: job.receipt == nil ? job.prepared : nil, onSaved: onSaved)
     }
 }
 

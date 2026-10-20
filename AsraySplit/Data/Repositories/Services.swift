@@ -106,6 +106,8 @@ protocol ReceiptService: Sendable {
     /// Runs server-side AI extraction. The result is untrusted until validated by `ScanResultValidator`.
     func scanReceipt(id: UUID) async throws -> ReceiptScanResult
     func fetchReceipts(tripID: TripID) async throws -> [Receipt]
+    /// Links an uploaded receipt to an existing expense (used for receipts captured offline).
+    func attachReceipt(_ receiptID: UUID, to expenseID: ExpenseID) async throws -> Expense
     func signedURL(for receipt: Receipt) async throws -> URL
     func downloadReceipt(_ receipt: Receipt) async throws -> Data
     func deleteReceipt(_ receipt: Receipt) async throws

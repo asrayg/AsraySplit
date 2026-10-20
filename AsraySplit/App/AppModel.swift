@@ -108,6 +108,9 @@ final class AppModel {
             phase = (profile?.onboardedAt == nil && !isDemo) ? .needsProfile : .ready
             await env.store.start()
             await env.notifications.refreshAuthorization()
+            if let preferences = try? await env.backend.account.fetchNotificationPreferences() {
+                await env.notifications.scheduleDailyReminders(for: env.store.activeTrips, enabled: preferences.dailyReminder)
+            }
             if let link = pendingLink { pendingLink = nil; open(link) }
         }
     }

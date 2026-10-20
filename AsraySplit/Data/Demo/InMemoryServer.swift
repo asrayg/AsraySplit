@@ -502,6 +502,18 @@ actor InMemoryServer {
     }
     private var receiptHashes: [UUID: String] = [:]
 
+    func attachReceipt(_ receiptID: UUID, to expenseID: ExpenseID, by user: UserID) throws -> Expense {
+        try gate()
+        guard let receipt = receipts[receiptID], var expense = expenses[expenseID], receipt.tripId == expense.tripId else { throw AppError.notFound }
+        try require(user, receipt.tripId, allowArchived: false)
+        receipts[receiptID]?.expenseId = expenseID
+        if !expense.receiptIds.contains(receiptID) { expense.receiptIds.append(receiptID) }
+        expense.updatedAt = clock()
+        expenses[expenseID] = expense
+        notify(expense.tripId)
+        return expense
+    }
+
     func receipts(_ tripID: TripID, for user: UserID) throws -> [Receipt] {
         try gate()
         try require(user, tripID)

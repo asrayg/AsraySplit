@@ -118,6 +118,7 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     func fetchReceipts(tripID: TripID) async throws -> [Receipt] { try await server.receipts(tripID, for: user()) }
+    func attachReceipt(_ receiptID: UUID, to expenseID: ExpenseID) async throws -> Expense { try await server.attachReceipt(receiptID, to: expenseID, by: user()) }
     func signedURL(for receipt: Receipt) async throws -> URL {
         let data = try await server.receiptBytes(receipt.id, for: user())
         let url = FileManager.default.temporaryDirectory.appending(path: "\(receipt.id.uuidString).\(receipt.objectPath.split(separator: ".").last ?? "jpg")")

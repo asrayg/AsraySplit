@@ -251,4 +251,25 @@ final class SyncEngineTests: XCTestCase {
         let balances = await b.store.balances(for: b.store.trip(trip.id)!)
         XCTAssertEqual(balances.balances.map(\.netMinor).reduce(0, +), 0)
     }
+
+    func testReceiptCapturedOfflineIsUploadedAndAttachedAfterSync() async throws {
+        let server = InMemoryServer()
+        let (a, _, trip) = try await sharedTrip(server: server)
+        await a.setOnline(false)
+        let payload = try a.equalPayload(trip, title: "Market", amount: 2400)
+        try await a.store.saveExpense(payload, in: trip)
+        let prepared = PreparedReceipt(id: UUID(), data: Data([0xFF, 0xD8, 0xFF, 0x00]), mimeType: "image/jpeg", fileExtension: "jpg",
+                                       width: 10, height: 10, sha256: String(repeating: "a", count: 64), perceptualHash: nil)
+        try await a.store.queueReceiptUpload(prepared, tripID: trip.id, expenseID: payload.id)
+        await a.store.uploadPendingReceipts()
+        XCTAssertEqual(a.store.pendingReceiptCount, 1, "nothing uploads while offline")
+
+        await a.setOnline(true)
+        await a.store.syncNow()
+        XCTAssertEqual(a.store.pendingReceiptCount, 0)
+        let attached = await server.expenses[payload.id]?.receiptIds
+        XCTAssertEqual(attached, [prepared.id])
+        let local = await a.store.expense(payload.id)
+        XCTAssertEqual(local?.expense.receiptIds, [prepared.id])
+    }
 }

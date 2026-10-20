@@ -292,6 +292,10 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
 
     func fetchReceipts(tripID: TripID) async throws -> [Receipt] { try await rpc("list_receipts", ["p_trip_id": Self.json(tripID)]) }
 
+    func attachReceipt(_ receiptID: UUID, to expenseID: ExpenseID) async throws -> Expense {
+        try await rpc("attach_receipt", ["p_receipt_id": Self.json(receiptID), "p_expense_id": Self.json(expenseID)])
+    }
+
     /// Short-lived signed URL (5 minutes) for viewing a private receipt.
     func signedURL(for receipt: Receipt) async throws -> URL {
         try await call { try await client.storage.from(Self.bucket).createSignedURL(path: receipt.objectPath, expiresIn: 300) }
