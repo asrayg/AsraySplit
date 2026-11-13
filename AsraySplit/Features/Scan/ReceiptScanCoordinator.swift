@@ -4,8 +4,9 @@ import UIKit
 import UniformTypeIdentifiers
 
 /// Owns receipt scan jobs at app level so a scan keeps running when the user leaves the screen.
-/// Pipeline: normalize locally → upload privately → AI extraction (server) → validate → review.
-/// Any AI failure falls back to on-device OCR; the manual path always remains available.
+/// Pipeline: normalize locally → upload privately → on-device OCR (Vision) → structure with Apple's on-device
+/// model, or ask a nearby Apple Intelligence iPhone → validate → review. Falls back to the regex parser.
+/// No paid AI: the `scan-receipt` Edge Function is not called.
 @MainActor
 @Observable
 final class ReceiptScanCoordinator {
@@ -31,9 +32,11 @@ final class ReceiptScanCoordinator {
 
     private(set) var jobs: [UUID: Job] = [:]
     private let receipts: any ReceiptService
+    private let nearby: NearbyMesh?
 
-    init(receipts: any ReceiptService) {
+    init(receipts: any ReceiptService, nearby: NearbyMesh? = nil) {
         self.receipts = receipts
+        self.nearby = nearby
     }
 
     var unfinishedJobs: [Job] { jobs.values.sorted { $0.startedAt > $1.startedAt } }
@@ -112,17 +115,15 @@ final class ReceiptScanCoordinator {
                 return
             }
 
-            if useAI, jobs[id]?.receipt != nil {
-                do {
-                    let result = try await receipts.scanReceipt(id: prepared.id)
+            if useAI, !lines.isEmpty {
+                if OnDeviceReceiptAI.isAvailable, let result = await OnDeviceReceiptAI.structure(lines: lines, currency: trip.baseCurrency) {
                     update(id) { $0.result = result; $0.phase = .ready }
                     return
-                } catch {
-                    let appError = error.asAppError
-                    Log.scan.notice("AI scan unavailable, using on-device OCR: \(appError.title, privacy: .public)")
-                    if appError != .notConfigured {
-                        update(id) { $0.fallbackReason = appError.message }
-                    }
+                }
+                if let nearby, let helper = nearby.peers.first(where: \.canParse),
+                   let result = await nearby.requestParse(lines: lines, currency: trip.baseCurrency) {
+                    update(id) { $0.result = result; $0.phase = .ready; $0.fallbackReason = String(localized: "Read by \(helper.name)’s iPhone nearby.") }
+                    return
                 }
             }
 

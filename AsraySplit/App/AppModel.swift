@@ -10,6 +10,8 @@ enum Route: Hashable {
     case tripSettings(TripID)
     case activity(TripID)
     case receipts(TripID)
+    case chat(TripID)
+    case photos(TripID)
 }
 
 enum SheetRoute: Identifiable, Equatable {
@@ -62,6 +64,8 @@ final class AppModel {
     var store: TripStore { env.store }
     private var authTask: Task<Void, Never>?
     private var pendingLink: DeepLink?
+    /// Set while a crew sign-in is in flight so the profile is filled without the setup form.
+    private var pendingCrew: CrewMember?
 
     init(env: AppEnvironment) {
         self.env = env
@@ -93,7 +97,8 @@ final class AppModel {
         case .unknown:
             phase = .launching
         case .signedOut:
-            if previous != nil { await env.store.wipeLocalData() }
+            if previous != nil { await env.store.wipeLocalData(); env.chat.wipe(); env.photos.wipe() }
+            env.nearby.stop()
             profile = nil
             env.store.currentUserID = nil
             phase = .signedOut
@@ -110,6 +115,10 @@ final class AppModel {
                 Log.auth.error("Profile fetch failed: \(error.asAppError.title, privacy: .public)")
             }
             phase = (profile?.onboardedAt == nil && !isDemo) ? .needsProfile : .ready
+            if phase == .needsProfile, let crew = pendingCrew {
+                pendingCrew = nil
+                await completeProfile(name: crew.name, emoji: crew.emoji, currency: .usd)
+            }
             await env.store.start()
             await env.notifications.refreshAuthorization()
             if let preferences = try? await env.backend.account.fetchNotificationPreferences() {
@@ -130,6 +139,56 @@ final class AppModel {
         isDemo = true
         if seeded { await DemoData.seed(demo.server) }
         await demo.signInDemo()
+    }
+
+    // MARK: Crew trip
+
+    private(set) var crewJoinError: String?
+
+    /// Links this account to its person on the built-in Puerto Rico trip, then syncs. Idempotent.
+    func joinCrewTrip() async {
+        guard phase == .ready, let name = UserDefaults.standard.string(forKey: Self.crewNameKey) ?? profile?.displayName else { return }
+        crewJoinError = nil
+        do {
+            _ = try await env.backend.trips.joinCrewTrip(name: name)
+            await store.syncNow()
+        } catch {
+            // Offline with a cached trip is fine; only surface the error when there's nothing to show.
+            if store.trip(CrewMember.tripID) == nil { crewJoinError = error.asAppError.message }
+        }
+    }
+
+    // MARK: Nearby phones
+
+    /// Starts Bluetooth/peer Wi-Fi once signed in. Phones with Apple Intelligence offer to read receipts for others.
+    func startNearby() {
+        guard phase == .ready, let userID = authState.userID else { return }
+        let name = profile?.displayName ?? "Phone"
+        env.chat.userID = userID
+        env.chat.displayName = name
+        env.photos.userID = userID
+        env.photos.displayName = name
+        env.photos.knownTrips = { [weak self] in Set(self?.store.trips.map(\.trip.id) ?? []) }
+        env.photos.scheduleOvernightSync()
+        guard !ProcessInfo.processInfo.arguments.contains("-uiTesting") else { return }
+        if OnDeviceReceiptAI.isAvailable {
+            env.nearby.parseHandler = { lines, currency in await OnDeviceReceiptAI.structure(lines: lines, currency: currency) }
+        }
+        if env.nearby.isRunning { env.nearby.stop() }   // restart so peers see the current name
+        env.nearby.start(displayName: name)
+    }
+
+    // MARK: Crew sign-in
+
+    static let crewNameKey = "crew.name"
+
+    func signIn(as crew: CrewMember) async {
+        UserDefaults.standard.set(crew.name, forKey: Self.crewNameKey)
+        pendingCrew = crew
+        do { try await env.backend.auth.signInAnonymously() } catch {
+            pendingCrew = nil
+            presentedError = error.asAppError
+        }
     }
 
     // MARK: Profile

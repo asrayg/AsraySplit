@@ -13,8 +13,6 @@ struct SettingsView: View {
     @State private var loadedPreferences = false
     @State private var exportURL: URL?
     @State private var exporting = false
-    @State private var confirmSignOut = false
-    @State private var unsynced = 0
     @State private var confirmDelete = false
     @State private var deleteText = ""
     @State private var deleting = false
@@ -81,8 +79,6 @@ struct SettingsView: View {
                 }
 
                 Section {
-                    Button("Sign out") { Task { unsynced = await store.unsyncedCount(); confirmSignOut = true } }
-                        .accessibilityIdentifier("signOut")
                     Button("Delete account", role: .destructive) { confirmDelete = true }
                 } footer: {
                     Text("Deleting your account removes your profile, devices, receipt images you uploaded and trips only you belong to. Shared trips are handed to another member and your name is replaced with “Former traveler”.")
@@ -97,13 +93,6 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { saveProfile(); dismiss() } } }
             .task { await load() }
-            .confirmationDialog("Sign out?", isPresented: $confirmSignOut, titleVisibility: .visible) {
-                Button(unsynced > 0 ? "Sign out and discard \(unsynced) change(s)" : "Sign out", role: .destructive) {
-                    Task { dismiss(); await app.signOut() }
-                }
-            } message: {
-                Text(unsynced > 0 ? "\(unsynced) change(s) haven’t synced yet and will be lost. Connect to the internet first to keep them." : "Trip data cached on this iPhone will be removed.")
-            }
             .sheet(isPresented: $confirmDelete) { deleteSheet }
         }
     }

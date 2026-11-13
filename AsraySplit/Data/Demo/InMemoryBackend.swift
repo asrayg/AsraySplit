@@ -2,7 +2,7 @@ import Foundation
 
 /// Client-side adapter that talks to an `InMemoryServer` as one signed-in user. Two adapters over the
 /// same server behave like two devices/users of one Supabase project.
-final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, @unchecked Sendable {
+final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, @unchecked Sendable {
     let server: InMemoryServer
     private let lock = NSLock()
     private var state: AuthState
@@ -17,7 +17,7 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     var backend: Backend {
-        Backend(kind: .demo, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self)
+        Backend(kind: .demo, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self)
     }
 
     private func user() throws -> UserID {
@@ -50,6 +50,7 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
     /// Demo sign-in: any credential signs in the local demo user.
     func signInWithApple(idToken: String, nonce: String, fullName: PersonNameComponents?) async throws { await signInDemo() }
     func sendMagicLink(to email: String) async throws { await signInDemo() }
+    func signInAnonymously() async throws { await signInDemo() }
     func handleAuthCallback(_ url: URL) async throws -> Bool { false }
     func signOut() async throws { setState(.signedOut) }
 
@@ -172,5 +173,66 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
         }
         continuation.onTermination = { _ in task.cancel() }
         return stream
+    }
+}
+
+// MARK: ChatService (demo: kept in memory on this device)
+
+private actor DemoChatLog {
+    static let shared = DemoChatLog()
+    var messages: [UUID: ChatMessage] = [:]
+    func upsert(_ message: ChatMessage) -> ChatMessage {
+        if let existing = messages[message.id] { return existing }
+        var stored = message
+        stored.createdAt = Date()
+        messages[message.id] = stored
+        return stored
+    }
+    func list(_ trip: TripID) -> [ChatMessage] { messages.values.filter { $0.tripId == trip }.sorted { $0.sentAt < $1.sentAt } }
+}
+
+extension InMemoryBackend {
+    func listMessages(tripID: TripID) async throws -> [ChatMessage] { await DemoChatLog.shared.list(tripID) }
+    func postMessage(_ message: ChatMessage) async throws -> ChatMessage { await DemoChatLog.shared.upsert(message) }
+    func messageChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
+}
+
+// MARK: PhotoService (demo: kept in memory on this device)
+
+private actor DemoPhotoLibrary {
+    static let shared = DemoPhotoLibrary()
+    var photos: [UUID: (TripPhoto, Data)] = [:]
+    func put(_ photo: TripPhoto, _ data: Data) -> TripPhoto {
+        if let existing = photos[photo.id] { return existing.0 }
+        var stored = photo
+        stored.createdAt = Date()
+        stored.byteSize = data.count
+        photos[photo.id] = (stored, data)
+        return stored
+    }
+    func list(_ trip: TripID) -> [TripPhoto] { photos.values.map(\.0).filter { $0.tripId == trip } }
+    func data(_ id: UUID) -> Data? { photos[id]?.1 }
+}
+
+extension InMemoryBackend {
+    func listPhotos(tripID: TripID) async throws -> [TripPhoto] { await DemoPhotoLibrary.shared.list(tripID) }
+    func uploadPhoto(_ photo: TripPhoto, data: Data) async throws -> TripPhoto { await DemoPhotoLibrary.shared.put(photo, data) }
+    func downloadPhoto(_ photo: TripPhoto) async throws -> Data {
+        guard let data = await DemoPhotoLibrary.shared.data(photo.id) else { throw AppError.notFound }
+        return data
+    }
+}
+
+extension InMemoryBackend {
+    /// Demo: create the crew trip locally if it doesn't exist yet.
+    func joinCrewTrip(name: String) async throws -> Trip {
+        if let trip = try? await fetchTrip(CrewMember.tripID) { return trip }
+        var draft = TripDraft()
+        draft.id = CrewMember.tripID
+        draft.name = "Puerto Rico Thanksgiving"
+        draft.emoji = "🇵🇷"
+        draft.baseCurrency = .usd
+        draft.guestNames = CrewMember.all.map(\.name).filter { $0 != name }
+        return try await createTrip(draft)
     }
 }

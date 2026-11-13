@@ -2,7 +2,7 @@
 
 ## Metadata
 
-- **Name:** Asray Split · **Subtitle:** Split trip costs, receipt by receipt
+- **Name:** AsraySplit · **Subtitle:** Split trip costs, receipt by receipt
 - **Category:** Finance (secondary: Travel) · **Age rating:** 4+ (no objectionable content; no gambling; no UGC sharing beyond invited trip members)
 - **Keywords:** split,expenses,travel,trip,group,receipt,bill,share,costs,settle,friends,vacation
 - **Description (first lines):** Split trip costs fairly with friends. Scan a receipt and tap who had what, or add an

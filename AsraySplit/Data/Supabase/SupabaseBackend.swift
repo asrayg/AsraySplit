@@ -3,7 +3,7 @@ import Supabase
 
 /// Production backend: Supabase Auth (Keychain-persisted sessions with automatic refresh),
 /// PostgREST RPCs, Storage, Edge Functions and Realtime.
-final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, @unchecked Sendable {
+final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, @unchecked Sendable {
     let client: SupabaseClient
     private let redirectURL = URL(string: "asraysplit://auth-callback")!
 
@@ -18,7 +18,7 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     var backend: Backend {
-        Backend(kind: .supabase, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self)
+        Backend(kind: .supabase, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self)
     }
 
     // MARK: Error mapping
@@ -85,9 +85,12 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
 
     // MARK: AuthService
 
+    /// Offline-first: a stored session counts as signed in even if its access token expired; the SDK refreshes
+    /// it when the network returns. Only an explicit sign-out/deletion signs the user out.
     func currentState() async -> AuthState {
-        guard let session = try? await client.auth.session else { return .signedOut }
-        return .signedIn(session.user.id, email: session.user.email)
+        if let session = try? await client.auth.session { return .signedIn(session.user.id, email: session.user.email) }
+        if let stored = client.auth.currentSession { return .signedIn(stored.user.id, email: stored.user.email) }
+        return .signedOut
     }
 
     func stateChanges() -> AsyncStream<AuthState> {
@@ -97,7 +100,8 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
                     switch event {
                     case .signedOut, .userDeleted: continuation.yield(.signedOut)
                     default:
-                        if let session, !session.isExpired { continuation.yield(.signedIn(session.user.id, email: session.user.email)) }
+                        // Keep expired sessions on launch so the app opens offline; refresh happens when online.
+                        if let session = session ?? client.auth.currentSession { continuation.yield(.signedIn(session.user.id, email: session.user.email)) }
                         else if event == .initialSession { continuation.yield(.signedOut) }
                     }
                 }
@@ -119,6 +123,10 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
 
     func sendMagicLink(to email: String) async throws {
         try await call { try await client.auth.signInWithOTP(email: email, redirectTo: redirectURL, shouldCreateUser: true) }
+    }
+
+    func signInAnonymously() async throws {
+        try await call { _ = try await client.auth.signInAnonymously() }
     }
 
     func handleAuthCallback(_ url: URL) async throws -> Bool {
@@ -189,6 +197,10 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     func previewInvite(secret: String) async throws -> InvitePreview { try await inviteRPC("preview_invite", ["p_secret": .string(secret)]) }
+
+    func joinCrewTrip(name: String) async throws -> Trip {
+        try await rpc("join_crew_trip", ["p_name": .string(name)])
+    }
 
     func acceptInvite(secret: String, claimParticipantID: ParticipantID?) async throws -> Trip {
         try await inviteRPC("accept_invite", ["p_secret": .string(secret), "p_claim_participant_id": Self.json(claimParticipantID)])
@@ -419,4 +431,75 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
 
 private extension String {
     var nilIfEmpty: String? { isEmpty ? nil : self }
+}
+
+// MARK: ChatService
+
+extension SupabaseBackend {
+    func listMessages(tripID: TripID) async throws -> [ChatMessage] {
+        try await chatRPC("list_trip_messages", ["p_trip_id": .string(tripID.sortKey)])
+    }
+
+    func postMessage(_ message: ChatMessage) async throws -> ChatMessage {
+        try await chatRPC("post_trip_message", [
+            "p_trip_id": .string(message.tripId.sortKey),
+            "p_id": .string(message.id.uuidString.lowercased()),
+            "p_body": .string(message.body),
+            "p_sent_at": .string(PostgresDate.timestamp(message.sentAt)),
+        ])
+    }
+
+    func messageChanges(tripID: TripID) -> AsyncStream<Void> {
+        AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
+            let channel = client.channel("chat:\(tripID.sortKey)")
+            let stream = channel.postgresChange(AnyAction.self, schema: "public", table: "trip_messages", filter: .eq("trip_id", value: tripID.sortKey))
+            let task = Task {
+                await channel.subscribe()
+                for await _ in stream { continuation.yield(()) }
+            }
+            continuation.onTermination = { [client] _ in
+                task.cancel()
+                Task { await client.removeChannel(channel) }
+            }
+        }
+    }
+
+    private func chatRPC<T: Decodable>(_ name: String, _ params: [String: JSONValue]) async throws -> T {
+        do {
+            let data = try await client.rpc(name, params: params).execute().data
+            return try JSONCoding.decoder.decode(T.self, from: data)
+        } catch { throw Self.map(error) }
+    }
+}
+
+// MARK: PhotoService
+
+extension SupabaseBackend {
+    private static let photoBucket = "trip-photos"
+
+    func listPhotos(tripID: TripID) async throws -> [TripPhoto] {
+        try await chatRPC("list_trip_photos", ["p_trip_id": .string(tripID.sortKey)])
+    }
+
+    func uploadPhoto(_ photo: TripPhoto, data: Data) async throws -> TripPhoto {
+        do {
+            try await client.storage.from(Self.photoBucket)
+                .upload(photo.objectPath, data: data, options: FileOptions(cacheControl: "86400", contentType: "image/jpeg", upsert: false))
+        } catch let error as StorageError where error.statusCode == "409" || error.message.localizedCaseInsensitiveContains("exists") {
+            // Retried upload: the object is already there; registration below is idempotent.
+        } catch {
+            throw Self.map(error)
+        }
+        var params: [String: JSONValue] = [
+            "p_trip_id": .string(photo.tripId.sortKey), "p_id": .string(photo.id.sortKey),
+            "p_width": .integer(Int64(photo.width)), "p_height": .integer(Int64(photo.height)),
+            "p_byte_size": .integer(Int64(data.count)),
+        ]
+        if let takenAt = photo.takenAt { params["p_taken_at"] = .string(PostgresDate.timestamp(takenAt)) }
+        return try await chatRPC("register_trip_photo", params)
+    }
+
+    func downloadPhoto(_ photo: TripPhoto) async throws -> Data {
+        do { return try await client.storage.from(Self.photoBucket).download(path: photo.objectPath) } catch { throw Self.map(error) }
+    }
 }

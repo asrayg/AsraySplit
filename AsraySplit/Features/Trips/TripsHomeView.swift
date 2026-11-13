@@ -26,6 +26,18 @@ struct TripsHomeView: View {
                 }
             }
 
+            Section {
+                NavigationLink {
+                    TripGuideView(guide: .puertoRico)
+                } label: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(TripGuide.puertoRico.title).font(.headline)
+                        Text("Itinerary · food · packing · \(TripGuide.puertoRico.dates)").font(.caption).foregroundStyle(.secondary)
+                    }
+                }
+                .accessibilityIdentifier("tripGuide")
+            }
+
             if store.trips.isEmpty {
                 Section {
                     VStack(spacing: 14) {

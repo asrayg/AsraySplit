@@ -1,15 +1,11 @@
-import AuthenticationServices
-import CryptoKit
 import SwiftUI
 
+/// "Who are you?" — the crew build has no email or password. Tapping a name creates an anonymous
+/// Supabase account on this iPhone and names it; row-level security still scopes data to trip members.
 @MainActor
 struct SignInView: View {
     @Environment(AppModel.self) private var app
-    @State private var email = ""
-    @State private var sentTo: String?
-    @State private var isWorking = false
-    @State private var nonce = ""
-    @State private var showEmail = false
+    @State private var working: CrewMember?
 
     var body: some View {
         ScrollView {
@@ -17,61 +13,35 @@ struct SignInView: View {
                 Spacer(minLength: 40)
                 AppMark(size: 88)
                 VStack(spacing: 10) {
-                    Text("Asray Split").font(.largeTitle.bold())
-                    Text("Split trip costs fairly, keep every receipt, and settle up with the fewest payments.")
+                    Text("Who are you?").font(.largeTitle.bold())
+                    Text("Pick your name. This iPhone stays signed in as you — no email or password.")
                         .font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }
-                VStack(alignment: .leading, spacing: 14) {
-                    feature("receipt", "Scan receipts and assign items to people")
-                    feature("wifi.slash", "Add expenses offline — they sync when you’re back")
-                    feature("arrow.left.arrow.right", "See who owes whom, simplified")
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-
-                VStack(spacing: 12) {
-                    if app.env.backend.kind == .supabase {
-                        SignInWithAppleButton(.continue) { request in
-                            nonce = Self.randomNonce()
-                            request.requestedScopes = [.fullName, .email]
-                            request.nonce = Self.sha256(nonce)
-                        } onCompletion: { result in
-                            Task { await handleApple(result) }
-                        }
-                        .signInWithAppleButtonStyle(.whiteOutline)
-                        .frame(height: 50)
-                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-
-                        if let sentTo {
-                            Label("Check \(sentTo) for a sign-in link.", systemImage: "envelope.badge")
-                                .font(.subheadline).foregroundStyle(Color.brand)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        } else if showEmail {
-                            TextField("Email address", text: $email)
-                                .textContentType(.emailAddress).keyboardType(.emailAddress)
-                                .textInputAutocapitalization(.never).autocorrectionDisabled()
-                                .padding(14).background(Color.surface, in: RoundedRectangle(cornerRadius: 14))
-                            Button { Task { await sendLink() } } label: {
-                                if isWorking { ProgressView() } else { Text("Email me a sign-in link") }
+                if app.env.backend.kind == .supabase {
+                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
+                        ForEach(CrewMember.all) { member in
+                            Button { Task { await pick(member) } } label: {
+                                VStack(spacing: 8) {
+                                    if working == member { ProgressView().frame(height: 44) }
+                                    else { Text(member.emoji).font(.system(size: 40)) }
+                                    Text(member.name).font(.headline)
+                                }
+                                .frame(maxWidth: .infinity, minHeight: 110)
+                                .background(Color.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
                             }
-                            .buttonStyle(PrimaryButtonStyle())
-                            .disabled(!email.contains("@") || isWorking)
-                        } else {
-                            Button("Continue with email") { showEmail = true }.buttonStyle(SecondaryButtonStyle())
+                            .buttonStyle(.plain)
+                            .disabled(working != nil)
+                            .accessibilityIdentifier("crew-\(member.name)")
                         }
                     }
-                    if app.env.demoBackend != nil {
-                        Button {
-                            Task { await app.enterDemoMode() }
-                        } label: {
-                            Text("Explore the demo trip")
-                        }
+                    Text("Pick your name once with internet. After that the app works offline — anything you add syncs when you’re back online. Reinstalling? Just pick your name again.")
+                        .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                }
+                if app.env.demoBackend != nil {
+                    Button { Task { await app.enterDemoMode() } } label: { Text("Explore the demo trip") }
                         .buttonStyle(app.env.backend.kind == .demo ? AnyButtonStyle(PrimaryButtonStyle()) : AnyButtonStyle(SecondaryButtonStyle()))
                         .accessibilityIdentifier("demoButton")
-                        Text("Demo data stays on this iPhone and is never uploaded.")
-                            .font(.footnote).foregroundStyle(.secondary)
-                    }
                 }
-                LegalLinks()
             }
             .padding(24)
             .frame(maxWidth: 520)
@@ -80,45 +50,10 @@ struct SignInView: View {
         .background(Color.canvas.ignoresSafeArea())
     }
 
-    private func feature(_ icon: String, _ text: LocalizedStringKey) -> some View {
-        Label { Text(text).font(.subheadline) } icon: { Image(systemName: icon).foregroundStyle(Color.brand).frame(width: 28) }
-    }
-
-    private func sendLink() async {
-        isWorking = true
-        defer { isWorking = false }
-        let address = email.trimmingCharacters(in: .whitespacesAndNewlines)
-        do {
-            try await app.env.backend.auth.sendMagicLink(to: address)
-            sentTo = address
-        } catch {
-            app.report(error)
-        }
-    }
-
-    private func handleApple(_ result: Result<ASAuthorization, Error>) async {
-        switch result {
-        case .success(let authorization):
-            guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
-                  let tokenData = credential.identityToken, let token = String(data: tokenData, encoding: .utf8) else {
-                app.presentedError = .unexpected(String(localized: "Apple didn’t return a sign-in token."))
-                return
-            }
-            do { try await app.env.backend.auth.signInWithApple(idToken: token, nonce: nonce, fullName: credential.fullName) }
-            catch { app.report(error) }
-        case .failure(let error):
-            if (error as? ASAuthorizationError)?.code != .canceled { app.report(error) }
-        }
-    }
-
-    static func randomNonce(length: Int = 32) -> String {
-        let charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
-        var generator = SystemRandomNumberGenerator()
-        return String((0..<length).map { _ in charset.randomElement(using: &generator)! })
-    }
-
-    static func sha256(_ input: String) -> String {
-        SHA256.hash(data: Data(input.utf8)).map { String(format: "%02x", $0) }.joined()
+    private func pick(_ member: CrewMember) async {
+        working = member
+        await app.signIn(as: member)
+        working = nil
     }
 }
 

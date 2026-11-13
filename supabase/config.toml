@@ -14,8 +14,8 @@ additional_redirect_urls = ["asraysplit://auth-callback"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 enable_signup = true
-# Guest/anonymous accounts are not used; every account can be deleted in-app.
-enable_anonymous_sign_ins = false
+# The TestFlight crew build signs in anonymously behind a "Who are you?" picker (no email/password).
+enable_anonymous_sign_ins = true
 
 [auth.email]
 enable_signup = true

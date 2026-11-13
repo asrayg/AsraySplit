@@ -2,34 +2,88 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>CFBundleDevelopmentRegion</key><string>en</string>
-  <key>CFBundleDisplayName</key><string>$(APP_DISPLAY_NAME)</string>
-  <key>CFBundleIdentifier</key><string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
-  <key>CFBundleExecutable</key><string>$(EXECUTABLE_NAME)</string>
-  <key>CFBundleName</key><string>$(PRODUCT_NAME)</string>
-  <key>CFBundlePackageType</key><string>APPL</string>
-  <key>CFBundleShortVersionString</key><string>$(MARKETING_VERSION)</string>
-  <key>CFBundleVersion</key><string>$(CURRENT_PROJECT_VERSION)</string>
-  <key>CFBundleURLTypes</key>
-  <array>
-    <dict>
-      <key>CFBundleURLName</key><string>com.asray.split</string>
-      <key>CFBundleURLSchemes</key><array><string>asraysplit</string></array>
-    </dict>
-  </array>
-  <key>LSApplicationQueriesSchemes</key><array><string>venmo</string></array>
-  <key>ITSAppUsesNonExemptEncryption</key><false/>
-  <key>UILaunchScreen</key><dict><key>UIColorName</key><string>LaunchBackground</string></dict>
-  <key>UIApplicationSceneManifest</key><dict><key>UIApplicationSupportsMultipleScenes</key><false/></dict>
-  <key>UIBackgroundModes</key><array><string>remote-notification</string></array>
-  <key>NSCameraUsageDescription</key><string>Scan receipts so you can split them item by item.</string>
-  <key>NSPhotoLibraryUsageDescription</key><string>Choose receipt photos to split.</string>
-  <key>UISupportedInterfaceOrientations</key><array><string>UIInterfaceOrientationPortrait</string></array>
-  <key>SupabaseHost</key><string>$(SUPABASE_HOST)</string>
-  <key>SupabasePublishableKey</key><string>$(SUPABASE_PUBLISHABLE_KEY)</string>
-  <key>InviteHost</key><string>$(INVITE_HOST)</string>
-  <key>AppEnvironment</key><string>$(APP_ENV)</string>
-  <key>AppGroupIdentifier</key><string>$(APP_GROUP_ID)</string>
-  <key>APNSEnvironment</key><string>$(APNS_ENVIRONMENT)</string>
+	<key>APNSEnvironment</key>
+	<string>$(APNS_ENVIRONMENT)</string>
+	<key>AppEnvironment</key>
+	<string>$(APP_ENV)</string>
+	<key>AppGroupIdentifier</key>
+	<string>$(APP_GROUP_ID)</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.asray.split.photosync</string>
+	</array>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>$(APP_DISPLAY_NAME)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.asray.split</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>asraysplit</string>
+			</array>
+		</dict>
+	</array>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>InviteHost</key>
+	<string>$(INVITE_HOST)</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>venmo</string>
+	</array>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>Connect to friends’ iPhones nearby for chat and receipt reading without internet.</string>
+	<key>NSBonjourServices</key>
+	<array>
+		<string>_asraysplit._tcp</string>
+		<string>_asraysplit._udp</string>
+	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Scan receipts so you can split them item by item.</string>
+	<key>NSLocalNetworkUsageDescription</key>
+	<string>Chat with and share receipts to friends’ iPhones nearby, even without internet.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save the shared trip album to your photo library.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Choose receipt photos to split.</string>
+	<key>SupabaseHost</key>
+	<string>$(SUPABASE_HOST)</string>
+	<key>SupabasePublishableKey</key>
+	<string>$(SUPABASE_PUBLISHABLE_KEY)</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<false/>
+	</dict>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+		<string>processing</string>
+	</array>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>LaunchBackground</string>
+	</dict>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
 </dict>
 </plist>

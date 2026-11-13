@@ -10,6 +10,9 @@ struct AppEnvironment {
     let network: any NetworkStatusProviding
     let notifications: NotificationCoordinator
     let scanner: ReceiptScanCoordinator
+    let nearby: NearbyMesh
+    let chat: ChatStore
+    let photos: TripPhotoStore
     /// Present only in demo mode.
     let demoBackend: InMemoryBackend?
 
@@ -38,9 +41,12 @@ struct AppEnvironment {
             demo = inMemory
             backend = inMemory.backend
         }
+        let nearby = NearbyMesh()
         return AppEnvironment(config: config, backend: backend, store: TripStore(local: local, backend: backend, network: network),
                               network: network, notifications: NotificationCoordinator(),
-                              scanner: ReceiptScanCoordinator(receipts: backend.receipts), demoBackend: demo)
+                              scanner: ReceiptScanCoordinator(receipts: backend.receipts, nearby: nearby), nearby: nearby,
+                              chat: ChatStore(service: backend.chat, nearby: nearby),
+                              photos: TripPhotoStore(service: backend.photos, nearby: nearby), demoBackend: demo)
     }
 
     static func preview(seeded: Bool = true) -> AppEnvironment {
@@ -52,6 +58,10 @@ struct AppEnvironment {
         store.currentUserID = DemoData.demoUserID
         if seeded { Task { await DemoData.seed(server); await store.syncNow() } }
         return AppEnvironment(config: .load(), backend: demo.backend, store: store, network: network,
-                              notifications: NotificationCoordinator(), scanner: ReceiptScanCoordinator(receipts: demo.backend.receipts), demoBackend: demo)
+                              notifications: NotificationCoordinator(), scanner: ReceiptScanCoordinator(receipts: demo.backend.receipts),
+                              nearby: NearbyMesh(), chat: ChatStore(service: demo.backend.chat, nearby: nil),
+                              photos: TripPhotoStore(service: demo.backend.photos, nearby: nil,
+                                                     directory: FileManager.default.temporaryDirectory.appending(path: "PreviewPhotos")),
+                              demoBackend: demo)
     }
 }

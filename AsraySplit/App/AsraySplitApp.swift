@@ -1,3 +1,4 @@
+import BackgroundTasks
 import SwiftUI
 
 @main
@@ -8,7 +9,21 @@ struct AsraySplitApp: App {
 
     init() {
         let environment = AppEnvironment.live()
-        _model = State(initialValue: AppModel(env: environment))
+        let model = AppModel(env: environment)
+        _model = State(initialValue: model)
+        // Overnight photo sync (Wi-Fi + charging). Must be registered before launch finishes.
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: TripPhotoStore.backgroundTaskID, using: nil) { task in
+            Task { @MainActor in
+                let work = Task { @MainActor in
+                    let trips = (try? await environment.backend.trips.fetchTrips().map(\.id)) ?? []
+                    await environment.photos.sync(tripIDs: Array(Set(trips + [CrewMember.tripID])))
+                }
+                task.expirationHandler = { work.cancel() }
+                await work.value
+                environment.photos.scheduleOvernightSync()
+                task.setTaskCompleted(success: !work.isCancelled)
+            }
+        }
     }
 
     var body: some Scene {

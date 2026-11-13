@@ -1,4 +1,4 @@
-# Asray Split
+# AsraySplit
 
 Native SwiftUI app for splitting group-travel costs: exact multi-currency splits, receipt scanning with
 per-item assignment, offline capture, collaborative trips with invites, and minimal settle-up payments.
@@ -37,4 +37,4 @@ DB_FIXTURES_OUT=$PWD/AsraySplitTests/Fixtures scripts/db-test.sh   # refresh Swi
 
 [Product spec](docs/PRODUCT_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) ·
 [Implementation plan](docs/IMPLEMENTATION_PLAN.md) · [QA & release](docs/QA_AND_RELEASE.md) ·
-[Operations](docs/OPERATIONS.md)
+[Operations](docs/OPERATIONS.md) · [Launch guide](docs/LAUNCH_GUIDE.md)
