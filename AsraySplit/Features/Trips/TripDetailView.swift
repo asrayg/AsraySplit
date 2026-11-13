@@ -87,9 +87,8 @@ struct TripDetailView: View {
                 NavigationLink { TripGuideView(guide: .puertoRico) } label: { Label("Itinerary", systemImage: "map") }
                 NavigationLink(value: Route.photos(trip.id)) { Label("Photos", systemImage: "photo.on.rectangle.angled") }
                 NavigationLink(value: Route.chat(trip.id)) { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
-                NavigationLink(value: Route.activity(trip.id)) { Label("Activity", systemImage: "clock.arrow.circlepath") }
                 NavigationLink(value: Route.receipts(trip.id)) { Label("Receipts", systemImage: "doc.text.image") }
-                NavigationLink { InsightsView(tripID: trip.id) } label: { Label("Insights", systemImage: "chart.pie") }
+                NavigationLink(value: Route.activity(trip.id)) { Label("History", systemImage: "clock.arrow.circlepath") }
             }
 
             Section {

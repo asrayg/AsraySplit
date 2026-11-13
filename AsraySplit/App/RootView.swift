@@ -76,9 +76,7 @@ struct MainView: View {
     var body: some View {
         @Bindable var app = app
         NavigationStack(path: $app.path) {
-            Group {
-                if app.env.backend.kind == .supabase { CrewHomeView() } else { TripsHomeView() }
-            }
+            CrewHomeView()
                 .navigationDestination(for: Route.self) { route in
                     switch route {
                     case .trip(let id): TripDetailView(tripID: id)
@@ -95,8 +93,6 @@ struct MainView: View {
         .task(id: app.profile?.displayName) { app.startNearby() }
         .sheet(item: $app.sheet) { sheet in
             switch sheet {
-            case .join(let secret): JoinTripView(secret: secret)
-            case .createTrip: TripEditorView(existing: nil)
             case .addExpense(let trip): ExpenseEditorView(tripID: trip, editing: nil)
             case .scanReceipt(let trip): ScanReceiptView(initialTripID: trip)
             case .reviewScan(let trip, let job): ScanReceiptView(initialTripID: trip, initialJobID: job)

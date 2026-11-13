@@ -15,8 +15,6 @@ enum Route: Hashable {
 }
 
 enum SheetRoute: Identifiable, Equatable {
-    case join(secret: String)
-    case createTrip
     case addExpense(TripID)
     case scanReceipt(TripID?)
     /// Opens the review for a scan job already started (e.g. an item shared from another app).
@@ -25,8 +23,6 @@ enum SheetRoute: Identifiable, Equatable {
 
     var id: String {
         switch self {
-        case .join(let secret): "join-\(secret)"
-        case .createTrip: "create-trip"
         case .addExpense(let trip): "add-\(trip)"
         case .scanReceipt(let trip): "scan-\(trip?.uuidString ?? "")"
         case .reviewScan(let trip, let job): "review-\(trip)-\(job)"
@@ -223,14 +219,14 @@ final class AppModel {
     func open(_ link: DeepLink) {
         guard phase == .ready else { pendingLink = link; return }
         switch link {
-        case .join(let secret):
-            sheet = .join(secret: secret)
-        case .trip(let trip):
-            path = [.trip(trip)]
+        case .join:
+            break   // Crew build: there's one built-in trip, no invites.
+        case .trip:
+            path = []   // the root screen is the trip
         case .expense(let trip, let expense):
-            path = [.trip(trip), .expense(trip, expense)]
+            path = [.expense(trip, expense)]
         case .balances(let trip):
-            path = [.trip(trip), .balances(trip)]
+            path = [.balances(trip)]
         case .authCallback(let url):
             handle(url: url)
         }

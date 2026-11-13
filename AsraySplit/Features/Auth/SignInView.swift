@@ -17,7 +17,7 @@ struct SignInView: View {
                     Text("Pick your name. This iPhone stays signed in as you — no email or password.")
                         .font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }
-                if app.env.backend.kind == .supabase {
+                Group {
                     LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
                         ForEach(CrewMember.all) { member in
                             Button { Task { await pick(member) } } label: {
@@ -36,11 +36,6 @@ struct SignInView: View {
                     }
                     Text("Pick your name once with internet. After that the app works offline — anything you add syncs when you’re back online. Reinstalling? Just pick your name again.")
                         .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
-                }
-                if app.env.demoBackend != nil {
-                    Button { Task { await app.enterDemoMode() } } label: { Text("Explore the demo trip") }
-                        .buttonStyle(app.env.backend.kind == .demo ? AnyButtonStyle(PrimaryButtonStyle()) : AnyButtonStyle(SecondaryButtonStyle()))
-                        .accessibilityIdentifier("demoButton")
                 }
             }
             .padding(24)
@@ -61,20 +56,6 @@ struct AnyButtonStyle: ButtonStyle {
     private let make: (Configuration) -> AnyView
     init<S: ButtonStyle>(_ style: S) { make = { AnyView(style.makeBody(configuration: $0)) } }
     func makeBody(configuration: Configuration) -> some View { make(configuration) }
-}
-
-@MainActor
-struct LegalLinks: View {
-    @Environment(AppModel.self) private var app
-
-    var body: some View {
-        HStack(spacing: 16) {
-            Link("Privacy", destination: app.env.config.privacyURL)
-            Link("Terms", destination: app.env.config.termsURL)
-            Link("Support", destination: app.env.config.supportURL)
-        }
-        .font(.footnote)
-    }
 }
 
 @MainActor

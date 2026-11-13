@@ -18,11 +18,7 @@ final class ScreenshotTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTesting"] + (contentSize.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? [])
         app.launch()
-        let trip = app.staticTexts["Lisbon Escape"]
-        XCTAssertTrue(trip.waitForExistence(timeout: 15))
-        capture("01-home\(suffix)")
-        trip.tap()
-        XCTAssertTrue(app.navigationBars["Lisbon Escape"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.navigationBars["Puerto Rico Thanksgiving"].waitForExistence(timeout: 15))
         capture("02-trip\(suffix)")
         let balances = app.buttons["balancesLink"].firstMatch
         for _ in 0..<4 where !balances.isHittable { app.swipeUp() }

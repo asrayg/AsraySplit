@@ -223,17 +223,3 @@ final class ScanReviewModelTests: XCTestCase {
     }
 }
 
-final class InsightsTests: XCTestCase {
-    func testInsightsAreDerivedFromFacts() {
-        let trip = makeTrip()
-        let day = Date(timeIntervalSince1970: 1_800_000_000)
-        let summary = TripSummary(tripId: trip.id, baseCurrency: .usd, budgetMinor: 10_000, totalSpentMinor: 12_000, expenseCount: 3,
-                                  byCategory: [.init(category: .food, totalMinor: 9_000, count: 2), .init(category: .transport, totalMinor: 3_000, count: 1)],
-                                  byDay: [.init(day: day, totalMinor: 4_000), .init(day: day.addingTimeInterval(86_400), totalMinor: 8_000)],
-                                  byParticipant: [.init(participantId: trip.participants[0].id, consumedMinor: 4_000, paidMinor: 12_000)])
-        let insights = TripInsights.make(summary: summary, trip: trip)
-        XCTAssertTrue(insights.contains { $0.id == "top-category" && $0.text.contains("75%") })
-        XCTAssertTrue(insights.contains { $0.id == "budget" && $0.text.contains("Over budget") })
-        XCTAssertTrue(insights.contains { $0.id == "payer" && $0.text.contains("Ana") })
-    }
-}
