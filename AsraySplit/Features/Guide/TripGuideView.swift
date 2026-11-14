@@ -4,7 +4,8 @@ import SwiftUI
 @MainActor
 struct TripGuideView: View {
     let guide: TripGuide
-    @State private var tab: Tab = .plan
+    /// Remembered across launches: reopening the itinerary returns to the last tab.
+    @AppStorage("guide.tab") private var tab: Tab = .plan
 
     enum Tab: String, CaseIterable, Identifiable { case plan = "Plan", food = "Food", pack = "Pack", info = "Info"; var id: String { rawValue } }
 

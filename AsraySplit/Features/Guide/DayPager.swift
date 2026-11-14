@@ -5,7 +5,10 @@ import SwiftUI
 @MainActor
 struct DayPager: View {
     let guide: TripGuide
-    @State private var selection = 0
+    /// Last viewed day, remembered across launches.
+    @AppStorage("guide.day") private var selection = 0
+    /// The trip day it was when the itinerary was last opened (-1 = before/after the trip).
+    @AppStorage("guide.todaySeen") private var todaySeen = -1
 
     /// Day pages start on the trip's first day (Nov 26, 2026) in Puerto Rico time.
     static let firstDay: DateComponents = DateComponents(year: 2026, month: 11, day: 26)
@@ -32,7 +35,13 @@ struct DayPager: View {
             .tabViewStyle(.page(indexDisplayMode: .never))
             .animation(.snappy, value: selection)
         }
-        .onAppear { if let todayIndex { selection = todayIndex } }
+        .onAppear {
+            // Keep the remembered day, except when a new trip day has started since last time: then jump to today.
+            let today = todayIndex ?? -1
+            if today >= 0 && today != todaySeen { selection = today }
+            todaySeen = today
+            if !guide.days.indices.contains(selection) { selection = 0 }
+        }
         .sensoryFeedback(.selection, trigger: selection)
     }
 
