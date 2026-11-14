@@ -72,8 +72,6 @@ struct ScanReceiptView: View {
             VStack(spacing: 22) {
                 Image(systemName: "doc.viewfinder").font(.system(size: 64)).foregroundStyle(Color.brand).padding(.top, 30).accessibilityHidden(true)
                 Text("Scan a receipt").font(.largeTitle.bold())
-                Text("We’ll read the items, tax and tip. You review everything and choose who had what before anything is saved.")
-                    .multilineTextAlignment(.center).foregroundStyle(.secondary)
                 if store.activeTrips.isEmpty {
                     ErrorBanner(error: .validation(code: "no_trip", message: String(localized: "Create a trip first.")))
                 } else {
@@ -129,8 +127,7 @@ struct ScanReceiptView: View {
             VStack(spacing: 20) {
                 Image(uiImage: job.image).resizable().scaledToFit().frame(maxHeight: 320).clipShape(RoundedRectangle(cornerRadius: 20)).accessibilityHidden(true)
                 ProgressView()
-                Text(job.phase == .uploading ? "Uploading securely…" : job.phase == .scanning ? "Reading every line…" : "Preparing…").font(.title3.bold())
-                Text("You can close this screen — the scan keeps going and will be waiting in Receipts.").font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
+                Text(job.phase == .uploading ? "Uploading…" : job.phase == .scanning ? "Reading…" : "Preparing…").font(.title3.bold())
             }
             .padding(24)
         case .failed(let message):

@@ -149,7 +149,6 @@ struct ExpenseEditorView: View {
             }
             .accessibilityIdentifier("splitMethod")
             if model.splitMethod == .itemized {
-                Text("Split by receipt items. Changing the split method replaces the item assignments.").font(.footnote).foregroundStyle(.secondary)
             }
             let shares = (try? model.allocation.get()) ?? [:]
             ForEach(model.participants) { person in
@@ -165,8 +164,6 @@ struct ExpenseEditorView: View {
             }
         } header: {
             Text("Split")
-        } footer: {
-            Text("Amounts are exact to the smallest unit. Any leftover cent goes to the first people in a stable order, so every device agrees.")
         }
     }
 

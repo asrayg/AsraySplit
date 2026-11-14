@@ -43,9 +43,7 @@ struct BalancesView: View {
                             }
                         }
                     }
-                } header: { Text("Suggested payments") } footer: {
-                    Text("The fewest payments that settle everyone. No money moves in the app — record a payment after you’ve paid by cash, bank transfer, Venmo or PayPal.")
-                }
+                } header: { Text("Suggested payments") }
 
                 Section {
                     ForEach(snapshot.balances) { balance in
@@ -64,9 +62,7 @@ struct BalancesView: View {
                             .accessibilityElement(children: .combine)
                         }
                     }
-                } header: { Text("Balances") } footer: {
-                    Text("Net = paid for the group − own share + payments sent − payments received. Shown in \(trip.baseCurrency.rawValue).")
-                }
+                } header: { Text("Balances") }
 
                 if !settlements.isEmpty {
                     Section("Recorded payments") {
@@ -193,7 +189,7 @@ struct SettleUpView: View {
                             Button("Full amount: \(Money(minorUnits: owed.amountMinor, currency: trip.baseCurrency).formatted())") { amount = owed.amountMinor }
                                 .font(.footnote)
                         }
-                    } footer: { Text("Partial payments are fine — balances update by the amount recorded.") }
+                    }
                     Section("How") {
                         Picker("Method", selection: $method) { ForEach(PaymentMethod.allCases) { Label($0.title, systemImage: $0.icon).tag($0) } }
                         TextField("Reference (optional)", text: $reference)

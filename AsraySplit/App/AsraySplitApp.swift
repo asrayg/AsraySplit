@@ -45,6 +45,7 @@ struct AsraySplitApp: App {
         .onChange(of: scenePhase) { _, phase in
             guard phase == .active, model.phase == .ready else { return }
             model.processSharedInbox()
+            model.env.location.resume()
             Task { await model.store.syncNow() }
         }
     }

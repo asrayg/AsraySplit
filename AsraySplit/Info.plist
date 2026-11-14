@@ -58,6 +58,10 @@
 	<string>Scan receipts so you can split them item by item.</string>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Chat with and share receipts to friends’ iPhones nearby, even without internet.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Keep your spot on the crew map updated while the app is closed. You can turn sharing off any time on the Map screen.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Show the crew where you are and drop your location in chat.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Save the shared trip album to your photo library.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

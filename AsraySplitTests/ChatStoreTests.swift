@@ -77,3 +77,19 @@ final class ChatStoreTests: XCTestCase {
         XCTAssertEqual(second.unsent.count, 1)
     }
 }
+
+final class LocationPinTests: XCTestCase {
+    func testPinRoundTrips() throws {
+        let body = ChatMessage.locationBody(latitude: 18.4655, longitude: -66.1057, label: "Asray is here")
+        let message = ChatMessage(id: UUID(), tripId: UUID(), senderId: nil, senderName: "Asray", body: body, sentAt: Date())
+        let pin = try XCTUnwrap(message.pinnedCoordinate)
+        XCTAssertEqual(pin.latitude, 18.4655, accuracy: 0.000001)
+        XCTAssertEqual(pin.longitude, -66.1057, accuracy: 0.000001)
+        XCTAssertEqual(message.mapsURL?.host, "maps.apple.com")
+    }
+
+    func testPlainTextIsNotAPin() {
+        let message = ChatMessage(id: UUID(), tripId: UUID(), senderId: nil, senderName: "A", body: "📍 meet at ll=999,999", sentAt: Date())
+        XCTAssertNil(message.pinnedCoordinate)
+    }
+}

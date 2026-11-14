@@ -2,7 +2,7 @@ import Foundation
 
 /// Client-side adapter that talks to an `InMemoryServer` as one signed-in user. Two adapters over the
 /// same server behave like two devices/users of one Supabase project.
-final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, @unchecked Sendable {
+final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, LocationService, @unchecked Sendable {
     let server: InMemoryServer
     private let lock = NSLock()
     private var state: AuthState
@@ -17,7 +17,7 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     var backend: Backend {
-        Backend(kind: .demo, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self)
+        Backend(kind: .demo, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self, locations: self)
     }
 
     private func user() throws -> UserID {
@@ -235,4 +235,25 @@ extension InMemoryBackend {
         draft.guestNames = CrewMember.all.map(\.name).filter { $0 != name }
         return try await createTrip(draft)
     }
+}
+
+// MARK: LocationService (demo: in memory)
+
+private actor DemoLocations {
+    static let shared = DemoLocations()
+    var byTrip: [TripID: [UserID: MemberLocation]] = [:]
+    func put(_ location: MemberLocation) { byTrip[location.tripId, default: [:]][location.userId] = location }
+    func remove(_ trip: TripID, _ user: UserID) { byTrip[trip]?[user] = nil }
+    func list(_ trip: TripID) -> [MemberLocation] { Array((byTrip[trip] ?? [:]).values) }
+}
+
+extension InMemoryBackend {
+    func updateMyLocation(tripID: TripID, latitude: Double, longitude: Double, accuracy: Double?, recordedAt: Date) async throws {
+        let me = try user()
+        await DemoLocations.shared.put(MemberLocation(tripId: tripID, userId: me, displayName: "You", latitude: latitude, longitude: longitude,
+                                                      accuracyM: accuracy, recordedAt: recordedAt))
+    }
+    func stopSharingLocation(tripID: TripID) async throws { await DemoLocations.shared.remove(tripID, try user()) }
+    func listMemberLocations(tripID: TripID) async throws -> [MemberLocation] { await DemoLocations.shared.list(tripID) }
+    func locationChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
 }

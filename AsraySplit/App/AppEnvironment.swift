@@ -13,6 +13,7 @@ struct AppEnvironment {
     let nearby: NearbyMesh
     let chat: ChatStore
     let photos: TripPhotoStore
+    let location: LocationSharing
     /// Present only in demo mode.
     let demoBackend: InMemoryBackend?
 
@@ -46,7 +47,8 @@ struct AppEnvironment {
                               network: network, notifications: NotificationCoordinator(),
                               scanner: ReceiptScanCoordinator(receipts: backend.receipts, nearby: nearby), nearby: nearby,
                               chat: ChatStore(service: backend.chat, nearby: nearby),
-                              photos: TripPhotoStore(service: backend.photos, nearby: nearby), demoBackend: demo)
+                              photos: TripPhotoStore(service: backend.photos, nearby: nearby),
+                              location: LocationSharing(service: backend.locations), demoBackend: demo)
     }
 
     static func preview(seeded: Bool = true) -> AppEnvironment {
@@ -62,6 +64,6 @@ struct AppEnvironment {
                               nearby: NearbyMesh(), chat: ChatStore(service: demo.backend.chat, nearby: nil),
                               photos: TripPhotoStore(service: demo.backend.photos, nearby: nil,
                                                      directory: FileManager.default.temporaryDirectory.appending(path: "PreviewPhotos")),
-                              demoBackend: demo)
+                              location: LocationSharing(service: demo.backend.locations), demoBackend: demo)
     }
 }

@@ -18,8 +18,7 @@ struct TripPhotosView: View {
         ScrollView {
             statusBar(count: photos.count)
             if photos.isEmpty && album.importing == 0 {
-                ContentUnavailableView("No photos yet", systemImage: "photo.on.rectangle.angled",
-                                       description: Text("Add as many as you want. Friends nearby get them over Bluetooth right away; uploads wait for Wi-Fi."))
+                ContentUnavailableView("No photos yet", systemImage: "photo.on.rectangle.angled")
                     .padding(.top, 40)
             }
             LazyVGrid(columns: columns, spacing: 2) {
@@ -67,9 +66,9 @@ struct TripPhotosView: View {
             }
             Group {
                 if album.importing > 0 { Text("Adding \(album.importing)…") }
-                if peers > 0 { Text("Sharing with \(peers) phone(s) nearby") }
+                if peers > 0 { Text("\(peers) nearby") }
                 if pending > 0 {
-                    Text(album.onWiFi ? "Uploading \(pending) on Wi-Fi…" : "\(pending) queued — uploads automatically when you’re on Wi-Fi")
+                    Text(album.onWiFi ? "Uploading \(pending)…" : "\(pending) waiting for Wi-Fi")
                 }
             }
             .font(.caption).foregroundStyle(.secondary)

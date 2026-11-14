@@ -87,6 +87,7 @@ struct MainView: View {
                     case .receipts(let id): ReceiptsView(tripID: id)
                     case .chat(let id): ChatView(tripID: id)
                     case .photos(let id): TripPhotosView(tripID: id)
+                    case .map(let id): CrewMapView(tripID: id)
                     }
                 }
         }

@@ -61,7 +61,7 @@ struct TripGuideView: View {
         Section {
             Text(guide.allergyMessage).textSelection(.enabled)
             ShareLink(item: guide.allergyMessage) { Label("Share", systemImage: "square.and.arrow.up") }
-        } header: { Text("Allergy message (Spanish)") } footer: { Text("Show this to staff when ordering.") }
+        } header: { Text("Allergy message (Spanish)") }
     }
 
     @ViewBuilder private var pack: some View {

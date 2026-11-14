@@ -6,7 +6,7 @@ export interface PushJob {
   user_id: string;
   trip_id: string | null;
   kind: string;
-  payload: { trip_id?: string; entity_id?: string | null; kind?: string; activity_id?: number };
+  payload: { trip_id?: string; entity_id?: string | null; kind?: string; activity_id?: number; title?: string; body?: string };
 }
 
 export interface PushContext {
@@ -34,13 +34,14 @@ const GENERIC: Record<string, string> = {
 
 export function buildAPNsPayload(job: PushJob, context: PushContext): Record<string, unknown> {
   const generic = GENERIC[job.kind] ?? "Your trip was updated";
-  let body = generic;
+  // Crew build: the database writes readable text (who/what/how much, chat text) into the job payload.
+  let body = job.payload.body ?? generic;
   if (context.showDetails && context.description) {
     body = `${context.actorName ?? "Someone"}: ${context.description}${context.amountText ? ` · ${context.amountText}` : ""}`;
   }
   return {
     aps: {
-      alert: { title: context.tripName ?? "Asray Split", body },
+      alert: { title: job.payload.title ?? context.tripName ?? "AsraySplit", body },
       sound: "default",
       "thread-id": job.trip_id ?? "general",
       "mutable-content": 0,

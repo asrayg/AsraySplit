@@ -12,7 +12,7 @@ select ok(not has_table_privilege('authenticated', 'public.trip_messages', 'inse
        and not has_table_privilege('authenticated', 'public.trip_messages', 'update')
        and not has_table_privilege('authenticated', 'public.trip_messages', 'delete'), 'authenticated cannot write messages directly');
 select ok(not has_table_privilege('anon', 'public.trip_messages', 'select'), 'anon cannot read messages');
-select ok(not has_function_privilege('anon', 'public.post_trip_message(uuid, uuid, text, timestamptz)', 'execute'), 'anon cannot post');
+select ok(not has_function_privilege('anon', 'public.post_trip_message(uuid, uuid, text, timestamptz, boolean)', 'execute'), 'anon cannot post');
 
 select tests.authenticate_as(:'u1');
 select public.create_trip(:'trip', 'PR', 'USD') as t \gset

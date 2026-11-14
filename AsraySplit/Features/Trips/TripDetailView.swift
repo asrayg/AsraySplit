@@ -86,6 +86,7 @@ struct TripDetailView: View {
                 .accessibilityIdentifier("balancesLink")
                 NavigationLink { TripGuideView(guide: .puertoRico) } label: { Label("Itinerary", systemImage: "map") }
                 NavigationLink(value: Route.photos(trip.id)) { Label("Photos", systemImage: "photo.on.rectangle.angled") }
+                NavigationLink(value: Route.map(trip.id)) { Label("Map", systemImage: "map.fill") }
                 NavigationLink(value: Route.chat(trip.id)) { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
                 NavigationLink(value: Route.receipts(trip.id)) { Label("Receipts", systemImage: "doc.text.image") }
                 NavigationLink(value: Route.activity(trip.id)) { Label("History", systemImage: "clock.arrow.circlepath") }
@@ -96,7 +97,7 @@ struct TripDetailView: View {
                     if model.filter.isActive {
                         ContentUnavailableView.search(text: model.filter.query)
                     } else {
-                        ContentUnavailableView("No expenses yet", systemImage: "receipt", description: Text("Scan a receipt or add an expense. It works offline too."))
+                        ContentUnavailableView("No expenses yet", systemImage: "receipt")
                     }
                 }
                 ForEach(model.expenses) { cached in

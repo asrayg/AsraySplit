@@ -14,8 +14,6 @@ struct SignInView: View {
                 AppMark(size: 88)
                 VStack(spacing: 10) {
                     Text("Who are you?").font(.largeTitle.bold())
-                    Text("Pick your name. This iPhone stays signed in as you — no email or password.")
-                        .font(.body).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }
                 Group {
                     LazyVGrid(columns: [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)], spacing: 14) {
@@ -34,8 +32,6 @@ struct SignInView: View {
                             .accessibilityIdentifier("crew-\(member.name)")
                         }
                     }
-                    Text("Pick your name once with internet. After that the app works offline — anything you add syncs when you’re back online. Reinstalling? Just pick your name again.")
-                        .font(.footnote).foregroundStyle(.secondary).multilineTextAlignment(.center)
                 }
             }
             .padding(24)

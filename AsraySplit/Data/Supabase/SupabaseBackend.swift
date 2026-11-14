@@ -3,7 +3,7 @@ import Supabase
 
 /// Production backend: Supabase Auth (Keychain-persisted sessions with automatic refresh),
 /// PostgREST RPCs, Storage, Edge Functions and Realtime.
-final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, @unchecked Sendable {
+final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, LocationService, @unchecked Sendable {
     let client: SupabaseClient
     private let redirectURL = URL(string: "asraysplit://auth-callback")!
 
@@ -18,7 +18,7 @@ final class SupabaseBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     var backend: Backend {
-        Backend(kind: .supabase, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self)
+        Backend(kind: .supabase, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self, locations: self)
     }
 
     // MARK: Error mapping
@@ -446,6 +446,7 @@ extension SupabaseBackend {
             "p_id": .string(message.id.uuidString.lowercased()),
             "p_body": .string(message.body),
             "p_sent_at": .string(PostgresDate.timestamp(message.sentAt)),
+            "p_announce": .bool(message.isAnnouncement == true),
         ])
     }
 
@@ -501,5 +502,42 @@ extension SupabaseBackend {
 
     func downloadPhoto(_ photo: TripPhoto) async throws -> Data {
         do { return try await client.storage.from(Self.photoBucket).download(path: photo.objectPath) } catch { throw Self.map(error) }
+    }
+}
+
+// MARK: LocationService
+
+extension SupabaseBackend {
+    func updateMyLocation(tripID: TripID, latitude: Double, longitude: Double, accuracy: Double?, recordedAt: Date) async throws {
+        var params: [String: JSONValue] = [
+            "p_trip_id": .string(tripID.sortKey), "p_latitude": .number(latitude), "p_longitude": .number(longitude),
+            "p_recorded_at": .string(PostgresDate.timestamp(recordedAt)),
+        ]
+        if let accuracy { params["p_accuracy"] = .number(accuracy) }
+        do { _ = try await client.rpc("update_my_location", params: params).execute() } catch { throw Self.map(error) }
+    }
+
+    func stopSharingLocation(tripID: TripID) async throws {
+        do { _ = try await client.rpc("stop_sharing_location", params: ["p_trip_id": JSONValue.string(tripID.sortKey)]).execute() }
+        catch { throw Self.map(error) }
+    }
+
+    func listMemberLocations(tripID: TripID) async throws -> [MemberLocation] {
+        try await chatRPC("list_member_locations", ["p_trip_id": .string(tripID.sortKey)])
+    }
+
+    func locationChanges(tripID: TripID) -> AsyncStream<Void> {
+        AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
+            let channel = client.channel("locations:\(tripID.sortKey)")
+            let stream = channel.postgresChange(AnyAction.self, schema: "public", table: "member_locations", filter: .eq("trip_id", value: tripID.sortKey))
+            let task = Task {
+                await channel.subscribe()
+                for await _ in stream { continuation.yield(()) }
+            }
+            continuation.onTermination = { [client] _ in
+                task.cancel()
+                Task { await client.removeChannel(channel) }
+            }
+        }
     }
 }

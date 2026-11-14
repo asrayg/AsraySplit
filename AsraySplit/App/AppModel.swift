@@ -12,6 +12,7 @@ enum Route: Hashable {
     case receipts(TripID)
     case chat(TripID)
     case photos(TripID)
+    case map(TripID)
 }
 
 enum SheetRoute: Identifiable, Equatable {
@@ -166,7 +167,11 @@ final class AppModel {
         env.photos.displayName = name
         env.photos.knownTrips = { [weak self] in Set(self?.store.trips.map(\.trip.id) ?? []) }
         env.photos.scheduleOvernightSync()
+        env.location.tripID = CrewMember.tripID
         guard !ProcessInfo.processInfo.arguments.contains("-uiTesting") else { return }
+        env.location.resume()
+        // Ask once for notifications (splits, chat, photos, announcements); registers the device for push.
+        Task { if env.notifications.authorization == .notDetermined { _ = await env.notifications.requestPermission() } }
         if OnDeviceReceiptAI.isAvailable {
             env.nearby.parseHandler = { lines, currency in await OnDeviceReceiptAI.structure(lines: lines, currency: currency) }
         }

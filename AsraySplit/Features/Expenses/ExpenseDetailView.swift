@@ -109,9 +109,7 @@ struct ExpenseDetailView: View {
                     }
                     .accessibilityElement(children: .combine)
                 }
-            } header: { Text("Who owes what") } footer: {
-                Text("Shares always add up exactly to the total. The payer is credited the full amount; each person’s share is what they consumed.")
-            }
+            } header: { Text("Who owes what") }
 
             if !expense.receiptIds.isEmpty {
                 Section("Receipt") {

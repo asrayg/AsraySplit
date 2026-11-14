@@ -21,7 +21,10 @@ final class CoreFlowUITests: XCTestCase {
         amount.typeText("30")
         app.buttons["saveExpense"].tap()
 
+        XCTAssertTrue(app.buttons["addExpense"].waitForExistence(timeout: 10))
+        app.swipeUp()
         XCTAssertTrue(app.staticTexts["Ramen"].waitForExistence(timeout: 10))
+        app.swipeDown()
         app.buttons["balancesLink"].tap()
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'pays'")).firstMatch.waitForExistence(timeout: 10))
     }

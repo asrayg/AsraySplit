@@ -95,10 +95,7 @@ struct DayPage: View {
                 .padding(.vertical, 8)
                 .padding(.horizontal, 14)
                 .background(Color.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-                Text(dayNumber < dayCount ? "Swipe for day \(dayNumber + 1) →" : "That’s the trip 🇵🇷")
-                    .font(.footnote).foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity)
-                    .padding(.bottom, 24)
+                Spacer(minLength: 24)
             }
             .padding(.horizontal, 16)
         }

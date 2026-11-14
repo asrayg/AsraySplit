@@ -35,11 +35,13 @@
 		3E23645F8C18DC4E99EA84EE /* MoneyParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5806BAEFD308AAAE1C50A224 /* MoneyParser.swift */; };
 		3E29DC980A0FFC10476CBEE8 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1EDE7593B7C4F236C7AB11F8 /* ChatView.swift */; };
 		44443846599E82D22461FEB2 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F2A594C31933CEACFBF09F0 /* Theme.swift */; };
+		4499FBAC9C0EA6D7F3009FE1 /* LocationSharing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79D1AE2E74BE516E399DAC0B /* LocationSharing.swift */; };
 		477F07D7F8F82BBD1F9E9FE5 /* ChatStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520D393E9935FE6F8AD84AC7 /* ChatStoreTests.swift */; };
 		4940F3FD73195C2F71E8C533 /* AsraySplitApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 544B147453C11A6FDD2EDDF8 /* AsraySplitApp.swift */; };
 		499AE101043382F6D6CFA59B /* Ledger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C02DE0EE1F20A1334D364AE /* Ledger.swift */; };
 		4B4C8C81AB58AEDCAF155BC9 /* SplitRule.swift in Sources */ = {isa = PBXBuildFile; fileRef = DF1E36D882CBFC1D5D7D3C25 /* SplitRule.swift */; };
 		4B8F52C30ED4E47B259FF53B /* trips.json in Resources */ = {isa = PBXBuildFile; fileRef = B1FA8654696ABB479E0F2175 /* trips.json */; };
+		4D1B1163D1153FC61FDFBCCB /* CrewMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A5B2B38FBD250D44AECD4E4 /* CrewMapView.swift */; };
 		4EF86636B0712CD1799F648B /* RideDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FD3F0BD76E8937D04D45B3 /* RideDetails.swift */; };
 		53EEA0B2CE27413789CF4D15 /* Crew.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA37DDDEF2B57E616FABBE6 /* Crew.swift */; };
 		56B4FEC3EFC20C9F19EED441 /* settlements.json in Resources */ = {isa = PBXBuildFile; fileRef = 3D2C33E99C40DDE8BB56530D /* settlements.json */; };
@@ -166,10 +168,12 @@
 		5F7507D9BBF4F306B88B3A8C /* AppError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppError.swift; sourceTree = "<group>"; };
 		65FD0CFDD0066B5E5D9FE770 /* invite.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = invite.json; sourceTree = "<group>"; };
 		672EC72053E118C1A12DFAB2 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		6A5B2B38FBD250D44AECD4E4 /* CrewMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrewMapView.swift; sourceTree = "<group>"; };
 		6CF8FF930C3E9C6E9B7F7F6F /* ScanReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanReviewView.swift; sourceTree = "<group>"; };
 		6DE3A9D84AE43F0DB497BC4F /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		6EC8F8269564B6AF2EE19848 /* RideImportTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideImportTests.swift; sourceTree = "<group>"; };
 		75E27D9CACEEB0EB66C64E98 /* ContractTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContractTests.swift; sourceTree = "<group>"; };
+		79D1AE2E74BE516E399DAC0B /* LocationSharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSharing.swift; sourceTree = "<group>"; };
 		7A88743FBB2D3D5E52A00230 /* LocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreTests.swift; sourceTree = "<group>"; };
 		7D773A531B69D3FF3BABC1F9 /* MoneyField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyField.swift; sourceTree = "<group>"; };
 		812E829A120DD3454848888E /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
@@ -202,6 +206,7 @@
 		C6D032EE8D73A1DA0988604E /* TripExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripExporter.swift; sourceTree = "<group>"; };
 		C9E36115D1B08B960B74D2AA /* ChatModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatModels.swift; sourceTree = "<group>"; };
 		CD5E8D27060283A5871300D7 /* CoreFlowUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreFlowUITests.swift; sourceTree = "<group>"; };
+		CDF75442F218997199CD1E8E /* AsraySplit.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AsraySplit.entitlements; sourceTree = "<group>"; };
 		CEA37DDDEF2B57E616FABBE6 /* Crew.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crew.swift; sourceTree = "<group>"; };
 		D59A665FF8F1962D4B6BE454 /* ChatStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatStore.swift; sourceTree = "<group>"; };
 		DA17D7D7EE09488E6AE7DA58 /* DeepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLink.swift; sourceTree = "<group>"; };
@@ -233,6 +238,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		02C8537C24263D0A8179EBC1 /* Location */ = {
+			isa = PBXGroup;
+			children = (
+				6A5B2B38FBD250D44AECD4E4 /* CrewMapView.swift */,
+				79D1AE2E74BE516E399DAC0B /* LocationSharing.swift */,
+			);
+			path = Location;
+			sourceTree = "<group>";
+		};
 		06979147A626C19E32166986 /* Money */ = {
 			isa = PBXGroup;
 			children = (
@@ -425,6 +439,7 @@
 		80EE50AB722A7D7DAD1FA59F /* AsraySplit */ = {
 			isa = PBXGroup;
 			children = (
+				CDF75442F218997199CD1E8E /* AsraySplit.entitlements */,
 				C15ADEDDB0584C0BCE094F7B /* Info.plist */,
 				54D24313A8E1B7AFC44B687D /* App */,
 				11048914C61A90094BB3F956 /* Core */,
@@ -590,6 +605,7 @@
 				6A2A96C01430E053E728F2AF /* Crew */,
 				FD77A636C6DE9E2FB032DEE1 /* Expenses */,
 				4A5C36E1AB989ACB39514BF7 /* Guide */,
+				02C8537C24263D0A8179EBC1 /* Location */,
 				4CF3A09842817B6F990AA590 /* Nearby */,
 				64054D455F58EFB75F7644F2 /* Photos */,
 				69F3F38EC3765DC6810B0720 /* Scan */,
@@ -785,6 +801,7 @@
 				3E29DC980A0FFC10476CBEE8 /* ChatView.swift in Sources */,
 				53EEA0B2CE27413789CF4D15 /* Crew.swift in Sources */,
 				87643A386660A548F3B545CD /* CrewHomeView.swift in Sources */,
+				4D1B1163D1153FC61FDFBCCB /* CrewMapView.swift in Sources */,
 				B2BEA18AA88697F868521AF6 /* CurrencyCode.swift in Sources */,
 				114CF8B7B828DF4D153AE673 /* DayPager.swift in Sources */,
 				839524208F2FCEA46F573741 /* DeepLink.swift in Sources */,
@@ -799,6 +816,7 @@
 				499AE101043382F6D6CFA59B /* Ledger.swift in Sources */,
 				CE1C0EC5A19CB459307B7504 /* LedgerModels.swift in Sources */,
 				3B73B43D13D92AC86ACC9F8C /* LocalStore.swift in Sources */,
+				4499FBAC9C0EA6D7F3009FE1 /* LocationSharing.swift in Sources */,
 				2DDB948168192572DF03BC14 /* Logging.swift in Sources */,
 				336963139605230A59FC7E71 /* Money.swift in Sources */,
 				FF6126104F42F6F865AFB075 /* MoneyField.swift in Sources */,
@@ -880,6 +898,7 @@
 			baseConfigurationReference = FB1F30182175755840634D88 /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AsraySplit/AsraySplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = AsraySplit/Info.plist;
@@ -1028,6 +1047,7 @@
 			baseConfigurationReference = 2CBBD82CA7CD55208DF22C92 /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AsraySplit/AsraySplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = AsraySplit/Info.plist;
@@ -1142,6 +1162,7 @@
 			baseConfigurationReference = 899ED194F82E55F0F755F693 /* Staging.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = AsraySplit/AsraySplit.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = AsraySplit/Info.plist;

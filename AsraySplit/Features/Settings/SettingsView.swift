@@ -13,7 +13,7 @@ struct SettingsView: View {
             Form {
                 Section {
                     TextField("Display name", text: $name).onSubmit(saveProfile)
-                } header: { Text("You") } footer: { Text("Shown on expenses, chat and photos.") }
+                } header: { Text("You") }
 
                 Section {
                     NavigationLink { SyncIssuesView() } label: {
@@ -26,7 +26,7 @@ struct SettingsView: View {
                     }
                     LabeledContent("Photos waiting for Wi-Fi", value: "\(app.env.photos.pendingUpload.count)")
                     LabeledContent("Messages waiting to send", value: "\(app.env.chat.unsent.count)")
-                } footer: { Text("Everything is saved on this iPhone first and works offline. It syncs when you’re back online; photos wait for Wi-Fi.") }
+                }
 
                 Section {
                     Text("AsraySplit \(Bundle.main.appVersion ?? "")").font(.footnote).foregroundStyle(.secondary)

@@ -205,6 +205,13 @@ protocol PhotoService: Sendable {
     func downloadPhoto(_ photo: TripPhoto) async throws -> Data
 }
 
+protocol LocationService: Sendable {
+    func updateMyLocation(tripID: TripID, latitude: Double, longitude: Double, accuracy: Double?, recordedAt: Date) async throws
+    func stopSharingLocation(tripID: TripID) async throws
+    func listMemberLocations(tripID: TripID) async throws -> [MemberLocation]
+    func locationChanges(tripID: TripID) -> AsyncStream<Void>
+}
+
 /// Everything remote, bundled for dependency injection.
 struct Backend: Sendable {
     var kind: Kind
@@ -217,6 +224,7 @@ struct Backend: Sendable {
     var realtime: any RealtimeService
     var chat: any ChatService
     var photos: any PhotoService
+    var locations: any LocationService
 
     enum Kind: Equatable, Sendable { case supabase, demo }
 }

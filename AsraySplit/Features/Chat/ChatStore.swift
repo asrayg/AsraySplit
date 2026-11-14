@@ -35,11 +35,11 @@ final class ChatStore {
     // MARK: Sending
 
     @discardableResult
-    func send(_ text: String, tripID: TripID) async -> ChatMessage? {
+    func send(_ text: String, tripID: TripID, announce: Bool = false) async -> ChatMessage? {
         let body = String(text.trimmingCharacters(in: .whitespacesAndNewlines).prefix(ChatMessage.maxLength))
         guard !body.isEmpty else { return nil }
         let message = ChatMessage(id: UUID(), tripId: tripID, senderId: userID, senderName: displayName.isEmpty ? "Me" : displayName,
-                                  body: body, sentAt: Date(), createdAt: nil)
+                                  body: body, sentAt: Date(), createdAt: nil, isAnnouncement: announce ? true : nil)
         insert(message)
         unsent.insert(message.id)
         saveCache()
