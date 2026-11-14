@@ -7,7 +7,7 @@ import { dispatchEmail, dispatchPush, drainStorageCleanup } from "../_shared/mai
 
 Deno.serve(async (request) => {
   try {
-    requireServiceRole(request);
+    await requireServiceRole(request);
     const admin = adminClient();
     const removed = await drainStorageCleanup(admin);
     const push = await dispatchPush(admin);
