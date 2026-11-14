@@ -9,28 +9,33 @@ struct TripGuideView: View {
     enum Tab: String, CaseIterable, Identifiable { case plan = "Plan", food = "Food", pack = "Pack", info = "Info"; var id: String { rawValue } }
 
     var body: some View {
-        List {
-            Section {
-                Picker("Section", selection: $tab) {
-                    ForEach(Tab.allCases) { Text($0.rawValue).tag($0) }
-                }
-                .pickerStyle(.segmented)
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
+        VStack(spacing: 0) {
+            Picker("Section", selection: $tab) {
+                ForEach(Tab.allCases) { Text($0.rawValue).tag($0) }
             }
-            switch tab {
-            case .plan: plan
-            case .food: food
-            case .pack: pack
-            case .info: info
+            .pickerStyle(.segmented)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+
+            if tab == .plan {
+                DayPager(guide: guide)
+            } else {
+                List {
+                    switch tab {
+                    case .food: food
+                    case .pack: pack
+                    default: info
+                    }
+                }
+                .screenBackground()
             }
         }
-        .screenBackground()
+        .background(Color.canvas.ignoresSafeArea())
         .navigationTitle(guide.title)
         .navigationBarTitleDisplayMode(.inline)
     }
 
-    @ViewBuilder private var plan: some View {
+    @ViewBuilder private var flightsSection: some View {
         Section("Flights") {
             ForEach(guide.flights) { flight in
                 VStack(alignment: .leading, spacing: 4) {
@@ -43,26 +48,6 @@ struct TripGuideView: View {
                     }
                     .font(.caption)
                 }
-            }
-        }
-        ForEach(guide.days) { day in
-            Section {
-                ForEach(day.stops) { stop in
-                    HStack(alignment: .firstTextBaseline, spacing: 12) {
-                        Text(stop.time).font(.caption.monospacedDigit().bold()).foregroundStyle(Color.brand).frame(width: 78, alignment: .leading)
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text(stop.title)
-                            ForEach(stop.notes, id: \.self) { Text("• \($0)").font(.caption).foregroundStyle(.secondary) }
-                        }
-                    }
-                }
-            } header: {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(day.date)
-                    Text(day.title).font(.headline).foregroundStyle(.primary).textCase(nil)
-                }
-            } footer: {
-                Label(day.transport, systemImage: "car")
             }
         }
     }
@@ -86,6 +71,7 @@ struct TripGuideView: View {
     }
 
     @ViewBuilder private var info: some View {
+        flightsSection
         Section("Stay") {
             Link(destination: URL(string: "https://maps.apple.com/?q=\(guide.airbnb.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")")!) {
                 Label(guide.airbnb, systemImage: "house")

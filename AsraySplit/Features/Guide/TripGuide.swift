@@ -44,8 +44,8 @@ extension TripGuide {
                 Stop(time: "8:23 PM", title: "Anoop lands"),
                 Stop(time: "9:00 PM", title: "Dinner at Vagon or a local spot"),
                 Stop(time: "9:30 PM", title: "Meet up — nearby bars or chill at the Airbnb"),
-                Stop(time: "1:36 AM Fri", title: "Arjun arrives"),
-                Stop(time: "6:32 AM Fri", title: "Justin arrives"),
+                Stop(time: "1:36 AM", title: "Arjun arrives (Fri)"),
+                Stop(time: "6:32 AM", title: "Justin arrives (Fri)"),
             ]),
             Day(date: "Fri, Nov 27", title: "Old San Juan, Beach & Nightlife", transport: "Uber / walking", stops: [
                 Stop(time: "10:00 AM", title: "Breakfast / brunch", notes: ["Near Escambrón beach", "Coffee and plan the day"]),

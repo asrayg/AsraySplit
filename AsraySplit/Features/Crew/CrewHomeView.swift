@@ -7,6 +7,7 @@ struct CrewHomeView: View {
     @Environment(AppModel.self) private var app
     @Environment(TripStore.self) private var store
     @State private var showSettings = false
+    @State private var showGuide = false
 
     var body: some View {
         Group {
@@ -37,6 +38,13 @@ struct CrewHomeView: View {
             }
         }
         .sheet(isPresented: $showSettings) { SettingsView() }
-        .task { await app.joinCrewTrip() }
+        .task {
+            await app.joinCrewTrip()
+            #if DEBUG
+            // Debug-only shortcut for screenshots: launch with -openGuide.
+            if ProcessInfo.processInfo.arguments.contains("-openGuide") { showGuide = true }
+            #endif
+        }
+        .navigationDestination(isPresented: $showGuide) { TripGuideView(guide: .puertoRico) }
     }
 }

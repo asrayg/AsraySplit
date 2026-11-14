@@ -14,6 +14,7 @@
 		0B56599F70D5E820DA73CA9B /* suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 27031E4015C73B543EC10EAF /* suggestions.json */; };
 		0DF4EBF529DCF61C6815B2E0 /* AllocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8603B321A3B7F9A17235425F /* AllocationTests.swift */; };
 		0FC80E518F48877FB8B8A2BC /* BalancesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB6E28834BA36DB58DCE9195 /* BalancesView.swift */; };
+		114CF8B7B828DF4D153AE673 /* DayPager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31AE39365FBF060267ABDE4E /* DayPager.swift */; };
 		132CDE8B1F27595AF06A09B5 /* ReceiptScanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB9CA4EA5DF8B03415C1EE69 /* ReceiptScanCoordinator.swift */; };
 		13A9C4506EA8AC72A0E1AD52 /* SyncEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A22A1463DE7211B7849B7F4 /* SyncEngine.swift */; };
 		1453AAB4C0A145E6C82688C0 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B60BCEF80D1069F4647FBAD8 /* DemoData.swift */; };
@@ -146,6 +147,7 @@
 		2CBBD82CA7CD55208DF22C92 /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		2E0EA06D9ADCEA32B48E9825 /* TripPhotoStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPhotoStoreTests.swift; sourceTree = "<group>"; };
 		2F2A594C31933CEACFBF09F0 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		31AE39365FBF060267ABDE4E /* DayPager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayPager.swift; sourceTree = "<group>"; };
 		32986AF66533B61E717F5632 /* AppModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppModel.swift; sourceTree = "<group>"; };
 		3706011AC06A06B48FDC750A /* Outbox.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Outbox.swift; sourceTree = "<group>"; };
 		37F10B6E697D97C61E78CCEF /* MoneyTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyTests.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 		4A5C36E1AB989ACB39514BF7 /* Guide */ = {
 			isa = PBXGroup;
 			children = (
+				31AE39365FBF060267ABDE4E /* DayPager.swift */,
 				1E82B0D8CFBBE47042E47E7C /* TripGuide.swift */,
 				033ACDE356AAF935E5F6EAED /* TripGuideView.swift */,
 			);
@@ -783,6 +786,7 @@
 				53EEA0B2CE27413789CF4D15 /* Crew.swift in Sources */,
 				87643A386660A548F3B545CD /* CrewHomeView.swift in Sources */,
 				B2BEA18AA88697F868521AF6 /* CurrencyCode.swift in Sources */,
+				114CF8B7B828DF4D153AE673 /* DayPager.swift in Sources */,
 				839524208F2FCEA46F573741 /* DeepLink.swift in Sources */,
 				1453AAB4C0A145E6C82688C0 /* DemoData.swift in Sources */,
 				6F0799EB3358BE25FE23B465 /* ExpenseDetailView.swift in Sources */,
