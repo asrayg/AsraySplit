@@ -8,6 +8,8 @@ struct ChatView: View {
     @State private var announce = false
     @State private var pinning = false
     @State private var editing: ChatMessage?
+    @State private var replyingTo: ChatMessage?
+    static let quickReactions = ["❤️", "😂", "🔥", "👍", "😮", "🇵🇷"]
     @FocusState private var typing: Bool
 
     /// Only Asray's phone gets the 📣 announcement button (the server enforces this too).
@@ -67,6 +69,16 @@ struct ChatView: View {
 
     private var composer: some View {
         VStack(spacing: 0) {
+            if let replyingTo, editing == nil {
+                HStack {
+                    Label("Replying to \(replyingTo.senderName)", systemImage: "arrowshape.turn.up.left.fill").font(.caption.bold())
+                    Text(replyingTo.body).font(.caption).lineLimit(1).foregroundStyle(.secondary)
+                    Spacer()
+                    Button { self.replyingTo = nil } label: { Image(systemName: "xmark.circle.fill") }
+                        .accessibilityLabel(Text("Cancel reply"))
+                }
+                .padding(.horizontal, 16).padding(.top, 8)
+            }
             if let editing {
                 HStack {
                     Label("Editing", systemImage: "pencil").font(.caption.bold())
@@ -98,6 +110,11 @@ struct ChatView: View {
             }
             TextField(announce ? "Announcement to everyone" : "Message", text: $draft, axis: .vertical)
                 .focused($typing)
+                .submitLabel(.done)
+                .onChange(of: draft) { _, value in
+                    // The keyboard's Done key closes the keyboard (no newlines in chat).
+                    if value.contains("\n") { draft = value.replacingOccurrences(of: "\n", with: ""); typing = false }
+                }
                 .lineLimit(1...5)
                 .padding(.horizontal, 14).padding(.vertical, 10)
                 .background(Color.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
@@ -111,7 +128,9 @@ struct ChatView: View {
                 }
                 let loud = announce
                 announce = false
-                Task { await chat.send(text, tripID: tripID, announce: loud) }
+                let reply = replyingTo?.id
+                replyingTo = nil
+                Task { await chat.send(text, tripID: tripID, announce: loud, replyTo: reply) }
                 app.eggs.chatSent(text)
             } label: {
                 Image(systemName: editing == nil ? "arrow.up.circle.fill" : "checkmark.circle.fill").font(.system(size: 32))
@@ -120,12 +139,6 @@ struct ChatView: View {
             .accessibilityLabel(Text("Send"))
         }
         .padding(.horizontal, 12).padding(.vertical, 8)
-        .toolbar {
-            ToolbarItemGroup(placement: .keyboard) {
-                Spacer()
-                Button("Done") { typing = false }
-            }
-        }
     }
 
     private func bubble(_ message: ChatMessage) -> some View {
@@ -134,6 +147,20 @@ struct ChatView: View {
             if mine { Spacer(minLength: 48) }
             VStack(alignment: mine ? .trailing : .leading, spacing: 3) {
                 if !mine { Text(message.senderName).font(.caption.bold()).foregroundStyle(.secondary) }
+                if let replyID = message.replyTo {
+                    let original = chat.message(replyID, in: tripID)
+                    HStack(spacing: 6) {
+                        Rectangle().fill(Color.brand).frame(width: 3)
+                        VStack(alignment: .leading, spacing: 1) {
+                            Text(original?.senderName ?? "Message").font(.caption2.bold())
+                            Text(original.map { $0.deletedAt == nil ? $0.body : "Deleted message" } ?? "…").font(.caption2).lineLimit(2)
+                        }
+                        .foregroundStyle(.secondary)
+                    }
+                    .padding(6)
+                    .background(Color.surfaceRaised, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .fixedSize(horizontal: false, vertical: true)
+                }
                 if let pin = message.pinnedCoordinate {
                     PinBubble(latitude: pin.latitude, longitude: pin.longitude, url: message.mapsURL)
                 } else if message.isAnnouncement == true {
@@ -148,6 +175,7 @@ struct ChatView: View {
                         .foregroundStyle(mine ? Color.onBrand : Color.primary)
                         .background(mine ? Color.brand : Color.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
+                if let reactions = message.reactions, !reactions.isEmpty { reactionChips(message, reactions) }
                 HStack(spacing: 4) {
                     if message.editedAt != nil { Text("edited") }
                     Text(message.sentAt, style: .time)
@@ -159,7 +187,14 @@ struct ChatView: View {
             }
             if !mine { Spacer(minLength: 48) }
         }
+        .onTapGesture(count: 2) { Task { await chat.toggleReaction("❤️", on: message) } }
         .contextMenu {
+            Section {
+                ForEach(Self.quickReactions, id: \.self) { emoji in
+                    Button(emoji) { Task { await chat.toggleReaction(emoji, on: message) } }
+                }
+            }
+            Button { replyingTo = message; editing = nil; typing = true } label: { Label("Reply", systemImage: "arrowshape.turn.up.left") }
             if mine {
                 if message.pinnedCoordinate == nil {
                     Button { editing = message; draft = message.body; typing = true } label: { Label("Edit", systemImage: "pencil") }
@@ -172,6 +207,24 @@ struct ChatView: View {
 }
 
 extension ChatView {
+    private func reactionChips(_ message: ChatMessage, _ reactions: [ChatReaction]) -> some View {
+        let grouped = Dictionary(grouping: reactions, by: \.emoji).sorted { $0.value.count > $1.value.count || ($0.value.count == $1.value.count && $0.key < $1.key) }
+        return HStack(spacing: 4) {
+            ForEach(grouped, id: \.key) { emoji, people in
+                let mineToo = people.contains { $0.userId == chat.userID }
+                Button { Task { await chat.toggleReaction(emoji, on: message) } } label: {
+                    Text(people.count > 1 ? "\(emoji) \(people.count)" : emoji)
+                        .font(.caption)
+                        .padding(.horizontal, 7).padding(.vertical, 3)
+                        .background(mineToo ? Color.brand.opacity(0.25) : Color.surface, in: Capsule())
+                        .overlay(Capsule().stroke(mineToo ? Color.brand : Color.clear, lineWidth: 1))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("\(emoji) from \(people.map(\.displayName).joined(separator: ", "))"))
+            }
+        }
+    }
+
     private func sendPin() async {
         pinning = true
         defer { pinning = false }

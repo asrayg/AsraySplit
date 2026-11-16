@@ -26,6 +26,7 @@ final class ChatStore {
         self.cacheURL = cacheURL
         loadCache()
         nearby?.onChat = { [weak self] message in self?.receiveNearby(message) }
+        nearby?.onReaction = { [weak self] trip, id, reaction, on in self?.applyReaction(trip, id, reaction, on: on) }
     }
 
     func messages(for tripID: TripID) -> [ChatMessage] {
@@ -52,17 +53,58 @@ final class ChatStore {
     // MARK: Sending
 
     @discardableResult
-    func send(_ text: String, tripID: TripID, announce: Bool = false) async -> ChatMessage? {
+    func send(_ text: String, tripID: TripID, announce: Bool = false, replyTo: UUID? = nil) async -> ChatMessage? {
         let body = String(text.trimmingCharacters(in: .whitespacesAndNewlines).prefix(ChatMessage.maxLength))
         guard !body.isEmpty else { return nil }
         let message = ChatMessage(id: UUID(), tripId: tripID, senderId: userID, senderName: displayName.isEmpty ? "Me" : displayName,
-                                  body: body, sentAt: Date(), createdAt: nil, isAnnouncement: announce ? true : nil)
+                                  body: body, sentAt: Date(), createdAt: nil, isAnnouncement: announce ? true : nil, replyTo: replyTo)
         insert(message)
         unsent.insert(message.id)
         saveCache()
         nearby?.broadcast(message)
         await upload(message)
         return message
+    }
+
+    // MARK: Reactions
+
+    /// Reactions waiting for the server: key "messageID|emoji" → on/off.
+    private(set) var pendingReactions: [String: Bool] = [:]
+
+    func message(_ id: UUID, in tripID: TripID) -> ChatMessage? { byTrip[tripID]?[id] }
+
+    func toggleReaction(_ emoji: String, on message: ChatMessage) async {
+        guard let userID else { return }
+        let mine = (byTrip[message.tripId]?[message.id]?.reactions ?? []).contains { $0.userId == userID && $0.emoji == emoji }
+        let reaction = ChatReaction(emoji: emoji, userId: userID, displayName: displayName.isEmpty ? "Me" : displayName)
+        applyReaction(message.tripId, message.id, reaction, on: !mine)
+        nearby?.broadcastReaction(tripID: message.tripId, messageID: message.id, reaction: reaction, on: !mine)
+        pendingReactions["\(message.id.uuidString)|\(emoji)"] = !mine
+        saveCache()
+        await flushReactions()
+    }
+
+    private func applyReaction(_ tripID: TripID, _ id: UUID, _ reaction: ChatReaction, on: Bool) {
+        guard var m = byTrip[tripID]?[id] else { return }
+        var list = (m.reactions ?? []).filter { !($0.userId == reaction.userId && $0.emoji == reaction.emoji) }
+        if on { list.append(reaction) }
+        m.reactions = list
+        byTrip[tripID]?[id] = m
+    }
+
+    private func flushReactions() async {
+        for (key, on) in pendingReactions {
+            let parts = key.split(separator: "|", maxSplits: 1).map(String.init)
+            guard parts.count == 2, let id = UUID(uuidString: parts[0]) else { pendingReactions[key] = nil; continue }
+            if unsent.contains(id) { continue }   // the message itself hasn't reached the server yet
+            do {
+                try await service.setReaction(messageID: id, emoji: parts[1], on: on)
+                if pendingReactions[key] == on { pendingReactions[key] = nil }
+            } catch let error as AppError where error == .notFound {
+                pendingReactions[key] = nil
+            } catch {}
+        }
+        saveCache()
     }
 
     // MARK: Editing
@@ -141,6 +183,7 @@ final class ChatStore {
 
     func flush(tripID: TripID) async {
         await flushChanges()
+        await flushReactions()
         for id in unsent {
             guard let message = byTrip[tripID]?[id] else { continue }
             await upload(message)
@@ -176,18 +219,31 @@ final class ChatStore {
     /// Keeps whichever copy is newest, and never lets a server copy undo an edit that's still queued.
     private func insert(_ message: ChatMessage) {
         if let pending = pendingChanges[message.id], pending.version > message.version { return }
-        if let existing = byTrip[message.tripId]?[message.id], existing.version > message.version { return }
-        byTrip[message.tripId, default: [:]][message.id] = message
+        let existing = byTrip[message.tripId]?[message.id]
+        if let existing, existing.version > message.version { return }
+        var merged = message
+        if merged.reactions == nil { merged.reactions = existing?.reactions }   // edit/post responses carry no reactions
+        // Keep my not-yet-synced reaction changes on top of the server's list.
+        if let userID {
+            for (key, on) in pendingReactions where key.hasPrefix(message.id.uuidString + "|") {
+                let emoji = String(key.dropFirst(message.id.uuidString.count + 1))
+                var list = (merged.reactions ?? []).filter { !($0.userId == userID && $0.emoji == emoji) }
+                if on { list.append(ChatReaction(emoji: emoji, userId: userID, displayName: displayName)) }
+                merged.reactions = list
+            }
+        }
+        byTrip[message.tripId, default: [:]][message.id] = merged
     }
 
     // MARK: Cache
 
-    private struct Cache: Codable { var messages: [ChatMessage]; var unsent: [UUID]; var changes: [ChatMessage]? }
+    private struct Cache: Codable { var messages: [ChatMessage]; var unsent: [UUID]; var changes: [ChatMessage]?; var reactions: [String: Bool]? }
 
     func wipe() {
         byTrip = [:]
         unsent = []
         pendingChanges = [:]
+        pendingReactions = [:]
         if let cacheURL { try? FileManager.default.removeItem(at: cacheURL) }
     }
 
@@ -196,11 +252,12 @@ final class ChatStore {
         cache.messages.forEach(insert)
         unsent = Set(cache.unsent)
         pendingChanges = Dictionary((cache.changes ?? []).map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
+        pendingReactions = cache.reactions ?? [:]
     }
 
     private func saveCache() {
         guard let cacheURL else { return }
-        let cache = Cache(messages: byTrip.values.flatMap(\.values), unsent: Array(unsent), changes: Array(pendingChanges.values))
+        let cache = Cache(messages: byTrip.values.flatMap(\.values), unsent: Array(unsent), changes: Array(pendingChanges.values), reactions: pendingReactions)
         guard let data = try? JSONEncoder().encode(cache) else { return }
         try? FileManager.default.createDirectory(at: cacheURL.deletingLastPathComponent(), withIntermediateDirectories: true)
         try? data.write(to: cacheURL, options: [.atomic, .completeFileProtection])

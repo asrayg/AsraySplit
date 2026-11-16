@@ -39,7 +39,9 @@ struct CrewHomeView: View {
             await app.joinCrewTrip()
             #if DEBUG
             // Debug-only shortcut for screenshots: launch with -openGuide.
-            if ProcessInfo.processInfo.arguments.contains("-openGuide") { app.tab = .plan }
+            let args = ProcessInfo.processInfo.arguments
+            if args.contains("-openGuide") { app.tab = .plan }
+            if let i = args.firstIndex(of: "-openTab"), i + 1 < args.count, let tab = AppTab(rawValue: args[i + 1]) { app.tab = tab }
             #endif
         }
 

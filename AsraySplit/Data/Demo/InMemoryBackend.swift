@@ -203,6 +203,7 @@ extension InMemoryBackend {
     func messageChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
     func editMessage(id: UUID, body: String) async throws -> ChatMessage { try await DemoChatLog.shared.change(id, body: body, delete: false) }
     func deleteMessage(id: UUID) async throws -> ChatMessage { try await DemoChatLog.shared.change(id, body: nil, delete: true) }
+    func setReaction(messageID: UUID, emoji: String, on: Bool) async throws {}
 }
 
 // MARK: PhotoService (demo: kept in memory on this device)

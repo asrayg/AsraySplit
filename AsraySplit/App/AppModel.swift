@@ -87,7 +87,7 @@ final class AppModel {
         env.notifications.onOpen = { [weak self] link in self?.open(link) }
         env.notifications.onOpenKind = { [weak self] kind in
             switch kind {
-            case "chat_message", "announcement": self?.tab = .chat
+            case "chat_message", "announcement", "chat_reaction": self?.tab = .chat
             case "photos_added": self?.tab = .photos
             default: self?.tab = .money
             }

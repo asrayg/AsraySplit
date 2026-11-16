@@ -14,11 +14,20 @@ struct ChatMessage: Codable, Hashable, Identifiable, Sendable {
     var isAnnouncement: Bool?
     var editedAt: Date?
     var deletedAt: Date?
+    var replyTo: UUID?
+    /// nil = unknown (e.g. an edit response); keep whatever we already have.
+    var reactions: [ChatReaction]?
 
     /// Newest change wins when the same message arrives from several places.
     var version: Date { [sentAt, editedAt, deletedAt].compactMap { $0 }.max() ?? sentAt }
 
     static let maxLength = 2000
+}
+
+struct ChatReaction: Codable, Hashable, Sendable {
+    var emoji: String
+    var userId: UserID
+    var displayName: String
 }
 
 /// A crew member's last shared position.

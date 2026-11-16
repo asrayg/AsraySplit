@@ -50,7 +50,7 @@ struct RootView: View {
 private struct LaunchView: View {
     var body: some View {
         VStack(spacing: 16) {
-            AppMark(size: 84)
+            AppMark(size: 120)
             ProgressView().accessibilityLabel(Text("Loading"))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -58,21 +58,18 @@ private struct LaunchView: View {
     }
 }
 
-/// Original brand mark: two overlapping rounded receipts.
+/// The app icon (rounded), used on the launch screen and sign-in.
 @MainActor
 struct AppMark: View {
     var size: CGFloat = 64
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: size * 0.22, style: .continuous).fill(Color.brand)
-            Image(systemName: "arrow.triangle.branch")
-                .font(.system(size: size * 0.45, weight: .bold))
-                .foregroundStyle(Color.onBrand)
-                .rotationEffect(.degrees(90))
-        }
-        .frame(width: size, height: size)
-        .accessibilityHidden(true)
+        Image("LaunchIcon")
+            .resizable()
+            .interpolation(.high)
+            .frame(width: size, height: size)
+            .clipShape(RoundedRectangle(cornerRadius: size * 0.2237, style: .continuous))
+            .accessibilityHidden(true)
     }
 }
 

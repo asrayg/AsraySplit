@@ -20,6 +20,7 @@ final class NearbyMesh: NSObject {
         case photoInventory(ids: [UUID])
         /// Metadata for a photo file that follows as a resource named with the photo id.
         case photoMeta(TripPhoto)
+        case reaction(tripId: TripID, messageId: UUID, reaction: ChatReaction, on: Bool)
     }
 
     struct Peer: Identifiable, Hashable { let id: MCPeerID; var name: String; var canParse: Bool }
@@ -32,6 +33,7 @@ final class NearbyMesh: NSObject {
 
     /// Incoming chat from a nearby phone.
     var onChat: ((ChatMessage) -> Void)?
+    var onReaction: ((TripID, UUID, ChatReaction, Bool) -> Void)?
     /// Answers parse requests from nearby phones (set when this phone can run the on-device model).
     var parseHandler: (([String], CurrencyCode) async -> ReceiptScanResult?)?
     var canParse: Bool { parseHandler != nil }
@@ -82,6 +84,10 @@ final class NearbyMesh: NSObject {
 
     func broadcast(_ message: ChatMessage) {
         send(.chat(message), to: peers.map(\.id))
+    }
+
+    func broadcastReaction(tripID: TripID, messageID: UUID, reaction: ChatReaction, on: Bool) {
+        send(.reaction(tripId: tripID, messageId: messageID, reaction: reaction, on: on), to: peers.map(\.id))
     }
 
     /// Asks a nearby Apple Intelligence phone to structure OCR text. Returns nil if none answers in time.
@@ -159,6 +165,8 @@ final class NearbyMesh: NSObject {
             onPhotoInventory?(peer, Set(ids))
         case .photoMeta(let photo):
             onPhotoMeta?(photo)
+        case .reaction(let tripId, let messageId, let reaction, let on):
+            onReaction?(tripId, messageId, reaction, on)
         case .parseResponse(let id, let result):
             // Untrusted: validate before it reaches the review screen.
             finishParse(id, result.flatMap { try? ScanResultValidator.validate($0) })

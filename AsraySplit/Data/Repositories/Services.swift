@@ -196,6 +196,7 @@ protocol ChatService: Sendable {
     func postMessage(_ message: ChatMessage) async throws -> ChatMessage
     func editMessage(id: UUID, body: String) async throws -> ChatMessage
     func deleteMessage(id: UUID) async throws -> ChatMessage
+    func setReaction(messageID: UUID, emoji: String, on: Bool) async throws
     /// Emits when the trip's messages change on the server.
     func messageChanges(tripID: TripID) -> AsyncStream<Void>
 }

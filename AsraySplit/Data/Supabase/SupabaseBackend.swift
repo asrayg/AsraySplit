@@ -447,11 +447,20 @@ extension SupabaseBackend {
             "p_body": .string(message.body),
             "p_sent_at": .string(PostgresDate.timestamp(message.sentAt)),
             "p_announce": .bool(message.isAnnouncement == true),
+            "p_reply_to": message.replyTo.map { .string($0.uuidString.lowercased()) } ?? .null,
         ])
     }
 
     func editMessage(id: UUID, body: String) async throws -> ChatMessage {
         try await chatRPC("edit_trip_message", ["p_id": .string(id.uuidString.lowercased()), "p_body": .string(body)])
+    }
+
+    func setReaction(messageID: UUID, emoji: String, on: Bool) async throws {
+        do {
+            _ = try await client.rpc("set_message_reaction", params: [
+                "p_message_id": JSONValue.string(messageID.uuidString.lowercased()), "p_emoji": .string(emoji), "p_on": .bool(on),
+            ]).execute()
+        } catch { throw Self.map(error) }
     }
 
     func deleteMessage(id: UUID) async throws -> ChatMessage {
@@ -462,9 +471,13 @@ extension SupabaseBackend {
         AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let channel = client.channel("chat:\(tripID.sortKey)")
             let stream = channel.postgresChange(AnyAction.self, schema: "public", table: "trip_messages", filter: .eq("trip_id", value: tripID.sortKey))
+            let reactions = channel.postgresChange(AnyAction.self, schema: "public", table: "trip_message_reactions", filter: .eq("trip_id", value: tripID.sortKey))
             let task = Task {
                 await channel.subscribe()
-                for await _ in stream { continuation.yield(()) }
+                await withTaskGroup(of: Void.self) { group in
+                    group.addTask { for await _ in stream { continuation.yield(()) } }
+                    group.addTask { for await _ in reactions { continuation.yield(()) } }
+                }
             }
             continuation.onTermination = { [client] _ in
                 task.cancel()

@@ -98,7 +98,7 @@ final class NotificationCoordinator: NSObject, UNUserNotificationCenterDelegate 
         DispatchQueue.main.async {
             MainActor.assumeIsolated {
                 if let kind { self.onOpenKind?(kind) }
-                if let link, kind != "chat_message", kind != "announcement", kind != "photos_added" { self.onOpen?(link) }
+                if let link, !["chat_message", "announcement", "chat_reaction", "photos_added"].contains(kind ?? "") { self.onOpen?(link) }
             }
             completionHandler()
         }

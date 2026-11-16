@@ -16,6 +16,11 @@ private final class FakeChatService: ChatService, @unchecked Sendable {
     }
     func messageChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
     var changeCount = 0
+    var reactionCalls: [(UUID, String, Bool)] = []
+    func setReaction(messageID: UUID, emoji: String, on: Bool) async throws {
+        if failPosts { throw AppError.offline }
+        reactionCalls.append((messageID, emoji, on))
+    }
     func editMessage(id: UUID, body: String) async throws -> ChatMessage {
         changeCount += 1
         if failPosts { throw AppError.offline }
@@ -147,6 +152,51 @@ final class ChatEditDeleteTests: XCTestCase {
         await store.edit(theirs, to: "changed")
         await store.delete(theirs)
         XCTAssertEqual(service.changeCount, 0)
+    }
+}
+
+@MainActor
+final class ChatReactionReplyTests: XCTestCase {
+    private let trip = UUID()
+
+    func testToggleReactionLocallyAndOnServer() async throws {
+        let service = FakeChatService()
+        let store = ChatStore(service: service, nearby: nil, cacheURL: nil)
+        store.userID = UUID(); store.displayName = "Asray"
+        let maybe = await store.send("dinner?", tripID: trip)
+        let sent = try XCTUnwrap(maybe)
+        await store.toggleReaction("🔥", on: sent)
+        XCTAssertEqual(store.messages(for: trip).first?.reactions?.map(\.emoji), ["🔥"])
+        await store.toggleReaction("🔥", on: sent)
+        XCTAssertEqual(store.messages(for: trip).first?.reactions?.count, 0, "second tap removes it")
+        XCTAssertEqual(service.reactionCalls.map(\.2), [true, false])
+        XCTAssertTrue(store.pendingReactions.isEmpty)
+    }
+
+    func testOfflineReactionSurvivesServerRefresh() async throws {
+        let service = FakeChatService()
+        let store = ChatStore(service: service, nearby: nil, cacheURL: nil)
+        store.userID = UUID()
+        let maybe = await store.send("hi", tripID: trip)
+        let sent = try XCTUnwrap(maybe)
+        service.failPosts = true
+        await store.toggleReaction("❤️", on: sent)
+        XCTAssertEqual(store.pendingReactions.count, 1)
+        service.failPosts = false
+        await store.refresh(tripID: trip)   // server copy has no reactions yet
+        XCTAssertEqual(store.messages(for: trip).first?.reactions?.map(\.emoji), ["❤️"])
+        XCTAssertTrue(store.pendingReactions.isEmpty)
+    }
+
+    func testReplyCarriesOriginalID() async throws {
+        let service = FakeChatService()
+        let store = ChatStore(service: service, nearby: nil, cacheURL: nil)
+        store.userID = UUID()
+        let first = await store.send("where?", tripID: trip)
+        let original = try XCTUnwrap(first)
+        let second = await store.send("El Batey", tripID: trip, replyTo: original.id)
+        XCTAssertEqual(second?.replyTo, original.id)
+        XCTAssertEqual(service.stored[try XCTUnwrap(second).id]?.replyTo, original.id)
     }
 }
 
