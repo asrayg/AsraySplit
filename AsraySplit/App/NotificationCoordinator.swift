@@ -82,17 +82,25 @@ final class NotificationCoordinator: NSObject, UNUserNotificationCenterDelegate 
 
     // MARK: UNUserNotificationCenterDelegate
 
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
-        [.banner, .list, .sound]
+    // Completion-handler variants on purpose: with the `async` variants, iOS 18 runs the completion off the
+    // main thread and UIKit aborts (crash in TestFlight build 6 when opening the app from a notification).
+
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
+                                            withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        DispatchQueue.main.async { completionHandler([.banner, .list, .sound]) }
     }
 
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
+                                            withCompletionHandler completionHandler: @escaping () -> Void) {
         let userInfo = response.notification.request.content.userInfo
         let link = DeepLink.fromNotification(userInfo)
         let kind = userInfo["kind"] as? String
-        await MainActor.run {
-            if let kind { self.onOpenKind?(kind) }
-            if let link, kind != "chat_message", kind != "announcement", kind != "photos_added" { self.onOpen?(link) }
+        DispatchQueue.main.async {
+            MainActor.assumeIsolated {
+                if let kind { self.onOpenKind?(kind) }
+                if let link, kind != "chat_message", kind != "announcement", kind != "photos_added" { self.onOpen?(link) }
+            }
+            completionHandler()
         }
     }
 }
