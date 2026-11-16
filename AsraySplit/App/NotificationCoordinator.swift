@@ -9,6 +9,8 @@ final class NotificationCoordinator: NSObject, UNUserNotificationCenterDelegate 
     private(set) var deviceToken: String?
     var onOpen: ((DeepLink) -> Void)?
     var onToken: ((String) -> Void)?
+    /// Called with the push `kind` when a notification is tapped (used to pick the tab).
+    var onOpenKind: ((String) -> Void)?
     private let center = UNUserNotificationCenter.current()
 
     static let reminderPrefix = "daily-reminder-"
@@ -87,8 +89,10 @@ final class NotificationCoordinator: NSObject, UNUserNotificationCenterDelegate 
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
         let link = DeepLink.fromNotification(userInfo)
+        let kind = userInfo["kind"] as? String
         await MainActor.run {
-            if let link { self.onOpen?(link) }
+            if let kind { self.onOpenKind?(kind) }
+            if let link, kind != "chat_message", kind != "announcement", kind != "photos_added" { self.onOpen?(link) }
         }
     }
 }

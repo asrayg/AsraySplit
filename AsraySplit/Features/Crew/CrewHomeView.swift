@@ -7,7 +7,6 @@ struct CrewHomeView: View {
     @Environment(AppModel.self) private var app
     @Environment(TripStore.self) private var store
     @State private var showSettings = false
-    @State private var showGuide = false
 
     var body: some View {
         Group {
@@ -22,8 +21,6 @@ struct CrewHomeView: View {
                         ProgressView()
                         Text("Opening Puerto Rico trip…").foregroundStyle(.secondary)
                     }
-                    NavigationLink { TripGuideView(guide: .puertoRico) } label: { Label("Itinerary (works offline)", systemImage: "map") }
-                        .buttonStyle(SecondaryButtonStyle())
                 }
                 .padding(24)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -42,9 +39,9 @@ struct CrewHomeView: View {
             await app.joinCrewTrip()
             #if DEBUG
             // Debug-only shortcut for screenshots: launch with -openGuide.
-            if ProcessInfo.processInfo.arguments.contains("-openGuide") { showGuide = true }
+            if ProcessInfo.processInfo.arguments.contains("-openGuide") { app.tab = .plan }
             #endif
         }
-        .navigationDestination(isPresented: $showGuide) { TripGuideView(guide: .puertoRico) }
+
     }
 }

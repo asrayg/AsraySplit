@@ -15,6 +15,8 @@ enum Route: Hashable {
     case map(TripID)
 }
 
+enum AppTab: String, Hashable { case money, chat, photos, plan, map }
+
 enum SheetRoute: Identifiable, Equatable {
     case addExpense(TripID)
     case scanReceipt(TripID?)
@@ -52,6 +54,7 @@ final class AppModel {
     private(set) var profile: Profile?
     private(set) var authState: AuthState = .unknown
     var path: [Route] = []
+    var tab: AppTab = .money
     var sheet: SheetRoute?
     var toast: Toast?
     var presentedError: AppError?
@@ -80,6 +83,13 @@ final class AppModel {
             }
         }
         env.notifications.onOpen = { [weak self] link in self?.open(link) }
+        env.notifications.onOpenKind = { [weak self] kind in
+            switch kind {
+            case "chat_message", "announcement": self?.tab = .chat
+            case "photos_added": self?.tab = .photos
+            default: self?.tab = .money
+            }
+        }
         env.notifications.onToken = { [weak self] token in
             guard let self else { return }
             Task { try? await self.env.backend.account.registerDevice(token: token, environment: self.env.config.apnsEnvironment,

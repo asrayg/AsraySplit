@@ -84,10 +84,6 @@ struct TripDetailView: View {
                     Label("Balances & settle up", systemImage: "scalemass")
                 }
                 .accessibilityIdentifier("balancesLink")
-                NavigationLink { TripGuideView(guide: .puertoRico) } label: { Label("Itinerary", systemImage: "map") }
-                NavigationLink(value: Route.photos(trip.id)) { Label("Photos", systemImage: "photo.on.rectangle.angled") }
-                NavigationLink(value: Route.map(trip.id)) { Label("Map", systemImage: "map.fill") }
-                NavigationLink(value: Route.chat(trip.id)) { Label("Chat", systemImage: "bubble.left.and.bubble.right") }
                 NavigationLink(value: Route.receipts(trip.id)) { Label("Receipts", systemImage: "doc.text.image") }
                 NavigationLink(value: Route.activity(trip.id)) { Label("History", systemImage: "clock.arrow.circlepath") }
             }

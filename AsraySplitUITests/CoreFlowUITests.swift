@@ -34,6 +34,10 @@ final class CoreFlowUITests: XCTestCase {
         app.launchArguments = ["-uiTesting", "-emptyDemo"]
         app.launch()
         XCTAssertTrue(app.buttons["addExpense"].waitForExistence(timeout: 15))
-        XCTAssertTrue(app.staticTexts["Photos"].exists && app.staticTexts["Chat"].exists && app.staticTexts["Itinerary"].exists)
+        for tab in ["Money", "Chat", "Photos", "Plan", "Map"] {
+            XCTAssertTrue(app.tabBars.buttons[tab].exists, "missing tab \(tab)")
+        }
+        app.tabBars.buttons["Plan"].tap()
+        XCTAssertTrue(app.buttons["Food"].waitForExistence(timeout: 5))
     }
 }

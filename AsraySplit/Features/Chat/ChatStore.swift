@@ -32,6 +32,21 @@ final class ChatStore {
 
     func isMine(_ message: ChatMessage) -> Bool { message.senderId != nil && message.senderId == userID }
 
+    // MARK: Unread
+
+    private(set) var lastRead: [TripID: Date] = (UserDefaults.standard.dictionary(forKey: "chat.lastRead") as? [String: Double] ?? [:])
+        .reduce(into: [:]) { result, item in if let id = UUID(uuidString: item.key) { result[id] = Date(timeIntervalSince1970: item.value) } }
+
+    func unreadCount(for tripID: TripID) -> Int {
+        let since = lastRead[tripID] ?? .distantPast
+        return (byTrip[tripID] ?? [:]).values.filter { !isMine($0) && $0.sentAt > since }.count
+    }
+
+    func markRead(_ tripID: TripID) {
+        lastRead[tripID] = Date()
+        UserDefaults.standard.set(lastRead.reduce(into: [String: Double]()) { $0[$1.key.uuidString] = $1.value.timeIntervalSince1970 }, forKey: "chat.lastRead")
+    }
+
     // MARK: Sending
 
     @discardableResult

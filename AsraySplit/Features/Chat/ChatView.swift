@@ -41,6 +41,9 @@ struct ChatView: View {
         .navigationTitle("Chat")
         .navigationBarTitleDisplayMode(.inline)
         .task { await chat.refresh(tripID: tripID) }
+        .onAppear { if app.tab == .chat { chat.markRead(tripID) } }
+        .onChange(of: app.tab) { old, new in if old == .chat || new == .chat { chat.markRead(tripID) } }
+        .onChange(of: messages.count) { _, _ in if app.tab == .chat { chat.markRead(tripID) } }
         .task { await chat.watch(tripID: tripID) }
     }
 

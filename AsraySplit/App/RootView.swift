@@ -73,23 +73,33 @@ struct MainView: View {
     @Environment(AppModel.self) private var app
     @Environment(TripStore.self) private var store
 
+    private let trip = CrewMember.tripID
+
     var body: some View {
         @Bindable var app = app
-        NavigationStack(path: $app.path) {
-            CrewHomeView()
-                .navigationDestination(for: Route.self) { route in
-                    switch route {
-                    case .trip(let id): TripDetailView(tripID: id)
-                    case .expense(let trip, let expense): ExpenseDetailView(tripID: trip, expenseID: expense)
-                    case .balances(let id): BalancesView(tripID: id)
-                    case .tripSettings(let id): TripSettingsView(tripID: id)
-                    case .activity(let id): ActivityView(tripID: id)
-                    case .receipts(let id): ReceiptsView(tripID: id)
-                    case .chat(let id): ChatView(tripID: id)
-                    case .photos(let id): TripPhotosView(tripID: id)
-                    case .map(let id): CrewMapView(tripID: id)
-                    }
-                }
+        TabView(selection: $app.tab) {
+            NavigationStack(path: $app.path) {
+                CrewHomeView().withRoutes()
+            }
+            .tabItem { Label("Money", systemImage: "dollarsign.circle.fill") }
+            .tag(AppTab.money)
+
+            NavigationStack { ChatView(tripID: trip).withRoutes() }
+                .tabItem { Label("Chat", systemImage: "bubble.left.and.bubble.right.fill") }
+                .badge(app.env.chat.unreadCount(for: trip))
+                .tag(AppTab.chat)
+
+            NavigationStack { TripPhotosView(tripID: trip).withRoutes() }
+                .tabItem { Label("Photos", systemImage: "photo.on.rectangle.angled") }
+                .tag(AppTab.photos)
+
+            NavigationStack { TripGuideView(guide: .puertoRico).withRoutes() }
+                .tabItem { Label("Plan", systemImage: "calendar") }
+                .tag(AppTab.plan)
+
+            NavigationStack { CrewMapView(tripID: trip).withRoutes() }
+                .tabItem { Label("Map", systemImage: "map.fill") }
+                .tag(AppTab.map)
         }
         .task(id: app.profile?.displayName) { app.startNearby() }
         .sheet(item: $app.sheet) { sheet in
@@ -98,6 +108,25 @@ struct MainView: View {
             case .scanReceipt(let trip): ScanReceiptView(initialTripID: trip)
             case .reviewScan(let trip, let job): ScanReceiptView(initialTripID: trip, initialJobID: job)
             case .settleUp(let trip, let transfer): SettleUpView(tripID: trip, suggestion: transfer)
+            }
+        }
+    }
+}
+
+extension View {
+    /// Shared navigation destinations for every tab's stack.
+    @MainActor func withRoutes() -> some View {
+        navigationDestination(for: Route.self) { route in
+            switch route {
+            case .trip(let id): TripDetailView(tripID: id)
+            case .expense(let trip, let expense): ExpenseDetailView(tripID: trip, expenseID: expense)
+            case .balances(let id): BalancesView(tripID: id)
+            case .tripSettings(let id): TripSettingsView(tripID: id)
+            case .activity(let id): ActivityView(tripID: id)
+            case .receipts(let id): ReceiptsView(tripID: id)
+            case .chat(let id): ChatView(tripID: id)
+            case .photos(let id): TripPhotosView(tripID: id)
+            case .map(let id): CrewMapView(tripID: id)
             }
         }
     }
