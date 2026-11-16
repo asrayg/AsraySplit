@@ -194,6 +194,8 @@ protocol ChatService: Sendable {
     func listMessages(tripID: TripID) async throws -> [ChatMessage]
     /// Idempotent on `message.id`. Only the sender posts their own messages.
     func postMessage(_ message: ChatMessage) async throws -> ChatMessage
+    func editMessage(id: UUID, body: String) async throws -> ChatMessage
+    func deleteMessage(id: UUID) async throws -> ChatMessage
     /// Emits when the trip's messages change on the server.
     func messageChanges(tripID: TripID) -> AsyncStream<Void>
 }

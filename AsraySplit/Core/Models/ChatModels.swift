@@ -12,6 +12,11 @@ struct ChatMessage: Codable, Hashable, Identifiable, Sendable {
     var createdAt: Date?
     /// Sent by Asray with the 📣 button; notifies everyone. Optional so older cached/peer messages decode.
     var isAnnouncement: Bool?
+    var editedAt: Date?
+    var deletedAt: Date?
+
+    /// Newest change wins when the same message arrives from several places.
+    var version: Date { [sentAt, editedAt, deletedAt].compactMap { $0 }.max() ?? sentAt }
 
     static let maxLength = 2000
 }

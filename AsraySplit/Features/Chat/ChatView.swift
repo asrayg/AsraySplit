@@ -7,6 +7,8 @@ struct ChatView: View {
     @State private var draft = ""
     @State private var announce = false
     @State private var pinning = false
+    @State private var editing: ChatMessage?
+    @FocusState private var typing: Bool
 
     /// Only Asray's phone gets the 📣 announcement button (the server enforces this too).
     private var canAnnounce: Bool { UserDefaults.standard.string(forKey: AppModel.crewNameKey) == "Asray" }
@@ -30,6 +32,8 @@ struct ChatView: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
             }
+            .scrollDismissesKeyboard(.interactively)
+            .onTapGesture { typing = false }
             .onChange(of: messages.last?.id) { _, last in
                 if let last { withAnimation { proxy.scrollTo(last, anchor: .bottom) } }
             }
@@ -62,6 +66,23 @@ struct ChatView: View {
     }
 
     private var composer: some View {
+        VStack(spacing: 0) {
+            if let editing {
+                HStack {
+                    Label("Editing", systemImage: "pencil").font(.caption.bold())
+                    Text(editing.body).font(.caption).lineLimit(1).foregroundStyle(.secondary)
+                    Spacer()
+                    Button { self.editing = nil; draft = "" } label: { Image(systemName: "xmark.circle.fill") }
+                        .accessibilityLabel(Text("Cancel editing"))
+                }
+                .padding(.horizontal, 16).padding(.top, 8)
+            }
+            composerRow
+        }
+        .background(.bar)
+    }
+
+    private var composerRow: some View {
         HStack(spacing: 10) {
             Button { Task { await sendPin() } } label: {
                 if pinning { ProgressView() } else { Image(systemName: "mappin.circle.fill").font(.system(size: 28)) }
@@ -76,24 +97,35 @@ struct ChatView: View {
                 .accessibilityLabel(Text(announce ? "Announcement on" : "Announcement off"))
             }
             TextField(announce ? "Announcement to everyone" : "Message", text: $draft, axis: .vertical)
+                .focused($typing)
                 .lineLimit(1...5)
                 .padding(.horizontal, 14).padding(.vertical, 10)
                 .background(Color.surface, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
             Button {
                 let text = draft
                 draft = ""
+                if let original = editing {
+                    editing = nil
+                    Task { await chat.edit(original, to: text) }
+                    return
+                }
                 let loud = announce
                 announce = false
                 Task { await chat.send(text, tripID: tripID, announce: loud) }
                 app.eggs.chatSent(text)
             } label: {
-                Image(systemName: "arrow.up.circle.fill").font(.system(size: 32))
+                Image(systemName: editing == nil ? "arrow.up.circle.fill" : "checkmark.circle.fill").font(.system(size: 32))
             }
             .disabled(draft.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             .accessibilityLabel(Text("Send"))
         }
         .padding(.horizontal, 12).padding(.vertical, 8)
-        .background(.bar)
+        .toolbar {
+            ToolbarItemGroup(placement: .keyboard) {
+                Spacer()
+                Button("Done") { typing = false }
+            }
+        }
     }
 
     private func bubble(_ message: ChatMessage) -> some View {
@@ -117,6 +149,7 @@ struct ChatView: View {
                         .background(mine ? Color.brand : Color.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
                 HStack(spacing: 4) {
+                    if message.editedAt != nil { Text("edited") }
                     Text(message.sentAt, style: .time)
                     if mine && chat.unsent.contains(message.id) {
                         Image(systemName: "clock").accessibilityLabel(Text("Not synced yet"))
@@ -125,6 +158,15 @@ struct ChatView: View {
                 .font(.caption2).foregroundStyle(.secondary)
             }
             if !mine { Spacer(minLength: 48) }
+        }
+        .contextMenu {
+            if mine {
+                if message.pinnedCoordinate == nil {
+                    Button { editing = message; draft = message.body; typing = true } label: { Label("Edit", systemImage: "pencil") }
+                }
+                Button(role: .destructive) { Task { await chat.delete(message) } } label: { Label("Delete", systemImage: "trash") }
+            }
+            Button { UIPasteboard.general.string = message.body } label: { Label("Copy", systemImage: "doc.on.doc") }
         }
     }
 }

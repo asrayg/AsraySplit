@@ -450,6 +450,14 @@ extension SupabaseBackend {
         ])
     }
 
+    func editMessage(id: UUID, body: String) async throws -> ChatMessage {
+        try await chatRPC("edit_trip_message", ["p_id": .string(id.uuidString.lowercased()), "p_body": .string(body)])
+    }
+
+    func deleteMessage(id: UUID) async throws -> ChatMessage {
+        try await chatRPC("delete_trip_message", ["p_id": .string(id.uuidString.lowercased())])
+    }
+
     func messageChanges(tripID: TripID) -> AsyncStream<Void> {
         AsyncStream(bufferingPolicy: .bufferingNewest(1)) { continuation in
             let channel = client.channel("chat:\(tripID.sortKey)")

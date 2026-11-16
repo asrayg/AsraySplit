@@ -189,12 +189,20 @@ private actor DemoChatLog {
         return stored
     }
     func list(_ trip: TripID) -> [ChatMessage] { messages.values.filter { $0.tripId == trip }.sorted { $0.sentAt < $1.sentAt } }
+    func change(_ id: UUID, body: String?, delete: Bool) throws -> ChatMessage {
+        guard var m = messages[id] else { throw AppError.notFound }
+        if delete { m.body = ""; m.deletedAt = m.deletedAt ?? Date() } else if let body { m.body = body; m.editedAt = Date() }
+        messages[id] = m
+        return m
+    }
 }
 
 extension InMemoryBackend {
     func listMessages(tripID: TripID) async throws -> [ChatMessage] { await DemoChatLog.shared.list(tripID) }
     func postMessage(_ message: ChatMessage) async throws -> ChatMessage { await DemoChatLog.shared.upsert(message) }
     func messageChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
+    func editMessage(id: UUID, body: String) async throws -> ChatMessage { try await DemoChatLog.shared.change(id, body: body, delete: false) }
+    func deleteMessage(id: UUID) async throws -> ChatMessage { try await DemoChatLog.shared.change(id, body: nil, delete: true) }
 }
 
 // MARK: PhotoService (demo: kept in memory on this device)
