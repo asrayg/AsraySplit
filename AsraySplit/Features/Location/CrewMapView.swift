@@ -16,6 +16,7 @@ struct CrewMapView: View {
         Map(position: $camera) {
             Annotation("Airbnb", coordinate: Self.airbnb) {
                 Image(systemName: "house.fill").padding(6).background(.orange, in: Circle()).foregroundStyle(.white)
+                    .onTapGesture { if app.eggs.tap("airbnb", needed: 5) { app.eggs.trigger(.airbnb, "🏠 1364 Calle Estrella. Home sweet Airbnb.", rain: ["🏠", "🌴", "🛏️"]) } }
             }
             ForEach(location.friends) { friend in
                 Annotation(friend.displayName, coordinate: CLLocationCoordinate2D(latitude: friend.latitude, longitude: friend.longitude)) {

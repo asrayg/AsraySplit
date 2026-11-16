@@ -30,6 +30,7 @@
 		2DDB948168192572DF03BC14 /* Logging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 197410CF59354C1A9CE4E502 /* Logging.swift */; };
 		336963139605230A59FC7E71 /* Money.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18736BC3FFD378CC5357E3E6 /* Money.swift */; };
 		3534355003326D4139858C0B /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2988EA085BFD6045A99EE580 /* Services.swift */; };
+		3619BD6B23497D74A165F2CA /* EasterEggTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A01E45EFDE442F3726E2B3BA /* EasterEggTests.swift */; };
 		3A2D0819A89782881A93E212 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 9294509F5E9B1595E8918BBB /* PrivacyInfo.xcprivacy */; };
 		3B73B43D13D92AC86ACC9F8C /* LocalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C4E05A928AF67D4AA57BC7A /* LocalStore.swift */; };
 		3E23645F8C18DC4E99EA84EE /* MoneyParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5806BAEFD308AAAE1C50A224 /* MoneyParser.swift */; };
@@ -75,6 +76,7 @@
 		955B7E6C732BF8F41A05B6C1 /* expenses.json in Resources */ = {isa = PBXBuildFile; fileRef = 3AEFE9B83B7C7FB6AAA66761 /* expenses.json */; };
 		A28326C2D96EEED719FDC696 /* RideImportTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EC8F8269564B6AF2EE19848 /* RideImportTests.swift */; };
 		A95C8A111447CDC6B207224F /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDD91BE1D9E8337F3115CA5 /* SettingsView.swift */; };
+		AF0BA93CA878DE0C148E1FB3 /* EasterEggs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E92DF74648D768DF2FE2EB7 /* EasterEggs.swift */; };
 		B2BEA18AA88697F868521AF6 /* CurrencyCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = F838E0CB005EB9648D2D2ED4 /* CurrencyCode.swift */; };
 		B448DD1627E2FE51417AD53A /* trip.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BE99C65A5E4CD0B7B2E7E60 /* trip.json */; };
 		B6A33D69A4C6F97C798CC8F8 /* SharedInbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = E15A006333BD3CC9A31F8092 /* SharedInbox.swift */; };
@@ -176,6 +178,7 @@
 		79D1AE2E74BE516E399DAC0B /* LocationSharing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSharing.swift; sourceTree = "<group>"; };
 		7A88743FBB2D3D5E52A00230 /* LocalStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalStoreTests.swift; sourceTree = "<group>"; };
 		7D773A531B69D3FF3BABC1F9 /* MoneyField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoneyField.swift; sourceTree = "<group>"; };
+		7E92DF74648D768DF2FE2EB7 /* EasterEggs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggs.swift; sourceTree = "<group>"; };
 		812E829A120DD3454848888E /* TripDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripDetailView.swift; sourceTree = "<group>"; };
 		831FC3AC35E76BFD0D41E0E7 /* ExpenseFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseFilter.swift; sourceTree = "<group>"; };
 		8603B321A3B7F9A17235425F /* AllocationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllocationTests.swift; sourceTree = "<group>"; };
@@ -189,6 +192,7 @@
 		9A22A1463DE7211B7849B7F4 /* SyncEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncEngine.swift; sourceTree = "<group>"; };
 		9C95477F42732D3C3577DCAF /* ScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreenshotTests.swift; sourceTree = "<group>"; };
 		9DDD91BE1D9E8337F3115CA5 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A01E45EFDE442F3726E2B3BA /* EasterEggTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EasterEggTests.swift; sourceTree = "<group>"; };
 		A464376F9439CE0979646B36 /* LedgerModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LedgerModels.swift; sourceTree = "<group>"; };
 		A6A9DCBC5753EA6CC26C0F71 /* ReceiptTextParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTextParser.swift; sourceTree = "<group>"; };
 		AC35EAFBC9BE7EE3FC373CC5 /* TripPhotoStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TripPhotoStore.swift; sourceTree = "<group>"; };
@@ -261,6 +265,7 @@
 			isa = PBXGroup;
 			children = (
 				520D393E9935FE6F8AD84AC7 /* ChatStoreTests.swift */,
+				A01E45EFDE442F3726E2B3BA /* EasterEggTests.swift */,
 				2E0EA06D9ADCEA32B48E9825 /* TripPhotoStoreTests.swift */,
 				75550AC4110654D6533E6471 /* Domain */,
 				6C145C166B54668545443BAB /* Features */,
@@ -595,6 +600,14 @@
 			path = AsraySplitUITests;
 			sourceTree = "<group>";
 		};
+		E25319B7003CE2BB01C93BEC /* EasterEggs */ = {
+			isa = PBXGroup;
+			children = (
+				7E92DF74648D768DF2FE2EB7 /* EasterEggs.swift */,
+			);
+			path = EasterEggs;
+			sourceTree = "<group>";
+		};
 		E5129E2C7CDB3666F14D37E7 /* Features */ = {
 			isa = PBXGroup;
 			children = (
@@ -603,6 +616,7 @@
 				729E0B9F54F0F93A322F0A2C /* Balances */,
 				A66730AD8CA14212BA6A4D0C /* Chat */,
 				6A2A96C01430E053E728F2AF /* Crew */,
+				E25319B7003CE2BB01C93BEC /* EasterEggs */,
 				FD77A636C6DE9E2FB032DEE1 /* Expenses */,
 				4A5C36E1AB989ACB39514BF7 /* Guide */,
 				02C8537C24263D0A8179EBC1 /* Location */,
@@ -806,6 +820,7 @@
 				114CF8B7B828DF4D153AE673 /* DayPager.swift in Sources */,
 				839524208F2FCEA46F573741 /* DeepLink.swift in Sources */,
 				1453AAB4C0A145E6C82688C0 /* DemoData.swift in Sources */,
+				AF0BA93CA878DE0C148E1FB3 /* EasterEggs.swift in Sources */,
 				6F0799EB3358BE25FE23B465 /* ExpenseDetailView.swift in Sources */,
 				0146BBB4C64D3C9C1150F9C2 /* ExpenseEditorModel.swift in Sources */,
 				1E7AA0885B4007E97A606125 /* ExpenseEditorView.swift in Sources */,
@@ -867,6 +882,7 @@
 				0DF4EBF529DCF61C6815B2E0 /* AllocationTests.swift in Sources */,
 				477F07D7F8F82BBD1F9E9FE5 /* ChatStoreTests.swift in Sources */,
 				2B6B0B4C84740F0CAD7A8B8D /* ContractTests.swift in Sources */,
+				3619BD6B23497D74A165F2CA /* EasterEggTests.swift in Sources */,
 				705CF52A3B2E99911FC9D011 /* FeatureLogicTests.swift in Sources */,
 				58869CC3642B15D1F9B5C576 /* LedgerTests.swift in Sources */,
 				2613D963EB7E115A42670456 /* LocalStoreTests.swift in Sources */,

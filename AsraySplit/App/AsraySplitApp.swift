@@ -46,6 +46,7 @@ struct AsraySplitApp: App {
             guard phase == .active, model.phase == .ready else { return }
             model.processSharedInbox()
             model.env.location.resume()
+            model.eggs.appOpened()
             Task { await model.store.syncNow() }
         }
     }

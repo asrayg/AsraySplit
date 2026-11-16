@@ -176,6 +176,7 @@ struct ExpenseEditorView: View {
             try await store.saveExpense(payload, in: model.trip, editing: editing)
             try? await store.local.setValue(model.defaultSplit, forKey: ExpenseEditorModel.defaultsKey(model.trip.id))
             app.show(Toast(message: store.isOnline ? String(localized: "Expense saved") : String(localized: "Saved offline — will sync later"), style: .success))
+            if editing == nil { app.eggs.expenseSaved(amountMinor: model.amountMinor) }
             dismiss()
         } catch {
             self.error = error.asAppError

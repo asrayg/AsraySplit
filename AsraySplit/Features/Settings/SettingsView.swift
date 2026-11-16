@@ -30,6 +30,7 @@ struct SettingsView: View {
 
                 Section {
                     Text("AsraySplit \(Bundle.main.appVersion ?? "")").font(.footnote).foregroundStyle(.secondary)
+                    if app.eggs.foundCount > 0 { Text("🥚 \(app.eggs.foundCount)/\(Egg.allCases.count)").font(.footnote).foregroundStyle(.secondary) }
                 }
             }
             .screenBackground()

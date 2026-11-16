@@ -125,7 +125,7 @@ struct TripDetailView: View {
         .navigationTitle(trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $model.filter.query, prompt: Text("Search description, person, tag or amount"))
-        .refreshable { await store.refresh(tripID: trip.id) }
+        .refreshable { app.eggs.refreshedMoney(); await store.refresh(tripID: trip.id) }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(value: Route.tripSettings(trip.id)) { Image(systemName: "gearshape") }

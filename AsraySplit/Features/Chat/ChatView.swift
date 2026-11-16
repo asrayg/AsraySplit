@@ -85,6 +85,7 @@ struct ChatView: View {
                 let loud = announce
                 announce = false
                 Task { await chat.send(text, tripID: tripID, announce: loud) }
+                app.eggs.chatSent(text)
             } label: {
                 Image(systemName: "arrow.up.circle.fill").font(.system(size: 32))
             }

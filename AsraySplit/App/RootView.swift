@@ -19,6 +19,14 @@ struct RootView: View {
             }
         }
         .animation(.default, value: app.phase)
+        .overlay {
+            if let rain = app.eggs.rain {
+                EmojiRain(emojis: rain.emojis) { app.eggs.clearRain() }.id(rain.id)
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .deviceDidShake)) { _ in
+            if app.phase == .ready { app.eggs.shook() }
+        }
         .overlay(alignment: .top) {
             if let toast = app.toast {
                 ToastView(toast: toast) { app.toast = nil }

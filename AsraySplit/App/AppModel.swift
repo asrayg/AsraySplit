@@ -61,6 +61,7 @@ final class AppModel {
     private(set) var isDemo = false
 
     let env: AppEnvironment
+    let eggs = EasterEggs()
     var store: TripStore { env.store }
     private var authTask: Task<Void, Never>?
     private var pendingLink: DeepLink?
@@ -73,6 +74,7 @@ final class AppModel {
 
     func start() {
         guard authTask == nil else { return }
+        eggs.toast = { [weak self] message in self?.show(Toast(message: message, style: .success)) }
         if ProcessInfo.processInfo.arguments.contains("-uiTesting") {
             Task { await enterDemoMode(seeded: !ProcessInfo.processInfo.arguments.contains("-emptyDemo")) }
         }
@@ -179,6 +181,7 @@ final class AppModel {
         env.photos.scheduleOvernightSync()
         env.location.tripID = CrewMember.tripID
         guard !ProcessInfo.processInfo.arguments.contains("-uiTesting") else { return }
+        eggs.appOpened()
         env.location.resume()
         // Ask once for notifications (splits, chat, photos, announcements); registers the device for push.
         Task { if env.notifications.authorization == .notDetermined { _ = await env.notifications.requestPermission() } }

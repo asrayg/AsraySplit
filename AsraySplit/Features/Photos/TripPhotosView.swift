@@ -77,6 +77,7 @@ struct TripPhotosView: View {
     }
 
     private func importItems(_ items: [PhotosPickerItem]) async {
+        defer { app.eggs.photosAdded(items.count) }
         // Load in small batches to keep memory flat with hundreds of photos.
         for batch in stride(from: 0, to: items.count, by: 8).map({ Array(items[$0..<min($0 + 8, items.count)]) }) {
             var datas: [Data] = []

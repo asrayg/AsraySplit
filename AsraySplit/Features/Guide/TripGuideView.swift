@@ -4,6 +4,7 @@ import SwiftUI
 @MainActor
 struct TripGuideView: View {
     let guide: TripGuide
+    @Environment(AppModel.self) private var app
     /// Remembered across launches: reopening the itinerary returns to the last tab.
     @AppStorage("guide.tab") private var tab: Tab = .plan
 
@@ -34,6 +35,12 @@ struct TripGuideView: View {
         .background(Color.canvas.ignoresSafeArea())
         .navigationTitle(guide.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Text(guide.title).font(.headline)
+                    .onTapGesture { if app.eggs.tap("coqui", needed: 7) { app.eggs.trigger(.coqui, "🐸 Coquí! Coquí!", rain: ["🐸", "🌿", "🌧️"]) } }
+            }
+        }
     }
 
     @ViewBuilder private var flightsSection: some View {

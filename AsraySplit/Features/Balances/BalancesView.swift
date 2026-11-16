@@ -100,6 +100,8 @@ struct BalancesView: View {
             .task(id: store.version) {
                 snapshot = await store.balances(for: trip)
                 settlements = await store.settlements(tripID: tripID)
+                let hasExpenses = !(await store.allExpenses(tripID: tripID)).isEmpty
+                app.eggs.balancesShown(allSettled: hasExpenses && !snapshot.balances.isEmpty && snapshot.balances.allSatisfy { $0.netMinor == 0 })
             }
         } else {
             ContentUnavailableView("Trip unavailable", systemImage: "suitcase")
