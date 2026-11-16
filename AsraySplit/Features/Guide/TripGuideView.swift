@@ -79,7 +79,6 @@ struct TripGuideView: View {
             }
             Label(guide.airport, systemImage: "airplane")
         }
-        Section("Before the trip") { ChecklistRows(key: "booking", items: guide.bookingChecklist) }
         Section("Getting around") { ForEach(guide.transport) { row($0) } }
         Section("Good to know") { ForEach(guide.info) { row($0) } }
     }

@@ -17,7 +17,6 @@ struct TripGuide: Sendable {
     let softDrinks: [Pick]
     let allergyMessage: String
     let transport: [Pick]
-    let bookingChecklist: [String]
     let info: [Pick]
     let packing: [ChecklistSection]
     let outfits: [Pick]
@@ -126,17 +125,6 @@ extension TripGuide {
             Pick(name: "Sun", note: "Rental car — Fajardo & Icacos"),
             Pick(name: "Mon", note: "Uber / walking"),
             Pick(name: "Tue", note: "Airport transfers for early flights"),
-        ],
-        bookingChecklist: [
-            "Reserve rental car for Nov 28–29",
-            "Reserve Icacos excursion for Nov 29",
-            "Verify excursion allergy accommodations",
-            "Research Thanksgiving dinner options",
-            "Pick restaurants with vegetarian + allergy-safe options",
-            "Check Frontier baggage policies",
-            "Pack swimwear, sunscreen, and hiking shoes",
-            "Bring snorkeling gear if desired",
-            "Confirm who’s paying for shared reservations",
         ],
         info: [
             Pick(name: "Emergency", note: "911"),
