@@ -130,6 +130,7 @@ final class AppModel {
             }
             await env.store.start()
             await env.notifications.refreshAuthorization()
+            await env.notifications.scheduleWakeReminders(enabled: UserDefaults.standard.object(forKey: "trip.wakeReminders") as? Bool ?? true)
             if let preferences = try? await env.backend.account.fetchNotificationPreferences() {
                 await env.notifications.scheduleDailyReminders(for: env.store.activeTrips, enabled: preferences.dailyReminder)
             }

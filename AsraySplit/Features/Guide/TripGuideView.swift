@@ -7,6 +7,7 @@ struct TripGuideView: View {
     @Environment(AppModel.self) private var app
     /// Remembered across launches: reopening the itinerary returns to the last tab.
     @AppStorage("guide.tab") private var tab: Tab = .plan
+    @AppStorage("trip.wakeReminders") private var wakeReminders = true
 
     enum Tab: String, CaseIterable, Identifiable { case plan = "Plan", food = "Food", pack = "Pack", info = "Info"; var id: String { rawValue } }
 
@@ -79,6 +80,17 @@ struct TripGuideView: View {
     }
 
     @ViewBuilder private var info: some View {
+        Section {
+            Toggle("Alarm & wake-up reminders", isOn: $wakeReminders)
+                .onChange(of: wakeReminders) { _, on in
+                    Task {
+                        if on { await app.env.notifications.requestPermission() }
+                        await app.env.notifications.scheduleWakeReminders(enabled: on)
+                    }
+                }
+        } footer: {
+            Text("Night-before “set your alarm” nudges and morning wake-ups for Sat, Sun and the Dec 1 departures. These are notifications, not alarms — still set a real alarm.")
+        }
         flightsSection
         Section("Stay") {
             Link(destination: URL(string: "https://maps.apple.com/?q=\(guide.airbnb.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")")!) {
