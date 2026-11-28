@@ -451,6 +451,10 @@ extension SupabaseBackend {
         ])
     }
 
+    func pingLead(tripID: TripID, note: String?) async throws {
+        try await rpcVoid("ping_crew_lead", ["p_trip_id": .string(tripID.sortKey), "p_note": Self.json(note)])
+    }
+
     func editMessage(id: UUID, body: String) async throws -> ChatMessage {
         try await chatRPC("edit_trip_message", ["p_id": .string(id.uuidString.lowercased()), "p_body": .string(body)])
     }

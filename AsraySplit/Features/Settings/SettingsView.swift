@@ -16,6 +16,16 @@ struct SettingsView: View {
                 } header: { Text("You") }
 
                 Section {
+                    Button {
+                        Task {
+                            let sent = await app.env.chat.pingLead(tripID: CrewMember.tripID)
+                            app.show(Toast(message: sent ? String(localized: "Pinged Asray 👋") : String(localized: "Couldn’t send the ping. Check your connection."),
+                                           style: sent ? .success : .warning))
+                        }
+                    } label: { Label("Send Asray a notification", systemImage: "bell.badge") }
+                } footer: { Text("Buzzes Asray's phone. You can send one every 30 seconds.") }
+
+                Section {
                     NavigationLink { SyncIssuesView() } label: {
                         LabeledContent("Sync") {
                             if !store.isOnline { Text("Offline") }

@@ -16,8 +16,8 @@ struct ChatView: View {
     static let quickReactions = ["❤️", "😂", "🔥", "👍", "😮", "🇵🇷"]
     @FocusState private var typing: Bool
 
-    /// Only Asray's phone gets the 📣 announcement button (the server enforces this too).
-    private var canAnnounce: Bool { UserDefaults.standard.string(forKey: AppModel.crewNameKey) == "Asray" }
+    /// Everyone on the trip can send a 📣 announcement.
+    private var canAnnounce: Bool { true }
 
     private var chat: ChatStore { app.env.chat }
     private var nearby: NearbyMesh { app.env.nearby }

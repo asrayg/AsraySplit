@@ -73,6 +73,11 @@ final class ChatStore {
 
     func message(_ id: UUID, in tripID: TripID) -> ChatMessage? { byTrip[tripID]?[id] }
 
+    /// Push-notifies Asray. Returns false when it couldn't be sent (offline etc.).
+    func pingLead(tripID: TripID, note: String? = nil) async -> Bool {
+        do { try await service.pingLead(tripID: tripID, note: note); return true } catch { return false }
+    }
+
     func toggleReaction(_ emoji: String, on message: ChatMessage) async {
         guard let userID else { return }
         let mine = (byTrip[message.tripId]?[message.id]?.reactions ?? []).contains { $0.userId == userID && $0.emoji == emoji }

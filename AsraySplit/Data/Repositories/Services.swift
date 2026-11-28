@@ -197,6 +197,8 @@ protocol ChatService: Sendable {
     func editMessage(id: UUID, body: String) async throws -> ChatMessage
     func deleteMessage(id: UUID) async throws -> ChatMessage
     func setReaction(messageID: UUID, emoji: String, on: Bool) async throws
+    /// Sends a push notification to the crew lead (Asray).
+    func pingLead(tripID: TripID, note: String?) async throws
     /// Emits when the trip's messages change on the server.
     func messageChanges(tripID: TripID) -> AsyncStream<Void>
 }
@@ -230,4 +232,9 @@ struct Backend: Sendable {
     var locations: any LocationService
 
     enum Kind: Equatable, Sendable { case supabase, demo }
+}
+
+extension ChatService {
+    /// Backends without push (demo, tests) accept the ping and do nothing.
+    func pingLead(tripID: TripID, note: String?) async throws {}
 }
