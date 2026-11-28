@@ -149,7 +149,6 @@ struct ExpenseEditorView: View {
             }
             .accessibilityIdentifier("splitMethod")
             if model.splitMethod == .itemized {
-                Text("Split by receipt items. Changing the split method replaces the item assignments.").font(.footnote).foregroundStyle(.secondary)
             }
             let shares = (try? model.allocation.get()) ?? [:]
             ForEach(model.participants) { person in
@@ -165,8 +164,6 @@ struct ExpenseEditorView: View {
             }
         } header: {
             Text("Split")
-        } footer: {
-            Text("Amounts are exact to the smallest unit. Any leftover cent goes to the first people in a stable order, so every device agrees.")
         }
     }
 
@@ -179,6 +176,7 @@ struct ExpenseEditorView: View {
             try await store.saveExpense(payload, in: model.trip, editing: editing)
             try? await store.local.setValue(model.defaultSplit, forKey: ExpenseEditorModel.defaultsKey(model.trip.id))
             app.show(Toast(message: store.isOnline ? String(localized: "Expense saved") : String(localized: "Saved offline — will sync later"), style: .success))
+            if editing == nil { app.eggs.expenseSaved(amountMinor: model.amountMinor) }
             dismiss()
         } catch {
             self.error = error.asAppError

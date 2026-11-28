@@ -50,7 +50,7 @@ select is((select user_id from public.devices where apns_token = repeat('ab', 32
 
 -- Service role claims due jobs exactly once.
 select tests.as_service();
-select is((select count(*)::int from public.claim_push_jobs(10)), 2, 'dispatcher claims due jobs (join + expense)');
+select is((select count(*)::int from public.claim_push_jobs(10)), 1, 'dispatcher claims due jobs (expense; joins no longer notify in the crew build)');
 select is((select count(*)::int from public.claim_push_jobs(10)), 0, 'claimed job not handed out twice');
 
 -- Export returns the caller's data.

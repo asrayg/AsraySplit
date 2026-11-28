@@ -2,7 +2,7 @@ import Foundation
 
 /// Client-side adapter that talks to an `InMemoryServer` as one signed-in user. Two adapters over the
 /// same server behave like two devices/users of one Supabase project.
-final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, @unchecked Sendable {
+final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptService, AccountService, ExchangeRateService, RealtimeService, ChatService, PhotoService, LocationService, @unchecked Sendable {
     let server: InMemoryServer
     private let lock = NSLock()
     private var state: AuthState
@@ -17,7 +17,7 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
     }
 
     var backend: Backend {
-        Backend(kind: .demo, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self)
+        Backend(kind: .demo, auth: self, trips: self, ledger: self, receipts: self, account: self, rates: self, realtime: self, chat: self, photos: self, locations: self)
     }
 
     private func user() throws -> UserID {
@@ -50,6 +50,7 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
     /// Demo sign-in: any credential signs in the local demo user.
     func signInWithApple(idToken: String, nonce: String, fullName: PersonNameComponents?) async throws { await signInDemo() }
     func sendMagicLink(to email: String) async throws { await signInDemo() }
+    func signInAnonymously() async throws { await signInDemo() }
     func handleAuthCallback(_ url: URL) async throws -> Bool { false }
     func signOut() async throws { setState(.signedOut) }
 
@@ -173,4 +174,95 @@ final class InMemoryBackend: AuthService, TripService, LedgerService, ReceiptSer
         continuation.onTermination = { _ in task.cancel() }
         return stream
     }
+}
+
+// MARK: ChatService (demo: kept in memory on this device)
+
+private actor DemoChatLog {
+    static let shared = DemoChatLog()
+    var messages: [UUID: ChatMessage] = [:]
+    func upsert(_ message: ChatMessage) -> ChatMessage {
+        if let existing = messages[message.id] { return existing }
+        var stored = message
+        stored.createdAt = Date()
+        messages[message.id] = stored
+        return stored
+    }
+    func list(_ trip: TripID) -> [ChatMessage] { messages.values.filter { $0.tripId == trip }.sorted { $0.sentAt < $1.sentAt } }
+    func change(_ id: UUID, body: String?, delete: Bool) throws -> ChatMessage {
+        guard var m = messages[id] else { throw AppError.notFound }
+        if delete { m.body = ""; m.deletedAt = m.deletedAt ?? Date() } else if let body { m.body = body; m.editedAt = Date() }
+        messages[id] = m
+        return m
+    }
+}
+
+extension InMemoryBackend {
+    func listMessages(tripID: TripID) async throws -> [ChatMessage] { await DemoChatLog.shared.list(tripID) }
+    func postMessage(_ message: ChatMessage) async throws -> ChatMessage { await DemoChatLog.shared.upsert(message) }
+    func messageChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
+    func editMessage(id: UUID, body: String) async throws -> ChatMessage { try await DemoChatLog.shared.change(id, body: body, delete: false) }
+    func deleteMessage(id: UUID) async throws -> ChatMessage { try await DemoChatLog.shared.change(id, body: nil, delete: true) }
+    func setReaction(messageID: UUID, emoji: String, on: Bool) async throws {}
+}
+
+// MARK: PhotoService (demo: kept in memory on this device)
+
+private actor DemoPhotoLibrary {
+    static let shared = DemoPhotoLibrary()
+    var photos: [UUID: (TripPhoto, Data)] = [:]
+    func put(_ photo: TripPhoto, _ data: Data) -> TripPhoto {
+        if let existing = photos[photo.id] { return existing.0 }
+        var stored = photo
+        stored.createdAt = Date()
+        stored.byteSize = data.count
+        photos[photo.id] = (stored, data)
+        return stored
+    }
+    func list(_ trip: TripID) -> [TripPhoto] { photos.values.map(\.0).filter { $0.tripId == trip } }
+    func data(_ id: UUID) -> Data? { photos[id]?.1 }
+}
+
+extension InMemoryBackend {
+    func listPhotos(tripID: TripID) async throws -> [TripPhoto] { await DemoPhotoLibrary.shared.list(tripID) }
+    func uploadPhoto(_ photo: TripPhoto, data: Data) async throws -> TripPhoto { await DemoPhotoLibrary.shared.put(photo, data) }
+    func downloadPhoto(_ photo: TripPhoto) async throws -> Data {
+        guard let data = await DemoPhotoLibrary.shared.data(photo.id) else { throw AppError.notFound }
+        return data
+    }
+}
+
+extension InMemoryBackend {
+    /// Demo: create the crew trip locally if it doesn't exist yet.
+    func joinCrewTrip(name: String) async throws -> Trip {
+        if let trip = try? await fetchTrip(CrewMember.tripID) { return trip }
+        var draft = TripDraft()
+        draft.id = CrewMember.tripID
+        draft.name = "Puerto Rico Thanksgiving"
+        draft.emoji = "🇵🇷"
+        draft.baseCurrency = .usd
+        draft.guestNames = CrewMember.all.map(\.name).filter { $0 != name }
+        return try await createTrip(draft)
+    }
+}
+
+// MARK: LocationService (demo: in memory)
+
+private actor DemoLocations {
+    static let shared = DemoLocations()
+    var byTrip: [TripID: [UserID: MemberLocation]] = [:]
+    func put(_ location: MemberLocation) { byTrip[location.tripId, default: [:]][location.userId] = location }
+    func remove(_ trip: TripID, _ user: UserID) { byTrip[trip]?[user] = nil }
+    func list(_ trip: TripID) -> [MemberLocation] { Array((byTrip[trip] ?? [:]).values) }
+}
+
+extension InMemoryBackend {
+    func updateMyLocation(tripID: TripID, latitude: Double, longitude: Double, accuracy: Double?, recordedAt: Date) async throws {
+        let me = try user()
+        await DemoLocations.shared.put(MemberLocation(tripId: tripID, userId: me, displayName: "You", latitude: latitude, longitude: longitude,
+                                                      accuracyM: accuracy, recordedAt: recordedAt))
+    }
+    func stopSharingLocation(tripID: TripID) async throws { await DemoLocations.shared.remove(tripID, try user()) }
+    func listMemberLocations(tripID: TripID) async throws -> [MemberLocation] { await DemoLocations.shared.list(tripID) }
+    func locationChanges(tripID: TripID) -> AsyncStream<Void> { AsyncStream { _ in } }
 }

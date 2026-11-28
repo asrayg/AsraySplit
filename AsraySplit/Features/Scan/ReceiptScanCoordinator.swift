@@ -4,8 +4,9 @@ import UIKit
 import UniformTypeIdentifiers
 
 /// Owns receipt scan jobs at app level so a scan keeps running when the user leaves the screen.
-/// Pipeline: normalize locally → upload privately → AI extraction (server) → validate → review.
-/// Any AI failure falls back to on-device OCR; the manual path always remains available.
+/// Pipeline: normalize locally → upload privately → on-device OCR (Vision) → structure with Apple's on-device
+/// model, or ask a nearby Apple Intelligence iPhone → validate → review. Falls back to the regex parser.
+/// No paid AI: the `scan-receipt` Edge Function is not called.
 @MainActor
 @Observable
 final class ReceiptScanCoordinator {
@@ -31,9 +32,11 @@ final class ReceiptScanCoordinator {
 
     private(set) var jobs: [UUID: Job] = [:]
     private let receipts: any ReceiptService
+    private let nearby: NearbyMesh?
 
-    init(receipts: any ReceiptService) {
+    init(receipts: any ReceiptService, nearby: NearbyMesh? = nil) {
         self.receipts = receipts
+        self.nearby = nearby
     }
 
     var unfinishedJobs: [Job] { jobs.values.sorted { $0.startedAt > $1.startedAt } }
@@ -93,15 +96,17 @@ final class ReceiptScanCoordinator {
         guard let job = jobs[id] else { return }
         do {
             let prepared = try job.prepared ?? ReceiptImageProcessor.prepare(image: job.image, id: id)
-            update(id) { $0.prepared = prepared; $0.phase = .uploading }
+            update(id) { $0.prepared = prepared; $0.phase = .scanning }
 
-            do {
-                let registration = try await receipts.uploadReceipt(prepared, tripID: trip.id)
-                update(id) { $0.receipt = registration.receipt; $0.duplicates = registration.duplicates }
-            } catch {
-                let appError = error.asAppError
-                Log.scan.notice("Receipt upload unavailable: \(appError.title, privacy: .public)")
-                update(id) { $0.fallbackReason = appError == .offline ? String(localized: "You’re offline, so the receipt was read on this iPhone. The photo will be attached when you’re back online.") : appError.message }
+            // Upload in the background — reading the receipt never waits on the network. If the upload hasn't
+            // finished when the expense is saved, the review screen queues it (pendingUpload) instead.
+            Task { [receipts] in
+                do {
+                    let registration = try await receipts.uploadReceipt(prepared, tripID: trip.id)
+                    self.update(id) { $0.receipt = registration.receipt; $0.duplicates = registration.duplicates }
+                } catch {
+                    Log.scan.notice("Receipt upload deferred: \(error.asAppError.title, privacy: .public)")
+                }
             }
 
             // Ride receipts (Uber/Lyft) are recognized on-device: no AI call or quota needed.
@@ -112,17 +117,15 @@ final class ReceiptScanCoordinator {
                 return
             }
 
-            if useAI, jobs[id]?.receipt != nil {
-                do {
-                    let result = try await receipts.scanReceipt(id: prepared.id)
+            if useAI, lines.count >= 3 {
+                if OnDeviceReceiptAI.isAvailable, let result = await OnDeviceReceiptAI.structure(lines: lines, currency: trip.baseCurrency) {
                     update(id) { $0.result = result; $0.phase = .ready }
                     return
-                } catch {
-                    let appError = error.asAppError
-                    Log.scan.notice("AI scan unavailable, using on-device OCR: \(appError.title, privacy: .public)")
-                    if appError != .notConfigured {
-                        update(id) { $0.fallbackReason = appError.message }
-                    }
+                }
+                if let nearby, let helper = nearby.peers.first(where: \.canParse),
+                   let result = await nearby.requestParse(lines: lines, currency: trip.baseCurrency, timeout: .seconds(8)) {
+                    update(id) { $0.result = result; $0.phase = .ready; $0.fallbackReason = String(localized: "Read by \(helper.name)’s iPhone nearby.") }
+                    return
                 }
             }
 

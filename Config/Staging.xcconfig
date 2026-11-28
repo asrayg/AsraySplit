@@ -2,5 +2,5 @@
 APP_ENV = staging
 APP_BUNDLE_ID = com.asray.AsraySplit.staging
 APP_GROUP_ID = group.com.asray.AsraySplit.staging
-APP_DISPLAY_NAME = Split Beta
+APP_DISPLAY_NAME = AsraySplit
 #include? "Secrets.Staging.xcconfig"

@@ -81,3 +81,16 @@ privacy manifest, privacy/terms/support pages (`web/`).
 - **Push** requires APNs keys as function secrets and the `maintenance` cron (pg_cron + pg_net + Vault).
 - **AI provider fallback:** a single provider (OpenAI) with on-device OCR as the fallback.
 - **Load testing** of RPCs/scan endpoint, Supabase advisors, TestFlight, App Store metadata/screenshots.
+
+## Crew TestFlight build (2026-11-13)
+
+- **Auth:** "Who are you?" picker (Asray, Anoop, Arjun, Justin) → Supabase anonymous sign-in + profile. RLS unchanged.
+  Deleting the app loses that identity (rejoin the trip as a new member). Apple/email sign-in UI removed.
+- **Trip guide:** bundled Puerto Rico itinerary, food, packing and info (`Features/Guide`); checklists stored per device.
+- **Chat:** `trip_messages` table + `post_trip_message` / `list_trip_messages` (migration 20261113000100, pgTAP 010).
+  Messages also go phone-to-phone over MultipeerConnectivity (`Features/Nearby/NearbyMesh.swift`), merged by client id.
+- **Receipts:** no paid AI. Vision OCR → Apple Foundation Models on-device (iOS 26 + Apple Intelligence) → else ask a
+  nearby Apple Intelligence iPhone → else regex parser. FoundationModels code compiles only with Xcode 26+
+  (`#if canImport(FoundationModels)`); it is not exercised by tests on the Xcode 15.2 machine.
+- **Backend:** project `djbpwnjzkfvnkmjcdzii`; all migrations applied; functions exchange-rates, delete-account,
+  maintenance, email-unsubscribe deployed. scan-receipt not deployed (not used).

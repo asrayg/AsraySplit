@@ -30,10 +30,15 @@ export async function requireUser(client: SupabaseClient): Promise<{ id: string;
   return { id: data.user.id, email: data.user.email, appMetadata: data.user.app_metadata ?? {} };
 }
 
-/** For scheduled/internal functions: the caller must present the service-role key. */
-export function requireServiceRole(request: Request): void {
+/** For scheduled/internal functions: the caller must present a service-role key. Accepts the injected key
+ * exactly, or any key the Auth admin API accepts (covers legacy JWT vs. new secret-key formats). */
+export async function requireServiceRole(request: Request): Promise<void> {
   const token = request.headers.get("Authorization")?.replace(/^Bearer\s+/, "") ?? "";
-  if (!token || token !== Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) throw new HttpError(401, "not_authorized", "Service credentials required.");
+  if (!token) throw new HttpError(401, "not_authorized", "Service credentials required.");
+  if (token === Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")) return;
+  const probe = createClient(env("SUPABASE_URL"), token, { auth: { persistSession: false, autoRefreshToken: false } });
+  const { error } = await probe.auth.admin.listUsers({ page: 1, perPage: 1 });
+  if (error) throw new HttpError(401, "not_authorized", "Service credentials required.");
 }
 
 export function optionalEnv(name: string): string | undefined {

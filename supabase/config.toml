@@ -14,29 +14,14 @@ additional_redirect_urls = ["asraysplit://auth-callback"]
 jwt_expiry = 3600
 enable_refresh_token_rotation = true
 enable_signup = true
-# Guest/anonymous accounts are not used; every account can be deleted in-app.
-enable_anonymous_sign_ins = false
+# The TestFlight crew build signs in anonymously behind a "Who are you?" picker (no email/password).
+enable_anonymous_sign_ins = true
 
 [auth.email]
 enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 max_frequency = "60s"
-
-[auth.external.apple]
-enabled = true
-client_id = "env(APPLE_CLIENT_ID)"
-secret = "env(APPLE_SIGNIN_SECRET)"
-
-# Magic-link and other auth emails are sent through Resend's SMTP relay from your domain.
-[auth.email.smtp]
-enabled = true
-host = "smtp.resend.com"
-port = 465
-user = "resend"
-pass = "env(RESEND_API_KEY)"
-admin_email = "no-reply@asraysplit.app"
-sender_name = "Asray Split"
 
 [auth.rate_limit]
 email_sent = 10

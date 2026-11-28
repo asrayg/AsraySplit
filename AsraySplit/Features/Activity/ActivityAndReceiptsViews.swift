@@ -103,7 +103,7 @@ struct ReceiptsView: View {
             }
             if let error { ErrorBanner(error: error) { Task { await load() } } }
             if receipts.isEmpty && !loading && error == nil {
-                ContentUnavailableView("No receipts", systemImage: "doc.text.image", description: Text("Scanned receipts are stored privately for trip members."))
+                ContentUnavailableView("No receipts", systemImage: "doc.text.image")
             }
             ForEach(receipts) { receipt in ReceiptThumbnailRow(receipt: receipt, onDeleted: { Task { await load() } }) }
         }

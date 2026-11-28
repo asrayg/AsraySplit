@@ -43,6 +43,7 @@ struct TripDetailView: View {
     let tripID: TripID
     @State private var model: TripDetailModel
     @State private var showFilters = false
+    @State private var pendingDelete: Expense?
 
     init(tripID: TripID) {
         self.tripID = tripID
@@ -84,9 +85,8 @@ struct TripDetailView: View {
                     Label("Balances & settle up", systemImage: "scalemass")
                 }
                 .accessibilityIdentifier("balancesLink")
-                NavigationLink(value: Route.activity(trip.id)) { Label("Activity", systemImage: "clock.arrow.circlepath") }
                 NavigationLink(value: Route.receipts(trip.id)) { Label("Receipts", systemImage: "doc.text.image") }
-                NavigationLink { InsightsView(tripID: trip.id) } label: { Label("Insights", systemImage: "chart.pie") }
+                NavigationLink(value: Route.activity(trip.id)) { Label("History", systemImage: "clock.arrow.circlepath") }
             }
 
             Section {
@@ -94,7 +94,7 @@ struct TripDetailView: View {
                     if model.filter.isActive {
                         ContentUnavailableView.search(text: model.filter.query)
                     } else {
-                        ContentUnavailableView("No expenses yet", systemImage: "receipt", description: Text("Scan a receipt or add an expense. It works offline too."))
+                        ContentUnavailableView("No expenses yet", systemImage: "receipt")
                     }
                 }
                 ForEach(model.expenses) { cached in
@@ -103,7 +103,7 @@ struct TripDetailView: View {
                     }
                     .swipeActions(edge: .trailing) {
                         if !trip.isArchived {
-                            Button(role: .destructive) { Task { await delete(cached.expense) } } label: { Label("Delete", systemImage: "trash") }
+                            Button(role: .destructive) { pendingDelete = cached.expense } label: { Label("Delete", systemImage: "trash") }
                         }
                     }
                 }
@@ -123,10 +123,19 @@ struct TripDetailView: View {
             }
         }
         .screenBackground()
+        .confirmationDialog("Delete this expense?", isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } }), titleVisibility: .visible) {
+            Button("Delete (it was a mistake)", role: .destructive) {
+                if let expense = pendingDelete { Task { await delete(expense) } }
+                pendingDelete = nil
+            }
+            Button("Cancel", role: .cancel) { pendingDelete = nil }
+        } message: {
+            Text("Deleting is for mistakes. It does NOT settle anything — it removes this expense from everyone’s totals as if it never happened. If someone paid you back, tap Cancel and record a payment on the Balances screen instead.")
+        }
         .navigationTitle(trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $model.filter.query, prompt: Text("Search description, person, tag or amount"))
-        .refreshable { await store.refresh(tripID: trip.id) }
+        .refreshable { app.eggs.refreshedMoney(); await store.refresh(tripID: trip.id) }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 NavigationLink(value: Route.tripSettings(trip.id)) { Image(systemName: "gearshape") }

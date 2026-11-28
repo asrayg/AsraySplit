@@ -28,6 +28,8 @@ actor SyncEngine {
     private let now: @Sendable () -> Date
     private var drainTask: Task<SyncReport, Never>?
     private var refreshing: Set<TripID> = []
+    /// Trips whose refresh was requested while one was already running (e.g. a delete landed mid-fetch).
+    private var refreshQueued: Set<TripID> = []
     private var changeHandlers: [UUID: @Sendable (Set<TripID>) async -> Void] = [:]
 
     /// Re-fetch overlap to tolerate transactions that commit with slightly older `updated_at` values.
@@ -215,9 +217,18 @@ actor SyncEngine {
     }
 
     func refresh(tripID: TripID, includeTrip: Bool = true) async throws {
-        guard !refreshing.contains(tripID) else { return }
+        // A request that arrives mid-refresh must not be dropped: the running fetch may already have read
+        // the old data, which left deleted expenses counted in balances until the next unrelated refresh.
+        guard !refreshing.contains(tripID) else { refreshQueued.insert(tripID); return }
         refreshing.insert(tripID)
         defer { refreshing.remove(tripID) }
+        repeat {
+            refreshQueued.remove(tripID)
+            try await refreshOnce(tripID: tripID, includeTrip: includeTrip)
+        } while refreshQueued.contains(tripID)
+    }
+
+    private func refreshOnce(tripID: TripID, includeTrip: Bool) async throws {
         do {
             if includeTrip { try await local.saveTrip(try await trips.fetchTrip(tripID)) }
 

@@ -17,6 +17,8 @@ protocol AuthService: AnyObject, Sendable {
     func stateChanges() -> AsyncStream<AuthState>
     func signInWithApple(idToken: String, nonce: String, fullName: PersonNameComponents?) async throws
     func sendMagicLink(to email: String) async throws
+    /// Passwordless, email-less account for the fixed trip crew (TestFlight build).
+    func signInAnonymously() async throws
     /// Completes a magic-link sign-in. Returns false when the URL is not an auth callback.
     func handleAuthCallback(_ url: URL) async throws -> Bool
     func signOut() async throws
@@ -39,6 +41,8 @@ protocol TripService: Sendable {
     func removeMember(tripID: TripID, userID: UserID) async throws -> Trip
     func transferOwnership(tripID: TripID, to userID: UserID) async throws -> Trip
     func leaveTrip(_ tripID: TripID, acknowledgeUnsettled: Bool) async throws
+    /// Crew build: joins the built-in trip as the named person (see migration 20261113000300).
+    func joinCrewTrip(name: String) async throws -> Trip
 }
 
 struct ExpensePage: Sendable {
@@ -186,6 +190,31 @@ protocol RealtimeService: Sendable {
     func changes(tripID: TripID) -> AsyncStream<Void>
 }
 
+protocol ChatService: Sendable {
+    func listMessages(tripID: TripID) async throws -> [ChatMessage]
+    /// Idempotent on `message.id`. Only the sender posts their own messages.
+    func postMessage(_ message: ChatMessage) async throws -> ChatMessage
+    func editMessage(id: UUID, body: String) async throws -> ChatMessage
+    func deleteMessage(id: UUID) async throws -> ChatMessage
+    func setReaction(messageID: UUID, emoji: String, on: Bool) async throws
+    /// Emits when the trip's messages change on the server.
+    func messageChanges(tripID: TripID) -> AsyncStream<Void>
+}
+
+protocol PhotoService: Sendable {
+    func listPhotos(tripID: TripID) async throws -> [TripPhoto]
+    /// Uploads the JPEG (idempotent if already present) and registers it.
+    func uploadPhoto(_ photo: TripPhoto, data: Data) async throws -> TripPhoto
+    func downloadPhoto(_ photo: TripPhoto) async throws -> Data
+}
+
+protocol LocationService: Sendable {
+    func updateMyLocation(tripID: TripID, latitude: Double, longitude: Double, accuracy: Double?, recordedAt: Date) async throws
+    func stopSharingLocation(tripID: TripID) async throws
+    func listMemberLocations(tripID: TripID) async throws -> [MemberLocation]
+    func locationChanges(tripID: TripID) -> AsyncStream<Void>
+}
+
 /// Everything remote, bundled for dependency injection.
 struct Backend: Sendable {
     var kind: Kind
@@ -196,6 +225,9 @@ struct Backend: Sendable {
     var account: any AccountService
     var rates: any ExchangeRateService
     var realtime: any RealtimeService
+    var chat: any ChatService
+    var photos: any PhotoService
+    var locations: any LocationService
 
     enum Kind: Equatable, Sendable { case supabase, demo }
 }

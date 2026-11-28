@@ -34,6 +34,7 @@ final class TripStore {
     private let network: any NetworkStatusProviding
     private let now: @Sendable () -> Date
     private var realtimeTasks: [TripID: Task<Void, Never>] = [:]
+    private var lastDriftRefresh: [TripID: Date] = [:]
     private var backgroundTasks: [Task<Void, Never>] = []
 
     init(local: LocalStore, backend: Backend, network: any NetworkStatusProviding, now: @escaping @Sendable () -> Date = { Date() }) {
@@ -148,6 +149,12 @@ final class TripStore {
 
     /// Server-authoritative balances when fully synced; otherwise a deterministic local projection
     /// (same algorithm and rounding as the server) labelled as unconfirmed.
+    func directDebts(for trip: Trip) async -> [SuggestedTransfer] {
+        let expenses = await allExpenses(tripID: trip.id).map(\.expense.ledgerFact)
+        let settlements = await settlements(tripID: trip.id).map(\.settlement.ledgerFact)
+        return Ledger.directDebts(expenses: expenses, settlements: settlements)
+    }
+
     func balances(for trip: Trip) async -> BalanceSnapshot {
         let cached = cachedTrip(trip.id)
         let hasPending = !operations(for: trip.id).isEmpty
@@ -160,7 +167,11 @@ final class TripStore {
             if serverBalances.map(\.netMinor) != projected.map(\.netMinor) {
                 // Cache drifted from the server (e.g. missed realtime event). Trust the server and resync.
                 Log.sync.notice("Local projection differs from server balances; scheduling refresh")
-                Task { try? await local.setExpenseCursor(trip.id, date: nil, id: nil); await refresh(tripID: trip.id) }
+                // Throttled: a persistent difference must not trigger a refresh on every redraw.
+                if Date().timeIntervalSince(lastDriftRefresh[trip.id] ?? .distantPast) > 30 {
+                    lastDriftRefresh[trip.id] = Date()
+                    Task { try? await local.setExpenseCursor(trip.id, date: nil, id: nil); await refresh(tripID: trip.id) }
+                }
             }
             return BalanceSnapshot(balances: serverBalances, suggestions: cached?.suggestions ?? Ledger.simplify(serverBalances), isProjected: false)
         }

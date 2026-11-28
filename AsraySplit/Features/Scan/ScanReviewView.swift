@@ -60,9 +60,7 @@ struct ScanReviewView: View {
                         }
                     }
                 }
-            } header: { Text("Receipt") } footer: {
-                Text("Highlighted fields were hard to read. Nothing is saved until you tap Save.")
-            }
+            } header: { Text("Receipt") }
 
             if let ride = model.ride {
                 Section {
@@ -91,9 +89,7 @@ struct ScanReviewView: View {
                         }
                         .accessibilityAddTraits(inCar ? .isSelected : [])
                     }
-                } header: { Text("Who was in the ride?") } footer: {
-                    Text("The fare, fees and tip are split equally between riders. Change a rider’s share below if needed.")
-                }
+                } header: { Text("Who was in the ride?") }
             }
 
             Section {
@@ -136,9 +132,7 @@ struct ScanReviewView: View {
                         LabeledContent(person.displayName) { Text(Money(minorUnits: share, currency: model.currency).formatted()).monospacedDigit() }
                     }
                 }
-            } header: { Text("Everyone’s share") } footer: {
-                Text("Tax, fees, tip and discounts are shared in proportion to each person’s items.")
-            }
+            } header: { Text("Everyone’s share") }
 
             Section {
                 Button { Task { await save() } } label: {

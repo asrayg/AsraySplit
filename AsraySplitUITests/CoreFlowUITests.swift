@@ -4,24 +4,10 @@ import XCTest
 final class CoreFlowUITests: XCTestCase {
     override func setUp() { continueAfterFailure = false }
 
-    func testCreateTripAddExpenseAndSeeBalance() {
+    func testAddExpenseToCrewTripAndSeeBalance() {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTesting", "-emptyDemo"]
         app.launch()
-
-        let create = app.buttons["Create a trip"]
-        XCTAssertTrue(create.waitForExistence(timeout: 10))
-        create.tap()
-        let name = app.textFields["tripName"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5))
-        name.tap()
-        name.typeText("Kyoto\n")
-        let guest = app.textFields["Add a traveler’s name"]
-        app.swipeUp()
-        XCTAssertTrue(guest.waitForExistence(timeout: 5))
-        guest.tap()
-        guest.typeText("Kai\n")
-        app.buttons["saveTrip"].tap()
 
         let addExpense = app.buttons["addExpense"]
         XCTAssertTrue(addExpense.waitForExistence(timeout: 10))
@@ -35,15 +21,23 @@ final class CoreFlowUITests: XCTestCase {
         amount.typeText("30")
         app.buttons["saveExpense"].tap()
 
+        XCTAssertTrue(app.buttons["addExpense"].waitForExistence(timeout: 10))
+        app.swipeUp()
         XCTAssertTrue(app.staticTexts["Ramen"].waitForExistence(timeout: 10))
+        app.swipeDown()
         app.buttons["balancesLink"].tap()
-        XCTAssertTrue(app.staticTexts["Kai pays You"].waitForExistence(timeout: 10) || app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'pays'")).firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'pays'")).firstMatch.waitForExistence(timeout: 10))
     }
 
-    func testDemoTripLoads() {
+    func testOpensStraightIntoTheCrewTrip() {
         let app = XCUIApplication()
-        app.launchArguments = ["-uiTesting"]
+        app.launchArguments = ["-uiTesting", "-emptyDemo"]
         app.launch()
-        XCTAssertTrue(app.staticTexts["Lisbon Escape"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["addExpense"].waitForExistence(timeout: 15))
+        for tab in ["Money", "Chat", "Photos", "Plan", "Map"] {
+            XCTAssertTrue(app.tabBars.buttons[tab].exists, "missing tab \(tab)")
+        }
+        app.tabBars.buttons["Plan"].tap()
+        XCTAssertTrue(app.buttons["Food"].waitForExistence(timeout: 5))
     }
 }
