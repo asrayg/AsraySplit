@@ -78,19 +78,30 @@ struct TripPhotosView: View {
                     }
                 }
             }
-            ToolbarItemGroup(placement: .bottomBar) {
-                if selecting {
-                    Button { selection = Set(photos.map(\.id)) } label: { Text("Select all") }
+        }
+        // Sits above the tab bar (a .bottomBar toolbar item is hidden behind it).
+        .safeAreaInset(edge: .bottom) {
+            if selecting {
+                HStack(spacing: 10) {
+                    Button(selection.count == photos.count ? "Deselect all" : "Select all") {
+                        selection = selection.count == photos.count ? [] : Set(photos.map(\.id))
+                    }
+                    .buttonStyle(.bordered)
                     Spacer()
                     Button { Task { await save(photos.filter { selection.contains($0.id) }) } } label: {
-                        Label(selection.isEmpty ? "Save" : "Save \(selection.count)", systemImage: "square.and.arrow.down")
+                        Group {
+                            if saving { ProgressView() } else {
+                                Label(selection.isEmpty ? "Save to Photos" : "Save \(selection.count) to Photos", systemImage: "square.and.arrow.down")
+                            }
+                        }
+                        .font(.headline)
                     }
+                    .buttonStyle(.borderedProminent)
                     .disabled(selection.isEmpty || saving)
-                } else if !photos.isEmpty {
-                    Button { Task { await save(photos) } } label: { Label("Save all to Photos", systemImage: "square.and.arrow.down.on.square") }
-                        .disabled(saving)
-                    Spacer()
                 }
+                .padding(12)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .padding(.horizontal, 12).padding(.bottom, 6)
             }
         }
         .onChange(of: picked) { _, items in
