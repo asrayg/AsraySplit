@@ -93,10 +93,9 @@ final class NotificationCoordinator: NSObject, UNUserNotificationCenterDelegate 
         WakeReminder(id: "sat-wake", month: 11, day: 28, hour: 8, minute: 30, title: "☀️ Wake up!", body: "Everyone has to shower. Breakfast at 9:30, drive to El Yunque at 10:15."),
         WakeReminder(id: "sun-set", month: 11, day: 28, hour: 21, minute: 0, title: "⏰ Set your alarm", body: "Icacos day: wake up 8:15 AM. We must be in Fajardo by 11:55 AM."),
         WakeReminder(id: "sun-wake", month: 11, day: 29, hour: 8, minute: 15, title: "☀️ Wake up!", body: "Breakfast 9:30, leave 10:15 for Fajardo. Be there by 11:55 at the latest."),
-        WakeReminder(id: "tue-set", month: 11, day: 30, hour: 20, minute: 30, title: "⏰ Set your alarms for tomorrow", body: "Asray & Arjun wake ~1:45 AM (leave 2:30). Anoop leaves 6:00 AM. Justin leaves 9:00 AM."),
-        WakeReminder(id: "tue-wake-early", month: 12, day: 1, hour: 1, minute: 45, title: "☀️ Wake up — airport!", body: "Asray & Arjun: leave for SJU at 2:30 AM. Flight 5:01 AM."),
+        WakeReminder(id: "tue-set", month: 11, day: 30, hour: 20, minute: 30, title: "⏰ Set your alarms for tomorrow", body: "Asray, Arjun & Justin wake ~1:45 AM (leave 2:30 AM, flight 5:01). Anoop leaves 6:00 AM."),
+        WakeReminder(id: "tue-wake-early", month: 12, day: 1, hour: 1, minute: 45, title: "☀️ Wake up — airport!", body: "Asray, Arjun & Justin: leave for SJU at 2:30 AM. Flight 5:01 AM."),
         WakeReminder(id: "tue-wake-anoop", month: 12, day: 1, hour: 5, minute: 15, title: "☀️ Wake up, Anoop", body: "Leave for the airport at 6:00 AM. Flight 8:30 AM."),
-        WakeReminder(id: "tue-wake-justin", month: 12, day: 1, hour: 8, minute: 15, title: "☀️ Wake up, Justin", body: "Leave for the airport at 9:00 AM. Flight 11:48 AM."),
     ]
 
     /// Replaces all trip wake-up reminders. Pass `enabled: false` to just clear them.

@@ -1,3 +1,4 @@
+import PhotosUI
 import SwiftUI
 
 @MainActor
@@ -9,6 +10,9 @@ struct ChatView: View {
     @State private var pinning = false
     @State private var editing: ChatMessage?
     @State private var replyingTo: ChatMessage?
+    @State private var reactingTo: UUID?
+    @State private var pickedPhotos: [PhotosPickerItem] = []
+    @State private var viewingPhoto: TripPhoto?
     static let quickReactions = ["❤️", "😂", "🔥", "👍", "😮", "🇵🇷"]
     @FocusState private var typing: Bool
 
@@ -51,6 +55,22 @@ struct ChatView: View {
         .onChange(of: app.tab) { old, new in if old == .chat || new == .chat { chat.markRead(tripID) } }
         .onChange(of: messages.count) { _, _ in if app.tab == .chat { chat.markRead(tripID) } }
         .task { await chat.watch(tripID: tripID) }
+        .onChange(of: pickedPhotos) { _, items in
+            guard !items.isEmpty else { return }
+            pickedPhotos = []
+            Task { await sendPhotos(items) }
+        }
+        .fullScreenCover(item: $viewingPhoto) { photo in
+            PhotoViewer(photos: app.env.photos.photos(for: tripID), start: photo)
+        }
+    }
+
+    private func sendPhotos(_ items: [PhotosPickerItem]) async {
+        var datas: [Data] = []
+        for item in items { if let data = try? await item.loadTransferable(type: Data.self) { datas.append(data) } }
+        let ids = await app.env.photos.addReturningIDs(datas, tripID: tripID)
+        for id in ids { await chat.send(ChatMessage.photoBody(id), tripID: tripID) }
+        if ids.count < items.count { app.show(Toast(message: String(localized: "Some photos couldn’t be added."), style: .warning)) }
     }
 
     private var nearbyBar: some View {
@@ -101,6 +121,10 @@ struct ChatView: View {
             }
             .disabled(pinning)
             .accessibilityLabel(Text("Share my location in chat"))
+            PhotosPicker(selection: $pickedPhotos, maxSelectionCount: 10, selectionBehavior: .ordered, matching: .images) {
+                Image(systemName: "photo.circle.fill").font(.system(size: 28))
+            }
+            .accessibilityLabel(Text("Send photos"))
             if canAnnounce {
                 Button { announce.toggle() } label: {
                     Image(systemName: announce ? "megaphone.fill" : "megaphone").font(.system(size: 22))
@@ -161,7 +185,9 @@ struct ChatView: View {
                     .background(Color.surfaceRaised, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     .fixedSize(horizontal: false, vertical: true)
                 }
-                if let pin = message.pinnedCoordinate {
+                if let photoID = message.photoID {
+                    ChatPhotoBubble(photoID: photoID, tripID: tripID) { viewingPhoto = $0 }
+                } else if let pin = message.pinnedCoordinate {
                     PinBubble(latitude: pin.latitude, longitude: pin.longitude, url: message.mapsURL)
                 } else if message.isAnnouncement == true {
                     Label(message.body, systemImage: "megaphone.fill")
@@ -176,6 +202,7 @@ struct ChatView: View {
                         .background(mine ? Color.brand : Color.surface, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
                 if let reactions = message.reactions, !reactions.isEmpty { reactionChips(message, reactions) }
+                if reactingTo == message.id { reactionBar(message) }
                 HStack(spacing: 4) {
                     if message.editedAt != nil { Text("edited") }
                     Text(message.sentAt, style: .time)
@@ -188,15 +215,11 @@ struct ChatView: View {
             if !mine { Spacer(minLength: 48) }
         }
         .onTapGesture(count: 2) { Task { await chat.toggleReaction("❤️", on: message) } }
+        .onTapGesture { withAnimation(.snappy(duration: 0.18)) { reactingTo = reactingTo == message.id ? nil : message.id } }
         .contextMenu {
-            Section {
-                ForEach(Self.quickReactions, id: \.self) { emoji in
-                    Button(emoji) { Task { await chat.toggleReaction(emoji, on: message) } }
-                }
-            }
             Button { replyingTo = message; editing = nil; typing = true } label: { Label("Reply", systemImage: "arrowshape.turn.up.left") }
             if mine {
-                if message.pinnedCoordinate == nil {
+                if message.pinnedCoordinate == nil && message.photoID == nil {
                     Button { editing = message; draft = message.body; typing = true } label: { Label("Edit", systemImage: "pencil") }
                 }
                 Button(role: .destructive) { Task { await chat.delete(message) } } label: { Label("Delete", systemImage: "trash") }
@@ -207,6 +230,23 @@ struct ChatView: View {
 }
 
 extension ChatView {
+    /// Tap a message to react: one horizontal row of emoji.
+    private func reactionBar(_ message: ChatMessage) -> some View {
+        HStack(spacing: 4) {
+            ForEach(Self.quickReactions, id: \.self) { emoji in
+                Button {
+                    Task { await chat.toggleReaction(emoji, on: message) }
+                    withAnimation { reactingTo = nil }
+                } label: { Text(emoji).font(.title3).frame(width: 36, height: 36) }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("React \(emoji)"))
+            }
+        }
+        .padding(.horizontal, 6)
+        .background(.regularMaterial, in: Capsule())
+        .transition(.scale(scale: 0.8).combined(with: .opacity))
+    }
+
     private func reactionChips(_ message: ChatMessage, _ reactions: [ChatReaction]) -> some View {
         let grouped = Dictionary(grouping: reactions, by: \.emoji).sorted { $0.value.count > $1.value.count || ($0.value.count == $1.value.count && $0.key < $1.key) }
         return HStack(spacing: 4) {
@@ -263,5 +303,35 @@ private struct PinBubble: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Shared location. Opens in Maps."))
+    }
+}
+
+
+/// Photo message: shows the album photo (it may still be arriving over Bluetooth or from the server).
+@MainActor
+private struct ChatPhotoBubble: View {
+    let photoID: UUID
+    let tripID: TripID
+    let open: (TripPhoto) -> Void
+    @Environment(AppModel.self) private var app
+
+    var body: some View {
+        let album = app.env.photos
+        Group {
+            if let photo = album.photos[photoID], let image = album.thumbnail(photoID, size: 240), album.hasFile(photoID) {
+                Button { open(photo) } label: {
+                    Image(uiImage: image).resizable().scaledToFill()
+                        .frame(width: 220, height: 220 * min(1.5, max(0.6, CGFloat(photo.height) / CGFloat(max(photo.width, 1)))))
+                        .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Text("Photo from \(photo.uploaderName)"))
+            } else {
+                RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color.surface)
+                    .frame(width: 220, height: 160)
+                    .overlay { VStack(spacing: 6) { ProgressView(); Text("Photo arriving…").font(.caption).foregroundStyle(.secondary) } }
+                    .task { await album.sync(tripIDs: [tripID], allowCellular: true) }
+            }
+        }
     }
 }

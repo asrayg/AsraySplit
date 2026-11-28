@@ -82,6 +82,7 @@ struct CrewMapView: View {
                     }
                     Divider()
                 }
+                crewRow
                 Toggle("Share my location", isOn: Binding(get: { location.isSharing }, set: { location.setSharing($0) }))
                     .font(.subheadline.weight(.semibold))
             }
@@ -104,6 +105,42 @@ struct CrewMapView: View {
         .navigationBarTitleDisplayMode(.inline)
         .task { location.tripID = tripID; location.resume() }
         .task { await location.watchFriends() }
+        .task {
+            // Realtime can drop; also re-pull everyone's last position every 20 s while the map is open.
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(20))
+                await location.refreshFriends()
+            }
+        }
+    }
+
+    /// Everyone currently sharing; tap a person to fly to them.
+    @ViewBuilder private var crewRow: some View {
+        if location.friends.isEmpty {
+            Text("Nobody else is sharing yet. Ask the crew to turn on “Share my location”.")
+                .font(.caption).foregroundStyle(.secondary).frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(location.friends) { friend in
+                        Button {
+                            withAnimation { camera = .region(MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: friend.latitude, longitude: friend.longitude), latitudinalMeters: 800, longitudinalMeters: 800)) }
+                        } label: {
+                            HStack(spacing: 6) {
+                                Avatar(name: friend.displayName, size: 26)
+                                VStack(alignment: .leading, spacing: 0) {
+                                    Text(friend.displayName).font(.caption.bold()).foregroundStyle(Color.primary)
+                                    Text(friend.recordedAt, format: .relative(presentation: .named)).font(.caption2).foregroundStyle(.secondary)
+                                }
+                            }
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .background(Color.surface, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+            }
+        }
     }
 
     static func color(_ kind: TripPlace.Kind) -> Color {

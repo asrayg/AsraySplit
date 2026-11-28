@@ -16,6 +16,24 @@ final class LedgerTests: XCTestCase {
         XCTAssertEqual(net.values.reduce(0, +), 0)
     }
 
+    func testDirectDebtsMatchBalancesAndNetPairs() throws {
+        let ids = fixedIDs(3)
+        let (a, b, c) = (ids[0], ids[1], ids[2])
+        let expenses = [
+            LedgerExpenseFact(id: UUID(), payments: [a: 9001], allocations: [a: 3000, b: 3000, c: 3001]),
+            LedgerExpenseFact(id: UUID(), payments: [b: 2002, c: 1001], allocations: [a: 1001, b: 1001, c: 1001]),
+        ]
+        let settlements = [LedgerSettlementFact(id: UUID(), from: c, to: a, amountMinor: 1000)]
+        let debts = Ledger.directDebts(expenses: expenses, settlements: settlements)
+        let balances = try Ledger.balances(participants: ids, expenses: expenses, settlements: settlements)
+        for balance in balances {
+            let incoming = debts.filter { $0.to == balance.participantID }.reduce(0) { $0 + $1.amountMinor }
+            let outgoing = debts.filter { $0.from == balance.participantID }.reduce(0) { $0 + $1.amountMinor }
+            XCTAssertEqual(incoming - outgoing, balance.netMinor)
+        }
+        XCTAssertEqual(Set(debts.map { Set([$0.from, $0.to]) }).count, debts.count, "one net debt per pair")
+    }
+
     func testFullSettlementZerosEveryone() throws {
         let ids = fixedIDs(2)
         let expense = LedgerExpenseFact(id: UUID(), payments: [ids[0]: 1000], allocations: [ids[0]: 500, ids[1]: 500])

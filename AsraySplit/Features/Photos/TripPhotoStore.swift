@@ -70,7 +70,10 @@ final class TripPhotoStore {
 
     /// Imports original image data (any format UIKit reads). Returns how many were added.
     @discardableResult
-    func add(_ originals: [Data], tripID: TripID) async -> Int {
+    func add(_ originals: [Data], tripID: TripID) async -> Int { await addReturningIDs(originals, tripID: tripID).count }
+
+    /// Same as `add`, returning the new photo IDs (used to post photos into chat).
+    func addReturningIDs(_ originals: [Data], tripID: TripID) async -> [UUID] {
         importing += originals.count
         defer { importing -= originals.count }
         var added: [TripPhoto] = []
@@ -92,7 +95,7 @@ final class TripPhotoStore {
         if let nearby { for peer in nearby.peers { sendPhotos(added, to: peer.id) } }
         scheduleOvernightSync()
         if onWiFi { Task { await sync(tripIDs: [tripID]) } }
-        return added.count
+        return added.map(\.id)
     }
 
     struct Prepared: Sendable { let data: Data; let width: Int; let height: Int; let takenAt: Date? }

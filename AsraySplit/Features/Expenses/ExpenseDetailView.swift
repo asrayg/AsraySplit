@@ -135,9 +135,10 @@ struct ExpenseDetailView: View {
         .sheet(isPresented: $editing) { ExpenseEditorView(tripID: tripID, editing: expense) }
         .sheet(isPresented: $duplicating) { ExpenseEditorView(tripID: tripID, editing: nil, duplicating: expense) }
         .confirmationDialog("Delete this expense?", isPresented: $confirmDelete, titleVisibility: .visible) {
-            Button("Delete", role: .destructive) { Task { await delete(expense) } }
+            Button("Delete (it was a mistake)", role: .destructive) { Task { await delete(expense) } }
+            Button("Cancel", role: .cancel) {}
         } message: {
-            Text("Balances update for everyone. The expense stays in the activity history and can be restored.")
+            Text("Deleting is for mistakes. It does NOT settle anything — it removes this expense from everyone’s totals as if it never happened. If someone paid you back, tap Cancel and record a payment on the Balances screen instead.")
         }
     }
 

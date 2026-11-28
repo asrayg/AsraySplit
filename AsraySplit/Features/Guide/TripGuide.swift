@@ -17,6 +17,7 @@ struct TripGuide: Sendable {
     let softDrinks: [Pick]
     let allergyMessage: String
     let transport: [Pick]
+    let codes: [Pick]
     let info: [Pick]
     let packing: [ChecklistSection]
     let outfits: [Pick]
@@ -32,7 +33,7 @@ extension TripGuide {
             Flight(person: "Asray", from: "Baltimore (BWI)", arrives: "Thu Nov 26 · 3:00 PM", returns: "Dec 1 · 5:01 AM"),
             Flight(person: "Anoop", from: "Hartford (BDL)", arrives: "Thu Nov 26 · 8:23 PM", returns: "Dec 1 · 8:30 AM"),
             Flight(person: "Arjun", from: "Chicago Midway (MDW)", arrives: "Fri Nov 27 · 1:36 AM", returns: "Dec 1 · 5:01 AM"),
-            Flight(person: "Justin", from: "Chicago O’Hare (ORD)", arrives: "Fri Nov 27 · 6:32 AM", returns: "Dec 1 · 11:48 AM"),
+            Flight(person: "Justin", from: "Chicago O’Hare (ORD)", arrives: "Fri Nov 27 · 6:32 AM", returns: "Dec 1 · 5:01 AM"),
         ],
         days: [
             Day(date: "Thu, Nov 26", title: "Thanksgiving / Arrival", transport: "Uber", stops: [
@@ -85,9 +86,8 @@ extension TripGuide {
                 Stop(time: "8:00 PM", title: "Back to Airbnb", notes: ["Pack luggage", "Clean up", "Coordinate airport transportation", "⏰ Set your alarms for tomorrow"]),
             ]),
             Day(date: "Tue, Dec 1", title: "Departure Day", transport: "Uber", stops: [
-                Stop(time: "2:30 AM", title: "Asray & Arjun leave Airbnb for SJU", notes: ["Flights depart 5:01 AM"]),
+                Stop(time: "2:30 AM", title: "Asray, Arjun & Justin leave Airbnb for SJU", notes: ["Flights depart 5:01 AM"]),
                 Stop(time: "6:00 AM", title: "Anoop leaves for airport", notes: ["Flight departs 8:30 AM"]),
-                Stop(time: "9:00 AM", title: "Justin leaves for airport", notes: ["Flight departs 11:48 AM"]),
             ]),
         ],
         restaurants: [
@@ -125,6 +125,10 @@ extension TripGuide {
             Pick(name: "Sun", note: "Rental car — Fajardo & Icacos"),
             Pick(name: "Mon", note: "Uber / walking"),
             Pick(name: "Tue", note: "Airport transfers for early flights"),
+        ],
+        codes: [
+            Pick(name: "Main door", note: "112324 🔒"),
+            Pick(name: "Apartment door", note: "1311#"),
         ],
         info: [
             Pick(name: "Emergency", note: "911"),

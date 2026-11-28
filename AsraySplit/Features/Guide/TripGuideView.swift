@@ -8,6 +8,7 @@ struct TripGuideView: View {
     /// Remembered across launches: reopening the itinerary returns to the last tab.
     @AppStorage("guide.tab") private var tab: Tab = .plan
     @AppStorage("trip.wakeReminders") private var wakeReminders = true
+    @State private var showAllergy = false
 
     enum Tab: String, CaseIterable, Identifiable { case plan = "Plan", food = "Food", pack = "Pack", info = "Info"; var id: String { rawValue } }
 
@@ -34,6 +35,7 @@ struct TripGuideView: View {
             }
         }
         .background(Color.canvas.ignoresSafeArea())
+        .fullScreenCover(isPresented: $showAllergy) { AllergyAlertView(message: guide.allergyMessage) }
         .navigationTitle(guide.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -67,7 +69,12 @@ struct TripGuideView: View {
         Section("Cocktails & local alcohol") { ForEach(guide.drinks) { row($0) } }
         Section("Non-alcoholic") { ForEach(guide.softDrinks) { row($0) } }
         Section {
-            Text(guide.allergyMessage).textSelection(.enabled)
+            Button { showAllergy = true } label: {
+                VStack(alignment: .leading, spacing: 6) {
+                    Label("🚨 Show to the server", systemImage: "exclamationmark.triangle.fill").font(.headline).foregroundStyle(.red)
+                    Text(guide.allergyMessage).foregroundStyle(Color.primary).multilineTextAlignment(.leading)
+                }
+            }
             ShareLink(item: guide.allergyMessage) { Label("Share", systemImage: "square.and.arrow.up") }
         } header: { Text("Allergy message (Spanish)") }
     }
@@ -90,6 +97,15 @@ struct TripGuideView: View {
                 }
         } footer: {
             Text("Night-before “set your alarm” nudges and morning wake-ups for Sat, Sun and the Dec 1 departures. These are notifications, not alarms — still set a real alarm.")
+        }
+        Section("🔑 Important codes") {
+            ForEach(guide.codes) { code in
+                HStack {
+                    Text(code.name)
+                    Spacer()
+                    Text(code.note).font(.title3.monospaced().bold()).textSelection(.enabled)
+                }
+            }
         }
         flightsSection
         Section("Stay") {
@@ -141,5 +157,46 @@ private struct ChecklistRows: View {
             .buttonStyle(.plain)
             .accessibilityAddTraits(done ? .isSelected : [])
         }
+    }
+}
+
+
+/// Full-screen, impossible-to-miss allergy warning to show restaurant staff.
+@MainActor
+private struct AllergyAlertView: View {
+    let message: String
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        ZStack {
+            Color.red.ignoresSafeArea()
+            ScrollView {
+                VStack(spacing: 18) {
+                    Text("🚨⚠️🚨").font(.system(size: 44))
+                    Text("ALERGIA / ALLERGY").font(.system(size: 34, weight: .black)).multilineTextAlignment(.center)
+                    HStack(spacing: 14) {
+                        Text("🥜 MANÍ\nPEANUTS")
+                        Text("🥚 HUEVO\nEGGS")
+                    }
+                    .font(.system(size: 24, weight: .heavy)).multilineTextAlignment(.center)
+                    .padding(14).frame(maxWidth: .infinity)
+                    .background(.white.opacity(0.18), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    Text("⚠️ " + message + " ⚠️")
+                        .font(.system(size: 22, weight: .bold)).multilineTextAlignment(.center)
+                        .padding(16)
+                        .background(.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                        .foregroundStyle(.red)
+                    Text("No cross-contamination · Sin contaminación cruzada ❌").font(.headline).multilineTextAlignment(.center)
+                    Text("🚨⚠️🚨").font(.system(size: 44))
+                }
+                .foregroundStyle(.white)
+                .padding(20)
+            }
+            VStack {
+                HStack { Spacer(); Button { dismiss() } label: { Image(systemName: "xmark.circle.fill").font(.system(size: 34)).foregroundStyle(.white) }.accessibilityLabel(Text("Close")) }
+                Spacer()
+            }.padding()
+        }
+        .onAppear { UIScreen.main.brightness = max(UIScreen.main.brightness, 0.9) }
     }
 }

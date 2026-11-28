@@ -61,3 +61,14 @@ extension ChatMessage {
 
     var mapsURL: URL? { body.split(separator: "\n").last.flatMap { URL(string: String($0)) } }
 }
+
+extension ChatMessage {
+    /// Photos in chat are album photos referenced by ID, so they sync like every other album photo.
+    static func photoBody(_ id: UUID) -> String { "📷 Photo\n\(photoPrefix)\(id.uuidString.lowercased())" }
+    private static let photoPrefix = "asraysplit://photo/"
+
+    var photoID: UUID? {
+        guard body.hasPrefix("📷 Photo\n"), let line = body.split(separator: "\n").last, line.hasPrefix(Self.photoPrefix) else { return nil }
+        return UUID(uuidString: String(line.dropFirst(Self.photoPrefix.count)))
+    }
+}

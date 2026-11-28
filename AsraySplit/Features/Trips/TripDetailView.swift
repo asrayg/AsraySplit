@@ -43,6 +43,7 @@ struct TripDetailView: View {
     let tripID: TripID
     @State private var model: TripDetailModel
     @State private var showFilters = false
+    @State private var pendingDelete: Expense?
 
     init(tripID: TripID) {
         self.tripID = tripID
@@ -102,7 +103,7 @@ struct TripDetailView: View {
                     }
                     .swipeActions(edge: .trailing) {
                         if !trip.isArchived {
-                            Button(role: .destructive) { Task { await delete(cached.expense) } } label: { Label("Delete", systemImage: "trash") }
+                            Button(role: .destructive) { pendingDelete = cached.expense } label: { Label("Delete", systemImage: "trash") }
                         }
                     }
                 }
@@ -122,6 +123,15 @@ struct TripDetailView: View {
             }
         }
         .screenBackground()
+        .confirmationDialog("Delete this expense?", isPresented: Binding(get: { pendingDelete != nil }, set: { if !$0 { pendingDelete = nil } }), titleVisibility: .visible) {
+            Button("Delete (it was a mistake)", role: .destructive) {
+                if let expense = pendingDelete { Task { await delete(expense) } }
+                pendingDelete = nil
+            }
+            Button("Cancel", role: .cancel) { pendingDelete = nil }
+        } message: {
+            Text("Deleting is for mistakes. It does NOT settle anything — it removes this expense from everyone’s totals as if it never happened. If someone paid you back, tap Cancel and record a payment on the Balances screen instead.")
+        }
         .navigationTitle(trip.name)
         .navigationBarTitleDisplayMode(.inline)
         .searchable(text: $model.filter.query, prompt: Text("Search description, person, tag or amount"))

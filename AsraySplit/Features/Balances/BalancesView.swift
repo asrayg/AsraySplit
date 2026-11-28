@@ -7,6 +7,7 @@ struct BalancesView: View {
     let tripID: TripID
     @State private var snapshot: BalanceSnapshot = .empty
     @State private var settlements: [CachedSettlement] = []
+    @State private var direct: [SuggestedTransfer] = []
 
     var body: some View {
         if let trip = store.trip(tripID) {
@@ -14,6 +15,9 @@ struct BalancesView: View {
                 if snapshot.isProjected {
                     Label("Includes changes not yet confirmed by the server.", systemImage: "icloud.and.arrow.up")
                         .font(.footnote).foregroundStyle(.secondary)
+                }
+                if let me = store.me(in: trip)?.id {
+                    youSection(trip: trip, me: me)
                 }
                 Section {
                     if snapshot.suggestions.isEmpty {
@@ -100,12 +104,59 @@ struct BalancesView: View {
             .task(id: store.version) {
                 snapshot = await store.balances(for: trip)
                 settlements = await store.settlements(tripID: tripID)
+                direct = await store.directDebts(for: trip)
                 let hasExpenses = !(await store.allExpenses(tripID: tripID)).isEmpty
                 app.eggs.balancesShown(allSettled: hasExpenses && !snapshot.balances.isEmpty && snapshot.balances.allSatisfy { $0.netMinor == 0 })
             }
         } else {
             ContentUnavailableView("Trip unavailable", systemImage: "suitcase")
         }
+    }
+
+    /// Your position person by person: who owes you and who you owe, with a tap to settle each one.
+    @ViewBuilder private func youSection(trip: Trip, me: ParticipantID) -> some View {
+        let owedToMe = direct.filter { $0.to == me }.sorted { $0.amountMinor > $1.amountMinor }
+        let iOwe = direct.filter { $0.from == me }.sorted { $0.amountMinor > $1.amountMinor }
+        let currency = trip.baseCurrency
+        Section {
+            if owedToMe.isEmpty && iOwe.isEmpty {
+                Label("You’re all settled up", systemImage: "checkmark.seal.fill").foregroundStyle(Color.positive)
+            }
+            ForEach(owedToMe) { debt in
+                debtRow(trip: trip, name: trip.name(of: debt.from), text: "owes you", debt: debt, color: Color.positive, currency: currency)
+            }
+            ForEach(iOwe) { debt in
+                debtRow(trip: trip, name: trip.name(of: debt.to), text: "you owe", debt: debt, color: Color.negative, currency: currency)
+            }
+        } header: {
+            let total = owedToMe.reduce(0) { $0 + $1.amountMinor } - iOwe.reduce(0) { $0 + $1.amountMinor }
+            HStack {
+                Text("You")
+                Spacer()
+                if total != 0 {
+                    Text(total > 0 ? "Owed \(Money(minorUnits: total, currency: currency).formatted())" : "You owe \(Money(minorUnits: -total, currency: currency).formatted())")
+                        .textCase(nil)
+                }
+            }
+        } footer: {
+            Text("Exactly who paid for what — not simplified. “Suggested payments” below uses fewer transfers.")
+        }
+    }
+
+    private func debtRow(trip: Trip, name: String, text: LocalizedStringKey, debt: SuggestedTransfer, color: Color, currency: CurrencyCode) -> some View {
+        Button { app.sheet = .settleUp(trip.id, debt) } label: {
+            HStack {
+                Avatar(name: name, size: 32)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(name).foregroundStyle(Color.primary)
+                    Text(text).font(.caption).foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text(Money(minorUnits: debt.amountMinor, currency: currency).formatted()).bold().monospacedDigit().foregroundStyle(color)
+            }
+        }
+        .disabled(trip.isArchived)
+        .accessibilityElement(children: .combine)
     }
 
     /// The person owed (or an admin) can email a member with an account who owes money.
