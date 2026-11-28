@@ -203,7 +203,14 @@ struct ChatView: View {
                 }
                 if let reactions = message.reactions, !reactions.isEmpty { reactionChips(message, reactions) }
                 if reactingTo == message.id { reactionBar(message) }
-                HStack(spacing: 4) {
+                HStack(spacing: 6) {
+                    if message.deletedAt == nil {
+                        Button { withAnimation(.snappy(duration: 0.18)) { reactingTo = reactingTo == message.id ? nil : message.id } } label: {
+                            Image(systemName: "face.smiling").font(.caption)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("React"))
+                    }
                     if message.editedAt != nil { Text("edited") }
                     Text(message.sentAt, style: .time)
                     if mine && chat.unsent.contains(message.id) {
